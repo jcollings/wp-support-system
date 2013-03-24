@@ -1,5 +1,52 @@
 <?php 
-// http://igeneralforums.com/misc.php?page=imgurimagegrabbercrazyedition
+function get_today_open_tickets(){
+	$today = getdate();
+	$open_tickets = new WP_Query(array(
+		'post_type' => 'SupportMessage',
+		'meta_query' => array(
+			array(
+				'key' => '_answered',
+				'value' => 0,
+				'compare' => '=',
+				'type' => 'INT'
+			),
+		),
+		'year' => $today['year'],
+		'monthnum' => $today['mon'],
+		'day' => $today['mday'],
+		'order'		=> 'DESC',
+		'orderby'	=> 'meta_value_num',
+		'meta_key' 	=> '_importance',
+		'posts_per_page' => -1
+	));
+
+	return $open_tickets->post_count;
+}
+
+function get_total_closed_tickets(){
+	$today = getdate();
+	$closed_tickets = new WP_Query(array(
+		'post_type' => 'SupportMessage',
+		'meta_query' => array(
+			array(
+				'key' => '_answered',
+				'value' => 1,
+				'compare' => '=',
+				'type' => 'INT'
+			)
+		),
+		'year' => $today['year'],
+		'monthnum' => $today['mon'],
+		'day' => $today['mday'],
+		'order'		=> 'ASC',
+		'orderby'	=> 'meta_value_num',
+		'meta_key' 	=> '_importance',
+		'posts_per_page' => -1
+	));
+	return $closed_tickets->post_count;
+}
+
+
 global $post;
 $open_tickets = new WP_Query(array(
 	'post_type' => 'SupportMessage',
@@ -113,7 +160,27 @@ $closed_tickets = new WP_Query(array(
 		<div id="postbox-container-1" class="postbox-container">
 
 			<div id="postimagediv" class="postbox ">
-				<h3 class="hndle"><span>Overview</span></h3>
+				<h3 class="hndle"><span>Todays Progress</span></h3>
+				<div class="inside">
+					<?php 
+					$today_open = get_today_open_tickets(); 
+					$today_closed = get_total_closed_tickets();
+					$today_total = $today_open + $today_closed; 
+					?>
+					<table width="100%">
+						<tr>
+							<td>Open Tickets: <?php echo $today_open; ?></td>
+							<td>Closed Tickets: <?php echo $today_closed; ?></td>
+						</tr>
+						<tr>
+							<td>Progress: <?php echo round(($today_closed / $today_total) * 100,0); ?>%</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+
+			<div id="postimagediv" class="postbox ">
+				<h3 class="hndle"><span>Total Progress</span></h3>
 				<div class="inside">
 					<?php 
 					$open = $open_tickets->post_count; 
