@@ -64,3 +64,4 @@ $open_tickets = new WP_Query(array(
 <?php else: ?>
 
 <?php endif; ?>
+<?php wp_reset_postdata(); ?>
