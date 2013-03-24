@@ -56,6 +56,7 @@ function support_system( $atts , $content = null )
 		case 'view':
 		case 'add':
 		case 'index':
+		case 'browse':
 		{
 			if (!current_user_can( 'read' )  && $view != 'index'){
 				$view = 'denied';

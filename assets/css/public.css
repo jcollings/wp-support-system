@@ -5,12 +5,16 @@
 .input.text{
     width:100%;
 }
-.input.text label{
+.input.text label, .input.textarea label{
     width:100%;
     display:block;
 }
+.input label{
+	color:#333;
+}
 .input.text input, .input.textarea textarea{
-    width:100%;
+    width:96%;
+    padding:2%;
 }
 
 .input.textarea textarea{
@@ -37,12 +41,48 @@
 	float:right;
 }
 
+.error_msg{
+	margin:10px 20px;
+}
+
+.error_msg p{
+	padding:10px;
+}
+.error_msg.warn p{
+	background:#FEEFB3;
+	color:#9F6000;
+	border:1px solid #9F6000;
+}
+.error_msg.success p{
+	background:#DFF2BF;
+	color:#4F8A10;
+	border:1px solid #4F8A10;
+}
+
+/**
+ * Add ticket form
+ */
+.form_wrapper{
+	border:1px solid #DDD;
+	background: #F1F1F1;
+	width: 99%;
+}
+
+.form_wrapper form{
+	margin:20px;
+}
+
+.form_wrapper .form_header{
+	margin:20px;
+	border-bottom: 1px dashed #DDD;
+}
+
+
 /**
  * Single Support Ticket View
  */
 
 .support-ticket{
-
 }
 .support-ticket ul, .support-ticket li{
 	list-style: none;
@@ -111,6 +151,14 @@
 	padding: 0;
 	margin:0;
 }
+.support-ticket .meta-head h1 a{
+	color:#444;
+	text-decoration: none;
+}
+.support-ticket .meta-head h1 a:hover{
+	color:#444;
+	text-decoration: underline;
+}
 .support-ticket .response p.desc{
 	padding: 0;
 	margin:3px 0 0;	
@@ -126,47 +174,49 @@
 	margin-top: 10px !important;
 }
 
-/*
-
-
-
-.support-ticket ul, .support-ticket li{
-	margin:0 !important;
+.support-ticket .form{
+	width:99%;
+	margin-top:10px;
+	border:1px solid #DDD;
+	background: #F1F1F1;
 }
-.support-ticket li{
-	margin-top: 10px !important;
+.support-ticket .form form{
+	margin:20px;
+	padding:0;
 }
-.support-ticket li:last-child .response{
+.support-ticket .form .textarea{
+	/*width:96%;
+	padding:2%;
+	min-height:100px;*/
+	margin-bottom: 10px;
+}
+
+/**
+ * Browse Open Tickets
+ */
+.tickets .support-ticket.single .question{
+	margin-bottom:10px;
 	border-bottom-style: solid;
 }
 
-.support-ticket .response{
-	width:100%;
-	border:1px solid #DDD;
-	border-top-style: dashed;
-	background: #F1F1F1;
-	overflow: hidden;
+.tickets .ticket-0{
+	border:1px solid #4F8A10;
+	background:#DFF2BF;
 }
-.support-ticket .response .meta-head{
-	margin: 15px 15px 0 15px;
-	padding-bottom: 5px;
-	border-bottom:1px solid #DDD;
+.tickets .ticket-0 .meta-head{
+	border-bottom-color: #4F8A10;
 }
-.support-ticket .response .meta-content{
-	margin:  10px 15px 15px;
+.tickets .ticket-5{
+	border:1px solid #9F6000;
+	background:#FEEFB3;
 }
-.support-ticket .response .meta-head h1{
-	padding: 0;
-	margin:0;
+.tickets .ticket-5 .meta-head{
+	border-bottom-color: #9F6000;
 }
-.support-ticket .response p.desc{
-	padding: 0;
-	margin:3px 0 0;	
-	color:#333;
+.tickets .ticket-10{
+	border:1px solid #D8000C;
+	background:#FFBABA;
 }
-
-.textarea{
-	width:100%;
-	margin-top:10px;
+.tickets .ticket-10 .meta-head{
+	border-bottom-color: #D8000C;
 }
-*/

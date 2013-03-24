@@ -1,12 +1,14 @@
 <?php 
-global $post;
+global $post, $page;
 $open_tickets = new WP_Query(array(
 	'post_type' => 'SupportMessage',
 	'p' => $_GET['id']
 ));
 ?>
 
-<?php if ( $open_tickets->have_posts() ) : ?>
+<p><a href="<?php the_permalink(get_query_var( 'page_id' )); ?>">Back to Open Tickets</a></p>
+
+<?php if ( $open_tickets->have_posts() && $open_tickets->post_count == 1 ) : ?>
 	<?php while ( $open_tickets->have_posts() ) : $open_tickets->the_post(); ?>
 		<?php $ticket_id = get_the_ID(); ?>
 
@@ -78,29 +80,36 @@ $open_tickets = new WP_Query(array(
 		 * Display Comment Form
 		 */
 		?>
-		<form action="#" method="post">
-			<input type="hidden" name="SupportFormType" id="SupportFormType" value="SubmitComment" />
-			<input type="hidden" name="TicketId" id="TicketId" value="<?php echo $ticket_id ?>">
-			<div class="textarea">
-				<?php
-				$editor_id = 'SupportResponse';
-				$settings =   array(
-				    'wpautop' => false, // use wpautop?
-				    'media_buttons' => false, // show insert/upload button(s)
-				    'textarea_rows' => 10,
-				    'teeny' => true, // output the minimal editor config used in Press This
-				);
-				wp_editor( '', $editor_id, $settings); 
-				?>
-			</div>
-			<div class="submit input">
-				<input type="submit" value="Send" /> 
-			</div>
-		</form>
+		<div class="form">
+			<form action="#" method="post">
+				<h2>Add Response:</h2>
+				<input type="hidden" name="SupportFormType" id="SupportFormType" value="SubmitComment" />
+				<input type="hidden" name="TicketId" id="TicketId" value="<?php echo $ticket_id ?>">
+				<div class="textarea">
+					<label>Message:</label>
+					<?php 
+					$editor_id = 'SupportResponse';
+					$settings =   array(
+					    'wpautop' => false, // use wpautop?
+					    'media_buttons' => false, // show insert/upload button(s)
+					    'textarea_rows' => 10,
+					    'teeny' => false, // output the minimal editor config used in Press This
+					    'tinymce' => false
+					);
+					wp_editor( '', $editor_id, $settings);  
+					?>
+				</div>
+				<div class="submit input">
+					<input type="submit" value="Send" /> 
+				</div>
+			</form>
+		</div>
 	</div>
 </footer>
 </div>
 
 
 	<?php endwhile; ?>
+<?php else: ?>
+
 <?php endif; ?>
