@@ -1,0 +1,2 @@
+<h1>Restricted Content</h1>
+<p>To view this content please <a href="<?php echo add_query_arg('support-action', 'login'); ?>">login</a> or <a href="<?php echo add_query_arg('support-action', 'register'); ?>">register an account</a> with the website.</p>

@@ -1,0 +1,126 @@
+tr.priority-0{
+	background:#DFF2BF;
+}
+tr.priority-0 a{
+	color:#4F8A10;
+}
+tr.priority-0 a:hover{
+	text-decoration: underline;
+}
+tr.priority-0 td, tr.priority-0{
+	color:#4F8A10;
+	border-color:#4F8A10;
+	border-bottom: none;
+}
+
+tr.priority-5{
+	background:#FEEFB3;
+}
+tr.priority-5 a{
+	color:#9F6000;
+}
+tr.priority-5 a:hover{
+	text-decoration: underline;
+}
+tr.priority-5 td, tr.priority-5{
+	color:#9F6000;
+	border-color:#9F6000;
+	border-bottom: none;
+}
+
+tr.priority-10{
+	background:#FFBABA;
+
+}
+tr.priority-10 a{
+	color:#D8000C;
+}
+tr.priority-10 a:hover{
+	text-decoration: underline;
+}
+tr.priority-10 td, tr.priority-10{
+	color:#D8000C;
+	border-color:#D8000C;
+	border-bottom: none;
+}
+
+.support-ticket{
+
+}
+.support-ticket .question{
+	width:100%;
+	overflow: hidden;
+}
+.support-ticket .question .left{
+	float:left;
+	width:74%;
+	margin-right: 5%;
+	border:1px solid #DDD;
+	border-bottom-style: dashed;
+	background: #F1F1F1;
+	min-height: 150px;
+}
+.support-ticket .question .meta-head{
+	margin: 15px 15px 0 15px;
+	padding-bottom: 5px;
+	border-bottom:1px solid #DDD;
+}
+.support-ticket .question .meta-content{
+	margin:  10px 15px 15px;
+}
+.support-ticket .question .meta-head h1{
+	padding: 0;
+	margin:0;
+}
+.support-ticket .question p.desc{
+	padding: 0;
+	margin:3px 0 0;	
+	color:#333;
+}
+.support-ticket .question .right{
+	float:right;
+	width:20%;
+}
+
+.support-ticket ul, .support-ticket li{
+	margin:0;
+}
+.support-ticket li{
+	margin-top: 10px;
+}
+.support-ticket li:last-child .response{
+	border-bottom-style: solid;
+}
+
+.support-ticket .response{
+	width:74%;
+	border:1px solid #DDD;
+	border-top-style: dashed;
+	background: #F1F1F1;
+	overflow: hidden;
+}
+.support-ticket .response .meta-head{
+	margin: 15px 15px 0 15px;
+	padding-bottom: 5px;
+	border-bottom:1px solid #DDD;
+}
+.support-ticket .response .meta-content{
+	margin:  10px 15px 15px;
+}
+.support-ticket .response .meta-head h1{
+	padding: 0;
+	margin:0;
+}
+.support-ticket .response p.desc{
+	padding: 0;
+	margin:3px 0 0;	
+	color:#333;
+}
+
+.textarea{
+	width:74%;
+	margin-top:10px;
+}
+
+
+
