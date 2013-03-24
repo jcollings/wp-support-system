@@ -37,6 +37,7 @@ function open_support_ticket($title = '', $message = '', $user_id = 0, $args = a
 	$result = wp_insert_post($post);
 	if($result > 0)
 	{
+		wp_set_post_terms( $result, $args['group'], 'support_groups');
 		add_post_meta($result, '_read', 0);			// set flag to not read
 		add_post_meta($result, '_answered', 0);		// set flag to not answered
 		add_post_meta($result, '_importance', $importance);	// set importance of message

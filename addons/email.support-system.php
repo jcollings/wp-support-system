@@ -32,7 +32,34 @@ class Email_Support_System{
 		register_activation_hook(__FILE__, array($this, 'activate'));
         register_deactivation_hook(__FILE__, array($this, 'unshedule_cron'));
 
+
+		// setup settings
+		add_action( 'support_system-menu_output_action', array($this, 'add_settings_tab'));
+		add_filter( 'support_system-settings_sections', array($this, 'add_settings_sections'),10,1);
+
         $this->schedule_cron();
+	}
+
+	public function add_settings_tab(){
+		global $tabs;
+		$tabs['email_settings'] = array(
+			'title' => 'Email Settings'
+		);
+	}
+
+	public function add_settings_sections($sections){
+		$fields = array(
+    		array('type' => 'text', 'id' => 'imap_host', 'section' => 'email_section', 'setting_id' => 'email_imap_host', 'label' => 'Imap Host'),
+	        array('type' => 'text', 'id' => 'imap_port', 'section' => 'email_section', 'setting_id' => 'email_imap_port', 'label' => 'Imap Port'),
+	        array('type' => 'text', 'id' => 'imap_username', 'section' => 'email_section', 'setting_id' => 'email_username', 'label' => 'Username'),
+	        array('type' => 'password', 'id' => 'imap_password', 'section' => 'email_section', 'setting_id' => 'email_password', 'label' => 'Password'),
+    	);
+    	$sections['email_section'] = array(
+			'section' => array('page' => 'email_settings', 'title' => 'Email Support Settings', 'description' => 'Email Server Support Description'),
+			'fields' => $fields
+		);
+
+		return $sections;
 	}
 
 	public function activate(){

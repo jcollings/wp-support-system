@@ -3,21 +3,27 @@ class WP_Engine_Form
 {
 	var $_settings = array();
 	var $hasPosted = false;
+	private $errors = array();
 
 	public function __construct($name)
 	{
 		$this->_settings['name'] = $name;
 	}
 
-	private function setValue($field)
-	{
+	private function setValue($field){
 		return isset($_POST[$field]) ? $_POST[$field] : false;	
 	}
 
-	private function setLabel($name)
-	{
+	private function setLabel($name){
 		$output = '<label>'.$name.'</label>';
 		return $output;
+	}
+	private function setError($name){
+		$error = $this->get_error_msg($name);
+		if(!empty($error))
+			return '<span class="error_msg">' . $error . '</span>';
+		
+		return '';
 	}
 
 	public function create($args = array())
@@ -66,6 +72,8 @@ class WP_Engine_Form
 			$output .= $this->setLabel($label);
 
 		$output .= '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" />';
+
+		$output .= $this->setError($name);
 
 		$output .= '</div>';
 		return $output;
@@ -196,6 +204,12 @@ class WP_Engine_Form
 		$value = $this->setValue($name);
 		$classes = array('input', 'select');
 
+		if(!empty($class)){
+			if(!is_array($class)){
+				$classes[] = $class;
+			}
+		}
+
 		if($required == true)
 		{
 			if(empty($value) && $this->hasPosted == true)
@@ -240,17 +254,25 @@ class WP_Engine_Form
 		return $output;
 	}
 
+	public function get_error_msg($name = ''){
+
+		if(!isset($this->errors['fields']) || !isset($this->errors['fields'][$name]))
+			return false;
+		// $fields = $this->errors['fields'];
+		return $this->errors['fields'][$name];
+	}
+
 	public function errors()
 	{
 		global $current_user;
 		$current_user = wp_get_current_user();
-		$errors = array(
+		$this->errors = array(
 			'message' => get_transient($this->_settings['name'].'Error_'.$current_user->ID),
 			'fields' => get_transient($this->_settings['name'].'Field_'.$current_user->ID)
 		);
 		delete_transient($this->_settings['name'].'Error_'.$current_user->ID);
 		delete_transient($this->_settings['name'].'Field_'.$current_user->ID);
-		return $errors;
+		return $this->errors;
 	}
 
 	/**

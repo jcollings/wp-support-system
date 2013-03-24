@@ -44,6 +44,10 @@ tr.priority-10 td, tr.priority-10{
 	border-bottom: none;
 }
 
+tr.priority-0 td, tr.priority-5 td, tr.priority-10 td{
+    padding: 10px 5px !important;
+}
+
 .support-ticket{
 
 }

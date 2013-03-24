@@ -1,0 +1,172 @@
+.input{
+	margin-bottom: 10px;
+}
+
+.input.text{
+    width:100%;
+}
+.input.text label{
+    width:100%;
+    display:block;
+}
+.input.text input, .input.textarea textarea{
+    width:100%;
+}
+
+.input.textarea textarea{
+	height:100px;
+}
+
+.input.required label:before{
+    color:red;
+    content:'* '
+}
+.input.required label:after{
+	content:': ';
+}
+
+.form_cols_2{
+	overflow: hidden;
+}
+.form_cols_2 .input.two_col_left{
+	width:50%;
+	float:left;
+}
+.form_cols_2 .input.two_col_right{
+	width:50%;
+	float:right;
+}
+
+/**
+ * Single Support Ticket View
+ */
+
+.support-ticket{
+
+}
+.support-ticket ul, .support-ticket li{
+	list-style: none;
+	margin:0 !important;
+	padding:0;
+}
+.support-ticket .question{
+	width:99%;
+	overflow: hidden;
+	border:1px solid #DDD;
+	border-bottom-style: dashed;
+	background: #F1F1F1;
+}
+.support-ticket .question .left{
+	float:left;
+	width:74%;
+	margin-right: 5%;
+	min-height: 150px;
+}
+.support-ticket .question .meta-head{
+	margin: 15px 15px 0 15px;
+	padding-bottom: 5px;
+	border-bottom:1px solid #DDD;
+}
+.support-ticket .question .meta-content{
+	margin:  10px 15px 15px;
+}
+.support-ticket .question .meta-head h1{
+	padding: 0;
+	margin:0;
+}
+.support-ticket .question p.desc{
+	padding: 0;
+	margin:3px 0 0;	
+	color:#333;
+}
+.support-ticket .question .right{
+	float:right;
+	width:20%;
+	padding-top:20px;
+}
+
+
+.support-ticket .response{
+	width:99%;
+	overflow: hidden;
+	border:1px solid #DDD;
+	border-bottom-style: dashed;
+	background: #F1F1F1;
+}
+.support-ticket .response .left{
+	float:left;
+	width:74%;
+	margin-right: 5%;
+	min-height: 150px;
+}
+.support-ticket .response .meta-head{
+	margin: 15px 15px 0 15px;
+	padding-bottom: 5px;
+	border-bottom:1px solid #DDD;
+}
+.support-ticket .response .meta-content{
+	margin:  10px 15px 15px;
+}
+.support-ticket .response .meta-head h1{
+	padding: 0;
+	margin:0;
+}
+.support-ticket .response p.desc{
+	padding: 0;
+	margin:3px 0 0;	
+	color:#333;
+}
+.support-ticket .response .right{
+	float:right;
+	width:20%;
+	padding-top:20px;
+}
+
+.support-ticket li{
+	margin-top: 10px !important;
+}
+
+/*
+
+
+
+.support-ticket ul, .support-ticket li{
+	margin:0 !important;
+}
+.support-ticket li{
+	margin-top: 10px !important;
+}
+.support-ticket li:last-child .response{
+	border-bottom-style: solid;
+}
+
+.support-ticket .response{
+	width:100%;
+	border:1px solid #DDD;
+	border-top-style: dashed;
+	background: #F1F1F1;
+	overflow: hidden;
+}
+.support-ticket .response .meta-head{
+	margin: 15px 15px 0 15px;
+	padding-bottom: 5px;
+	border-bottom:1px solid #DDD;
+}
+.support-ticket .response .meta-content{
+	margin:  10px 15px 15px;
+}
+.support-ticket .response .meta-head h1{
+	padding: 0;
+	margin:0;
+}
+.support-ticket .response p.desc{
+	padding: 0;
+	margin:3px 0 0;	
+	color:#333;
+}
+
+.textarea{
+	width:100%;
+	margin-top:10px;
+}
+*/

@@ -9,42 +9,69 @@ $open_tickets = new WP_Query(array(
 <?php if ( $open_tickets->have_posts() ) : ?>
 	<?php while ( $open_tickets->have_posts() ) : $open_tickets->the_post(); ?>
 		<?php $ticket_id = get_the_ID(); ?>
-		<div class="support_ticket_question">
-			<div class="support_ticket_meta-head">
+
+<?php $priority = get_post_meta(get_the_ID(), '_importance', true);  ?>
+
+<div id="post-<?php the_ID(); ?>" class="support-ticket single">
+	<div class="question">
+		<div class="left">
+			<div class="meta-head">
 				<h1><?php the_title(); ?></h1>
+				<p class="desc">Posted on <?php the_time('F j, Y \a\t g:i a'); ?></p>
 			</div>
-			<div class="support_ticket_meta-content">
+			<div class="meta-content">
 				<?php the_support_content(); ?>
 			</div>
 		</div>
-
-		<?php 
-		// support_ticket_get_comments();
-		$query = new WP_Query(array(
-			'post_type' => 'st_comment',
-			'post_parent' => get_the_ID(),
-			'order' => 'ASC',
-			'nopaging' => true,
-			// 'posts_per_page' => -1
-		));
-		
-
-		if($query->have_posts()): ?>
-		<ul class="support_ticket_comments">
-			<?php while($query->have_posts()): $query->the_post(); ?>
-			<li class="support_ticket_comment">
-				<div class="support_ticket_comment-head">
-					<p>Posted by <?php echo the_author(); ?> on <?php the_time(); ?></p>
+		<div class="right">
+			<div class="meta-info">
+				<div class="img-wrapper">
+					<?php echo get_avatar( get_the_author_email(), '96'); ?>
+					<p><?php the_author(); ?></p>
 				</div>
-				<div class="support_ticket_comment-content">
-					<?php the_support_content(); ?>
-				</div>
-			</li>
-			<?php endwhile; ?>
-		</ul>
-		<?php endif; ?>
+			</div>
+		</div>
+	</div>
 
-		<?php wp_reset_postdata(); ?>
+	<footer class="meta-footer">
+		<div id="comments" class="comments-area">
+			<?php 
+			$query = new WP_Query(array(
+				'post_type' => 'st_comment',
+				'post_parent' => get_the_ID(),
+				'order' => 'ASC',
+				'nopaging' => true,
+			));
+			
+
+			if($query->have_posts()): ?>
+			<ul>
+				<?php while($query->have_posts()): $query->the_post(); ?>
+				<li>
+					<div class="response">
+						<div class="left">
+							<div class="meta-head">
+								<h1><?php the_title(); ?></h1>
+								<p class="desc">Posted by <?php the_author(); ?> on <?php the_time('F j, Y \a\t g:i a'); ?></p>
+							</div>
+							<div class="meta-content">
+								<?php the_support_content(); ?>
+							</div>
+						</div>
+						<div class="right">
+							<div class="meta-info">
+								<div class="img-wrapper">
+									<?php echo get_avatar( get_the_author_email()); ?>
+									<p><?php the_author(); ?></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+				<?php endwhile; ?>
+			</ul>
+			<?php endif; ?>
+			<?php wp_reset_postdata(); ?>
 
 		<?php
 		/**
@@ -70,6 +97,10 @@ $open_tickets = new WP_Query(array(
 				<input type="submit" value="Send" /> 
 			</div>
 		</form>
+	</div>
+</footer>
+</div>
+
 
 	<?php endwhile; ?>
 <?php endif; ?>

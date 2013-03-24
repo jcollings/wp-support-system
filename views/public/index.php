@@ -46,7 +46,7 @@ $all_tickets = new WP_Query(array(
 <br />
 
 <table width="100%">
-	<?php if ( $all_tickets->have_posts() ) : ?>
+	<?php if ( $open_tickets->have_posts() ) : ?>
 	<thead>
 		<th>Date</th>
 		<th>Subject</th>
@@ -54,7 +54,7 @@ $all_tickets = new WP_Query(array(
 		<th>Urgancy</th>
 	</thead>
 	<tbody>
-	<?php while ( $all_tickets->have_posts() ) : $all_tickets->the_post(); ?>
+	<?php while ( $open_tickets->have_posts() ) : $open_tickets->the_post(); ?>
 	<tr>
 		<td><?php the_time('F j, Y g:i a');  ?></td>
 		<?php 

@@ -7,10 +7,14 @@ Version: 0.0.1
 Author: James Collings
 Author URI: http://www.jamescollings.co.uk
  */
-
+function support_plugin_url($dir = ''){
+	return plugin_dir_url( __FILE__ ) . $dir;
+}
 define('WP_SUPPORT_SYSTEM_DIR', plugin_dir_path(__FILE__));
 define('WP_SUPPORT_SYSTEM_TEMPLATE_DIR', WP_SUPPORT_SYSTEM_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR);
 define('WP_SUPPORT_SYSTEM_ASSETS_DIR', WP_SUPPORT_SYSTEM_DIR . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR );
+
+require_once 'config.php';
 
 require_once 'helpers/form_helper.php';
 
@@ -20,23 +24,29 @@ if(is_admin())
 require_once 'user.support-system.php';
 require_once 'funcs.support-system.php';
 require_once 'shortcodes.support-system.php';
-require_once 'addons/email.support-system.php';
 
+require_once 'addons/email.support-system.php';
+require_once 'addons/knowledgebase.support-system.php';
+
+$test =& Support_System_Singleton::getInstance();
+echo $test->test;
 
 global $wpengine_support;
 $wpengine_support = new WP_Engine_Support_System();
 
 class WP_Engine_Support_System
 {
+	private $config = null;
 	private $name = 'supportmessage'; 
 	private $fields = array(
-		'SubmitTicket' => array('SupportSubject', 'SupportMessage'),
+		'SubmitTicket' => array('SupportSubject', 'SupportMessage', 'SupportGroup'),
 		'Register' => array('user_login', 'user_first_name', 'user_last_name', 'user_email', 'user_pass', 'user_pass2'),
 		'Login' => array('user_email', 'user_pass')
 	);
 
 	public function __construct()
 	{
+		$this->config =& Support_System_Singleton::getInstance();
 		add_action('init', array($this, 'init'));
         add_action('plugins_loaded', array($this, 'plugins_loaded'));
 	}
@@ -97,12 +107,7 @@ class WP_Engine_Support_System
 			'support_groups',  
 			$this->name,  
 			array(  
-				// 'hierarchical' => false,  
 				'label' => 'Support Ticket Groups',  
-				// 'query_var' => false,  
-				// 'rewrite' => array('slug' => ''),
-				// 'show_ui' => true,
-				// 'show_in_nav_menus' => true,
 				'public' => true,
 		        'show_in_nav_menus' => true,
 		        'show_ui' => true,
@@ -278,8 +283,10 @@ class WP_Engine_Support_System
 
 				$user_id =  $current_user->ID;
 				$importance = intval($_POST['SupportImportance']);
+				$group = intval($_POST['SupportGroup']);
 				$result = open_support_ticket($_POST['SupportSubject'], $_POST['SupportMessage'], $user_id, array(
-					'importance' => $importance
+					'importance' => $importance,
+					'group' => $group
 				));
 
 				if($result){

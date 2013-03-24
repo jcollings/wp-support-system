@@ -2,13 +2,19 @@
 
 class Admin_Support_System{
 
-	private $settings_optgroup = 'wp-support-system';
+	private $config = null;
+	private $settings_optgroup = null;
+	private $settings_sections = array();
 	
 	public function __construct(){
-		$this->init_hooks();
+		$this->config =& Support_System_Singleton::getInstance();
+
+		// set class config
+		$this->settings_optgroup = $this->config->settings_api['optgroup'];
+		add_action('plugins_loaded', array($this, 'plugins_loaded'));
 	}
 
-	private function init_hooks(){
+	public function plugins_loaded(){
 		add_action( 'admin_menu', array( $this, 'register_menu_pages' ) );
 		add_action( 'admin_menu', array($this, 'add_user_menu_notifications'));
 		add_action( 'admin_head', array($this, 'admin_forms'));
@@ -22,7 +28,10 @@ class Admin_Support_System{
 	public function register_menu_pages(){
 		add_object_page( 'Support Tickets', 'WP Tickets', 'add_users', 'support-tickets', array($this, 'admin_page'));
 		add_submenu_page('support-tickets', 'Support Groups', 'Support Groups', 'add_users', 'edit-tags.php?taxonomy=support_groups');
-		add_submenu_page('support-tickets', 'Addons', 'Addons', 'add_users', 'support-ticket-addons', array($this, 'admin_addon_page' ));
+
+		// allow addons to hook into the meny creation
+		do_action('support_system-menu_output');
+		
 		add_submenu_page('support-tickets', 'Settings', 'Settings', 'add_users', 'support-ticket-settings', array($this, 'admin_settings_page'));
 		
 	}
@@ -51,7 +60,7 @@ class Admin_Support_System{
      */
 	function admin_scripts()
 	{
-		wp_enqueue_script('support-admin-js', plugins_url( 'support-system/assets/js/admin.js'));
+		wp_enqueue_script('support-admin-js', support_plugin_url( 'assets/js/admin.js'));
 	}
 
 	/**
@@ -60,28 +69,33 @@ class Admin_Support_System{
 	 */
 	function admin_styles()
 	{
-		wp_enqueue_style( 'support-admin-css', plugins_url( 'support-system/assets/css/admin.css'));
-	}
-
-	public function admin_addon_page(){
-		include 'views/admin/addons.php';	
+		wp_enqueue_style( 'support-admin-css', support_plugin_url( 'assets/css/admin.css'));
 	}
 
 	public function admin_settings_page()
 	{
+		global $tabs;
+		
+		$tabs = array(
+		    'base_settings' => array(
+		        'title' => 'General Settings'
+		    )
+		);
+
+		// hook to extends setting tabs
+		do_action('support_system-menu_output_action', $tabs);
+
+		// include view file
 		include 'views/admin/settings.php';
 	}
 
-	public function section_base(){
-		?>
-		<!-- <p>General Settings</p> -->
-		<?php
-	}
-
-	public function section_email(){
-		?>
-		<p>Enter your imap email settings, to enable email email support tickets.</p>
-		<?php
+	/**
+	 * General Section Callback
+	 * @param  array $args passed arguments
+	 * @return void
+	 */
+	public function section_callback($args = ''){
+		echo '<p>'.$this->settings_sections[$args['id']]['section']['description'].'</p>';
 	}
 
 	/**
@@ -90,42 +104,42 @@ class Admin_Support_System{
      */
     public function register_settings()
     {
-        // register_setting($option_group, $option_name, $sanitize_callback = '')
-        register_setting($this->settings_optgroup, 'email_imap_host');
-        register_setting($this->settings_optgroup, 'email_imap_port');
-        register_setting($this->settings_optgroup, 'email_username');
-        register_setting($this->settings_optgroup, 'email_password');
+    	$this->load_settings_api();
 
-        // add_settings_section($id, $title, $callback, $page)
-        add_settings_section('base_section', 'General Settings', array($this, 'section_base'), 'base_settings');
-        add_settings_section('email_section', 'Email Support Settings', array($this, 'section_email'), 'email_settings');
+    	foreach($this->settings_sections as $section => $options){
 
+    		//register settings
+    		foreach($options['fields'] as $field){
+    			register_setting($this->settings_optgroup, $field['setting_id']);
+    		}
 
-        // add_settings_field($id, $title, $callback, $page, $section = 'default', $args = array
-        add_settings_field('imap_host', 'IMAP Host', array($this, 'field_callback'), 'email_settings', 'email_section', array(
-            'type' => 'text',
-            'field_id' => 'imap_host',
-            'section_id' => 'email_section',
-            'setting_id' => 'email_imap_host'
-        ));
-        add_settings_field('imap_port', 'IMAP Port', array($this, 'field_callback'), 'email_settings', 'email_section', array(
-            'type' => 'text',
-            'field_id' => 'imap_port',
-            'section_id' => 'email_section',
-            'setting_id' => 'email_imap_port'
-        ));
-        add_settings_field('imap_username', 'Email Address', array($this, 'field_callback'), 'email_settings', 'email_section', array(
-            'type' => 'text',
-            'field_id' => 'imap_username',
-            'section_id' => 'email_section',
-            'setting_id' => 'email_username'
-        ));
-        add_settings_field('imap_password', 'Password', array($this, 'field_callback'), 'email_settings', 'email_section', array(
-            'type' => 'password',
-            'field_id' => 'imap_password',
-            'section_id' => 'email_section',
-            'setting_id' => 'email_password'
-        ));
+    		// register section
+    		add_settings_section($section, $options['section']['title'], array($this, 'section_callback'), $options['section']['page']);
+
+    		//register fields
+    		foreach($options['fields'] as $field){
+    			add_settings_field($field['id'], $field['label'], array($this, 'field_callback'), $options['section']['page'], $field['section'], array(
+		            'type' => $field['type'],
+		            'field_id' => $field['id'],
+		            'section_id' => $field['section'],
+		            'setting_id' => $field['setting_id']
+		        ));
+    		}
+    	}
+    }
+
+    private function load_settings_api(){
+    	$general_fields = array();
+
+    	$sections = array(
+    		'base_section' => array(
+    			'section' => array('page' => 'base_settings', 'title' => 'General Settings', 'description' => 'General Settings Description'),
+    			'fields' => $general_fields
+    		)
+    	);
+
+    	$sections = array_merge($sections, apply_filters( 'support_system-settings_sections', $sections));
+    	$this->settings_sections = $sections;
     }
 
     /**

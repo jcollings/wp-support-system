@@ -56,7 +56,7 @@ if(isset($_GET['status']) && $_GET['status'] == 'closed'){
 		<li class="closed"><a href="admin.php?page=support-tickets&status=closed" <?php if($tab == 'closed'): ?>class="current"<?php endif; ?>>Closed <span class="count">(<?php echo $closed_tickets->post_count; ?>)</span></a></li>
 	</ul>
 
-<div id="poststuff">
+<div id="poststuff" class="support_tickets">
 	<div id="post-body" class="metabox-holder columns-2">
 		<div id="post-body-content">
 
@@ -64,7 +64,7 @@ if(isset($_GET['status']) && $_GET['status'] == 'closed'){
 			<?php if ( $tickets->have_posts() ) : ?>
 			<thead>
 				<th>Subject</th>
-				<th>Author</th>
+				<th>Group</th>
 				<th>Content</th>
 				<th>Created</th>
 				<th>_</th>
@@ -74,7 +74,12 @@ if(isset($_GET['status']) && $_GET['status'] == 'closed'){
 			<?php $priority = get_post_meta(get_the_ID(), '_importance', true);  ?>
 			<tr class="<?php if($tab == 'open'){ echo 'priority-'.$priority; } ?>">
 				<td><?php the_title(); ?></td>
-				<td><?php the_author(); ?></td>
+				<td><?php 
+				$post_terms = wp_get_post_terms( get_the_ID(), 'support_groups' );
+				foreach($post_terms as $term){
+					echo $term->name;
+				}
+				 ?></td>
 				<td><?php echo get_the_support_content(); ?></td>
 				<td><?php the_time('F j, Y g:i a');  ?></td>
 				<td><a href="<?php echo site_url('/wp-admin/admin.php?page=support-tickets&action=view&id='.get_the_ID()); ?>">View</a> | <a href="<?php echo site_url('/wp-admin/admin.php?page=support-tickets&action=close&id='.get_the_ID()); ?>">Close</a></td>
