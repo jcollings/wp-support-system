@@ -86,6 +86,7 @@ $open_tickets = new WP_Query(array(
 								    'media_buttons' => false, // show insert/upload button(s)
 								    'textarea_rows' => 10,
 								    'teeny' => true, // output the minimal editor config used in Press This
+								    'tinymce' => false
 								);
 								wp_editor( '', $editor_id, $settings); 
 								?>

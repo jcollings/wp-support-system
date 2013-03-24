@@ -186,6 +186,7 @@ class Email_Support_System{
 	/**
 	 * Check to see if a response to an existing ticket
 	 * @return boolean
+	 * @todo  use WP_Query
 	 */
 	private function is_ticket_comment($msg = false){
 
@@ -199,24 +200,6 @@ class Email_Support_System{
 		global $wpdb;
 		$query = "SELECT * FROM wp_posts WHERE post_type='SupportMessage' AND post_author = ".$user_id." AND post_parent = 0 AND post_title LIKE '".$subject."' AND post_status = 'private' LIMIT 1";
 		$myrows = $wpdb->get_results( $query );
-
-		// not working
-		// $test = new WP_Query(array(
-		// 	'post_type' => 'SupportMessage',
-		// 	'author' => $user_id,
-		// 	'post_parent' => 0,
-		// 	// 'name' => $subject,
-		// 	// 'meta_query' => array(
-		// 	// 	array(
-		// 	// 		'key' => '_answered',
-		// 	// 		'value' => 0,
-		// 	// 		'compare' => '=',
-		// 	// 		'type' => 'INT'
-		// 	// 	)
-		// 	// )
-		// ));
-
-		// // print_r($test);
 
 		if(count($myrows) == 1){
 			return $myrows[0]->ID;
@@ -242,10 +225,10 @@ class Email_Support_System{
 		}
 
 		$this->_settings = array(
-			'host' => $host,
-			'port' => $port,
-			'user' => $user,
-			'pass' => $pass,
+			'host' => $host['imap_host'],
+			'port' => $port['imap_port'],
+			'user' => $user['imap_username'],
+			'pass' => $pass['imap_password'],
 		);
 		$this->setup = true;
 	}
@@ -255,7 +238,8 @@ class Email_Support_System{
 	 * @return string
 	 */
 	private function imap_build_hostname(){
-		return '{'.$this->_settings['host'].':'.$this->_settings['port'].'/imap/ssl}INBOX';
+		$host = '{'.$this->_settings['host'].':'.$this->_settings['port'].'/imap/ssl}INBOX';
+		return $host;
 	}
 
 	/**
@@ -305,7 +289,4 @@ class Email_Support_System{
 
 }
 
-// if(is_admin())
 $Email_Support_System = new Email_Support_System();
-
-// add_action('plugins_loaded', array('Email_Support_System', 'init'));

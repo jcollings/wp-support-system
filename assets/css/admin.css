@@ -75,6 +75,7 @@ tr.priority-0 td, tr.priority-5 td, tr.priority-10 td{
 .support-ticket .question .meta-head h1{
 	padding: 0;
 	margin:0;
+	line-height: 120%;
 }
 .support-ticket .question p.desc{
 	padding: 0;
