@@ -1,95 +1,67 @@
 <?php 
-function get_today_open_tickets(){
-	$today = getdate();
-	$open_tickets = new WP_Query(array(
+function get_tickets($args = array()){
+	
+	$open = isset($args['open']) ? $args['open'] : 0;
+	$today = isset($args['today']) ? $args['today'] : false;
+
+	if($open != 0 && $open != 1)
+		$open = 0;
+
+	$args = array(
 		'post_type' => 'SupportMessage',
 		'meta_query' => array(
 			array(
 				'key' => '_answered',
-				'value' => 0,
-				'compare' => '=',
-				'type' => 'INT'
-			),
-		),
-		'year' => $today['year'],
-		'monthnum' => $today['mon'],
-		'day' => $today['mday'],
-		'order'		=> 'DESC',
-		'orderby'	=> 'meta_value_num',
-		'meta_key' 	=> '_importance',
-		'posts_per_page' => -1
-	));
-
-	return $open_tickets->post_count;
-}
-
-function get_total_closed_tickets(){
-	$today = getdate();
-	$closed_tickets = new WP_Query(array(
-		'post_type' => 'SupportMessage',
-		'meta_query' => array(
-			array(
-				'key' => '_answered',
-				'value' => 1,
+				'value' => $open,
 				'compare' => '=',
 				'type' => 'INT'
 			)
 		),
-		'year' => $today['year'],
-		'monthnum' => $today['mon'],
-		'day' => $today['mday'],
-		'order'		=> 'ASC',
+		'order'		=> 'DESC',
 		'orderby'	=> 'meta_value_num',
 		'meta_key' 	=> '_importance',
 		'posts_per_page' => -1
-	));
-	return $closed_tickets->post_count;
+	);
+
+	if($today == true){
+		$today = getdate();
+		$args['year'] = $today['year'];
+		$args['monthnum'] = $today['mon'];
+		$args['day'] = $today['mday'];
+	}
+
+	$open_tickets = new WP_Query($args);	
+	return $open_tickets;
 }
 
+$open_tickets = get_tickets(array('open' => 0));
+$closed_tickets = get_tickets(array('open' => 1));
+$today_open_tickets = get_tickets(array('open' => 0, 'today' => true));
+$today_closed_tickets = get_tickets(array('open' => 1, 'today' => true));
 
-global $post;
-$open_tickets = new WP_Query(array(
-	'post_type' => 'SupportMessage',
-	'meta_query' => array(
-		array(
-			'key' => '_answered',
-			'value' => 0,
-			'compare' => '=',
-			'type' => 'INT'
-		)
-	),
-	'order'		=> 'DESC',
-	'orderby'	=> 'meta_value_num',
-	'meta_key' 	=> '_importance',
-	'posts_per_page' => -1
-));
-
-$closed_tickets = new WP_Query(array(
-	'post_type' => 'SupportMessage',
-	'meta_query' => array(
-		array(
-			'key' => '_answered',
-			'value' => 1,
-			'compare' => '=',
-			'type' => 'INT'
-		)
-	),
-	'order'		=> 'ASC',
-	'orderby'	=> 'meta_value_num',
-	'meta_key' 	=> '_importance',
-	'posts_per_page' => -1
-));
+if(isset($_GET['status']) && $_GET['status'] == 'closed'){
+	$tickets = $closed_tickets;
+	$tab = 'closed';
+}else{
+	$tab = 'open';
+	$tickets = $open_tickets;
+}
 ?>
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-posts-post"><br></div>
 	<h2>Support Tickets</h2>
+
+	<ul class="subsubsub">
+		<li class="open"><a href="admin.php?page=support-tickets" <?php if($tab == 'open'): ?>class="current"<?php endif; ?>>Open <span class="count">(<?php echo $open_tickets->post_count; ?>)</span></a> |</li>
+		<li class="closed"><a href="admin.php?page=support-tickets&status=closed" <?php if($tab == 'closed'): ?>class="current"<?php endif; ?>>Closed <span class="count">(<?php echo $closed_tickets->post_count; ?>)</span></a></li>
+	</ul>
 
 <div id="poststuff">
 	<div id="post-body" class="metabox-holder columns-2">
 		<div id="post-body-content">
 
 			<table class="wp-list-table widefat fixed">
-			<?php if ( $open_tickets->have_posts() ) : ?>
+			<?php if ( $tickets->have_posts() ) : ?>
 			<thead>
 				<th>Subject</th>
 				<th>Author</th>
@@ -98,9 +70,9 @@ $closed_tickets = new WP_Query(array(
 				<th>_</th>
 			</thead>
 			<tbody>
-			<?php while ( $open_tickets->have_posts() ) : $open_tickets->the_post(); ?>
+			<?php while ( $tickets->have_posts() ) : $tickets->the_post(); ?>
 			<?php $priority = get_post_meta(get_the_ID(), '_importance', true);  ?>
-			<tr class="<?php echo 'priority-'.$priority; ?>">
+			<tr class="<?php if($tab == 'open'){ echo 'priority-'.$priority; } ?>">
 				<td><?php the_title(); ?></td>
 				<td><?php the_author(); ?></td>
 				<td><?php echo get_the_support_content(); ?></td>
@@ -112,8 +84,8 @@ $closed_tickets = new WP_Query(array(
 			<?php endif; ?>
 			</table>
 
+			<?php /*
 			<h2>Closed Tickets</h2>
-
 			<table class="wp-list-table widefat fixed">
 			<?php if ( $closed_tickets->have_posts() ) : ?>
 			<thead>
@@ -155,16 +127,16 @@ $closed_tickets = new WP_Query(array(
 			<?php endwhile; ?>
 			</tbody>
 			<?php endif; ?>
-			</table>
+			</table> */ ?>
 		</div><!-- /#post-body-content -->
 		<div id="postbox-container-1" class="postbox-container">
 
 			<div id="postimagediv" class="postbox ">
 				<h3 class="hndle"><span>Todays Progress</span></h3>
 				<div class="inside">
-					<?php 
-					$today_open = get_today_open_tickets(); 
-					$today_closed = get_total_closed_tickets();
+					<?php
+					$today_open = $today_open_tickets->post_count;
+					$today_closed = $today_closed_tickets->post_count; 
 					$today_total = $today_open + $today_closed; 
 					?>
 					<table width="100%">
