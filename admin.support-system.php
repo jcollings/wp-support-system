@@ -118,25 +118,43 @@ class Admin_Support_System{
 
     		//register fields
     		foreach($options['fields'] as $field){
-    			add_settings_field($field['id'], $field['label'], array($this, 'field_callback'), $options['section']['page'], $field['section'], array(
+    			$args = array(
 		            'type' => $field['type'],
 		            'field_id' => $field['id'],
 		            'section_id' => $field['section'],
 		            'setting_id' => $field['setting_id']
-		        ));
+		        );
+
+		        if(isset($field['choices'])){
+		        	$args['choices'] = $field['choices'];
+		        }
+
+    			add_settings_field($field['id'], $field['label'], array($this, 'field_callback'), $options['section']['page'], $field['section'], $args);
     		}
     	}
     }
 
     private function load_settings_api(){
-    	$general_fields = array();
+    	$roles = get_editable_roles();
+    	$roles_sorted = array();
+    	foreach($roles as $key => $role){
+    		$roles_sorted[$key] = $role['name'];
+    	}
+
+    	$fields = array(
+    		array('type' => 'text', 'id' => 'login_url', 'section' => 'base_section', 'setting_id' => 'support_login_url', 'label' => 'Login Url'),
+    		array('type' => 'text', 'id' => 'register_url', 'section' => 'base_section', 'setting_id' => 'support_register_url', 'label' => 'Register Url'),
+    		array('type' => 'select', 'id' => 'register_role', 'section' => 'base_section', 'setting_id' => 'support_register_role', 'label' => 'Register Role', 'choices' => $roles_sorted),
+    	);
 
     	$sections = array(
     		'base_section' => array(
     			'section' => array('page' => 'base_settings', 'title' => 'General Settings', 'description' => 'General Settings Description'),
-    			'fields' => $general_fields
+    			'fields' => $fields
     		)
     	);
+
+
 
     	$sections = array_merge($sections, apply_filters( 'support_system-settings_sections', $sections));
     	$this->settings_sections = $sections;

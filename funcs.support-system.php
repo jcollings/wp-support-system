@@ -97,3 +97,69 @@ function get_the_support_content(){
 	$content =  preg_replace('/--(-)?(\s)?[\n\r]+.*/s', '', $content);
 	return $content;
 }
+
+function support_plugin_url($dir = ''){
+	return plugin_dir_url( __FILE__ ) . $dir;
+}
+
+function get_tickets($args = array()){
+	
+	$open = isset($args['open']) ? $args['open'] : 0;
+	$today = isset($args['today']) ? $args['today'] : false;
+	$group = isset($args['group']) ? $args['group'] : false;
+
+	if($open != 0 && $open != 1)
+		$open = 0;
+
+	$args = array(
+		'post_type' => 'SupportMessage',
+		'meta_query' => array(
+			array(
+				'key' => '_answered',
+				'value' => $open,
+				'compare' => '=',
+				'type' => 'INT'
+			)
+		),
+		'order'		=> 'DESC',
+		'orderby'	=> 'meta_value_num',
+		'meta_key' 	=> '_importance',
+		'posts_per_page' => -1
+	);
+
+	if($group){
+		$args['support_groups'] = $group;
+	}
+
+	if($today == true){
+		$today = getdate();
+		$args['year'] = $today['year'];
+		$args['monthnum'] = $today['mon'];
+		$args['day'] = $today['mday'];
+	}
+
+	$open_tickets = new WP_Query($args);	
+	return $open_tickets;
+}
+
+function count_group_tickets($taxonomy = ''){
+	$args = array(
+		'post_type' => 'SupportMessage',
+		'support_groups' => $taxonomy,
+		'meta_query' => array(
+			array(
+				'key' => '_answered',
+				'value' => 0,
+				'compare' => '=',
+				'type' => 'INT'
+			)
+		)
+	);
+	$query = new WP_Query($args);
+	wp_reset_postdata();
+	return $query->post_count;
+}
+
+function get_ticket_status($post_id = 0){
+
+}

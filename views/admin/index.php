@@ -1,39 +1,4 @@
 <?php 
-function get_tickets($args = array()){
-	
-	$open = isset($args['open']) ? $args['open'] : 0;
-	$today = isset($args['today']) ? $args['today'] : false;
-
-	if($open != 0 && $open != 1)
-		$open = 0;
-
-	$args = array(
-		'post_type' => 'SupportMessage',
-		'meta_query' => array(
-			array(
-				'key' => '_answered',
-				'value' => $open,
-				'compare' => '=',
-				'type' => 'INT'
-			)
-		),
-		'order'		=> 'DESC',
-		'orderby'	=> 'meta_value_num',
-		'meta_key' 	=> '_importance',
-		'posts_per_page' => -1
-	);
-
-	if($today == true){
-		$today = getdate();
-		$args['year'] = $today['year'];
-		$args['monthnum'] = $today['mon'];
-		$args['day'] = $today['mday'];
-	}
-
-	$open_tickets = new WP_Query($args);	
-	return $open_tickets;
-}
-
 $open_tickets = get_tickets(array('open' => 0));
 $closed_tickets = get_tickets(array('open' => 1));
 $today_open_tickets = get_tickets(array('open' => 0, 'today' => true));
@@ -42,6 +7,9 @@ $today_closed_tickets = get_tickets(array('open' => 1, 'today' => true));
 if(isset($_GET['status']) && $_GET['status'] == 'closed'){
 	$tickets = $closed_tickets;
 	$tab = 'closed';
+}elseif(isset($_GET['group']) && !empty($_GET['group'])){
+	$tickets = get_tickets(array('open' => 0, 'group' => $_GET['group']));
+	$tab = $_GET['group'];
 }else{
 	$tab = 'open';
 	$tickets = $open_tickets;
@@ -52,14 +20,18 @@ if(isset($_GET['status']) && $_GET['status'] == 'closed'){
 	<h2>Support Tickets</h2>
 
 	<ul class="subsubsub">
-		<li class="open"><a href="admin.php?page=support-tickets" <?php if($tab == 'open'): ?>class="current"<?php endif; ?>>Open <span class="count">(<?php echo $open_tickets->post_count; ?>)</span></a> |</li>
-		<li class="closed"><a href="admin.php?page=support-tickets&status=closed" <?php if($tab == 'closed'): ?>class="current"<?php endif; ?>>Closed <span class="count">(<?php echo $closed_tickets->post_count; ?>)</span></a></li>
+		<li class="all"><a href="admin.php?page=support-tickets" <?php if($tab == 'open'): ?>class="current"<?php endif; ?>>All <span class="count">(<?php echo $open_tickets->post_count; ?>)</span></a> |</li>
+		<?php 
+		$terms = get_terms( 'support_groups', array('hide_empty' => false) ); 
+		foreach($terms as $term): ?>
+		<li class="support-group"><a href="admin.php?page=support-tickets&group=<?php echo $term->slug; ?>" <?php if($tab == $term->slug): ?>class="current"<?php endif; ?>><?php echo $term->name; ?> <span class="count">(<?php echo count_group_tickets($term->slug); ?>)</span></a> |</li>
+		<?php endforeach; ?>
 	</ul>
 
 <div id="poststuff" class="support_tickets">
 	<div id="post-body" class="metabox-holder columns-2">
 		<div id="post-body-content">
-
+			<?php /*
 			<table class="wp-list-table widefat fixed">
 			<?php if ( $tickets->have_posts() ) : ?>
 			<thead>
@@ -133,6 +105,42 @@ if(isset($_GET['status']) && $_GET['status'] == 'closed'){
 			</tbody>
 			<?php endif; ?>
 			</table> */ ?>
+
+			<?php if ( $tickets->have_posts() ) : ?>
+			<ul class="support-ticket-index">
+			<?php while ( $tickets->have_posts() ) : $tickets->the_post(); ?>
+			<?php $priority = get_post_meta(get_the_ID(), '_importance', true);  ?>
+			<li id="post-<?php the_ID(); ?>" class="support-ticket priority-<?php echo $priority; ?>">
+				<a href="<?php echo site_url('/wp-admin/admin.php?page=support-tickets&action=view&id='.get_the_ID()); ?>">
+				<div class="question">
+					<div class="meta-info">
+						<div class="img-wrapper">
+							<?php echo get_avatar( get_the_author_email(), '50'); ?>
+						</div>
+					</div>
+					<div class="meta-head">
+						<p class="title"><?php the_title(); ?></p>
+						<p class="desc">Group <?php 
+							$post_terms = wp_get_post_terms( get_the_ID(), 'support_groups' );
+							foreach($post_terms as $term){
+								echo '<strong>'.$term->name.'</strong>';
+							}
+							?> / Updated on <strong><?php the_time('F j, Y \a\t g:i a'); ?></strong></p>
+					</div>
+					<div class="status">
+						<p>Response Needed</p>
+					</div>
+				</div>
+				</a>
+			</li>
+
+			<?php endwhile; ?>
+			</ul>
+			<?php endif; ?>
+
+
+
+
 		</div><!-- /#post-body-content -->
 		<div id="postbox-container-1" class="postbox-container">
 

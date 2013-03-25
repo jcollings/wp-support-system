@@ -48,20 +48,26 @@ tr.priority-0 td, tr.priority-5 td, tr.priority-10 td{
     padding: 10px 5px !important;
 }
 
-.support-ticket{
-
+/**
+ * Single Ticket View
+ */
+/* Question */
+.support-ticket ul, .support-ticket li{
+	list-style: none;
+	margin:0;
+	padding:0;
 }
 .support-ticket .question{
-	width:100%;
+	width:99%;
 	overflow: hidden;
+	border:1px solid #DDD;
+	border-bottom-style: dashed;
+	background: #F1F1F1;
 }
 .support-ticket .question .left{
 	float:left;
 	width:74%;
 	margin-right: 5%;
-	border:1px solid #DDD;
-	border-bottom-style: dashed;
-	background: #F1F1F1;
 	min-height: 150px;
 }
 .support-ticket .question .meta-head{
@@ -75,7 +81,7 @@ tr.priority-0 td, tr.priority-5 td, tr.priority-10 td{
 .support-ticket .question .meta-head h1{
 	padding: 0;
 	margin:0;
-	line-height: 120%;
+	line-height:110%;
 }
 .support-ticket .question p.desc{
 	padding: 0;
@@ -85,24 +91,22 @@ tr.priority-0 td, tr.priority-5 td, tr.priority-10 td{
 .support-ticket .question .right{
 	float:right;
 	width:20%;
+	padding-top:20px;
 }
 
-.support-ticket ul, .support-ticket li{
-	margin:0;
-}
-.support-ticket li{
-	margin-top: 10px;
-}
-.support-ticket li:last-child .response{
-	border-bottom-style: solid;
-}
-
+/* Answer */
 .support-ticket .response{
-	width:74%;
-	border:1px solid #DDD;
-	border-top-style: dashed;
-	background: #F1F1F1;
+	width:99%;
 	overflow: hidden;
+	border:1px solid #DDD;
+	border-bottom-style: dashed;
+	background: #F1F1F1;
+}
+.support-ticket .response .left{
+	float:left;
+	width:74%;
+	margin-right: 5%;
+	min-height: 150px;
 }
 .support-ticket .response .meta-head{
 	margin: 15px 15px 0 15px;
@@ -116,16 +120,155 @@ tr.priority-0 td, tr.priority-5 td, tr.priority-10 td{
 	padding: 0;
 	margin:0;
 }
+.support-ticket .meta-head h1 a{
+	color:#444;
+	text-decoration: none;
+}
+.support-ticket .meta-head h1 a:hover{
+	color:#444;
+	text-decoration: underline;
+}
 .support-ticket .response p.desc{
 	padding: 0;
 	margin:3px 0 0;	
 	color:#333;
 }
+.support-ticket .response .right{
+	float:right;
+	width:20%;
+	padding-top:20px;
+}
+.support-ticket li{
+	margin-top: 10px;
+}
 
-.textarea{
-	width:74%;
-	margin-top:10px;
+/* answer toolbar */
+.support-ticket .actions{
+	width:99%;
+	overflow: hidden;
+	border:1px solid #DDD;
+	border-top: none;
+	background: #FCFCFC;
+	margin:0;
+	padding:0;
+}
+.support-ticket .actions ul{
+	padding:10px;
+	margin:0;
+	overflow: hidden;
+}
+.support-ticket .actions li{
+	margin:0 2px;
+	padding:0 5px;
+	float:left;
+}
+.support-ticket .actions p{
+	margin:0;
+	padding:10px;
+}
+.left-action{
+	float:left;
+}
+.right-action{
+	float:right;
 }
 
 
+/**
+ * Form Styles
+ */
+.support-ticket .form{
+	width:99%;
+	margin-top:10px;
+	border:1px solid #DDD;
+	background: #F1F1F1;
+}
+.support-ticket .form form{
+	margin:20px;
+	padding:0;
+}
+.support-ticket .form .textarea{
+	margin-bottom: 10px;
+}
 
+/* Browse all tickets */
+.support-ticket-index{
+	margin:0;
+	padding: 0;
+}
+.support-ticket-index li .question{
+	border-bottom-style:solid;
+}
+.support-ticket-index .meta-info{
+	float:left;
+	padding:15px;
+}
+.support-ticket-index .question .meta-head{
+	float:left;
+	margin:15px 0;
+	border: none;
+	width: 55%;
+	display: block;
+}
+.support-ticket-index .question .status{
+	float:right;
+}
+.support-ticket-index .status p{
+	padding:5px 10px;
+	margin:0;
+	font-size:14px;
+	color:#FFF;
+	border-left:1px solid #DDD;
+	border-bottom:1px solid #DDD;
+}
+.support-ticket-index p.title{
+	font-size: 16px;
+	line-height:120%;
+	padding:0 0 5px;
+	margin:0;
+}
+.support-ticket.priority-0 .status p{
+	background:#DFF2BF;
+	border-color: #4F8A10;
+	color:#4F8A10;
+}
+.support-ticket.priority-5 .status p{
+	background:#FEEFB3;
+	border-color: #9F6000;
+	color:#9F6000;
+}
+.support-ticket.priority-10 .status p{
+	background:#FFBABA;
+	border-color: #D8000C;
+	color:#D8000C;
+}
+
+/**
+ * Browse Open Tickets
+ */
+.tickets .support-ticket.single .question{
+	margin-bottom:10px;
+	border-bottom-style: solid;
+}
+
+.tickets .ticket-0{
+	border:1px solid #4F8A10;
+	background:#DFF2BF;
+}
+.tickets .ticket-0 .meta-head{
+	border-bottom-color: #4F8A10;
+}
+.tickets .ticket-5{
+	border:1px solid #9F6000;
+	background:#FEEFB3;
+}
+.tickets .ticket-5 .meta-head{
+	border-bottom-color: #9F6000;
+}
+.tickets .ticket-10{
+	border:1px solid #D8000C;
+	background:#FFBABA;
+}
+.tickets .ticket-10 .meta-head{
+	border-bottom-color: #D8000C;
+}

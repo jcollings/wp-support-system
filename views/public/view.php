@@ -75,37 +75,37 @@ $open_tickets = new WP_Query(array(
 			<?php endif; ?>
 			<?php wp_reset_postdata(); ?>
 
-		<?php
-		/**
-		 * Display Comment Form
-		 */
-		?>
-		<div class="form">
-			<form action="#" method="post">
-				<h2>Add Response:</h2>
-				<input type="hidden" name="SupportFormType" id="SupportFormType" value="SubmitComment" />
-				<input type="hidden" name="TicketId" id="TicketId" value="<?php echo $ticket_id ?>">
-				<div class="textarea">
-					<label>Message:</label>
-					<?php 
-					$editor_id = 'SupportResponse';
-					$settings =   array(
-					    'wpautop' => false, // use wpautop?
-					    'media_buttons' => false, // show insert/upload button(s)
-					    'textarea_rows' => 10,
-					    'teeny' => false, // output the minimal editor config used in Press This
-					    'tinymce' => false
-					);
-					wp_editor( '', $editor_id, $settings);  
-					?>
-				</div>
-				<div class="submit input">
-					<input type="submit" value="Send" /> 
-				</div>
-			</form>
+			<?php
+			/**
+			 * Display Comment Form
+			 */
+			?>
+			<div class="form">
+				<form action="#" method="post">
+					<h2>Add Response:</h2>
+					<input type="hidden" name="SupportFormType" id="SupportFormType" value="SubmitComment" />
+					<input type="hidden" name="TicketId" id="TicketId" value="<?php echo $ticket_id ?>">
+					<div class="textarea">
+						<label>Message:</label>
+						<?php 
+						$editor_id = 'SupportResponse';
+						$settings =   array(
+						    'wpautop' => false, // use wpautop?
+						    'media_buttons' => false, // show insert/upload button(s)
+						    'textarea_rows' => 10,
+						    'teeny' => false, // output the minimal editor config used in Press This
+						    'tinymce' => false
+						);
+						wp_editor( '', $editor_id, $settings);  
+						?>
+					</div>
+					<div class="submit input">
+						<input type="submit" value="Send" /> 
+					</div>
+				</form>
+			</div>
 		</div>
-	</div>
-</footer>
+	</footer>
 </div>
 
 

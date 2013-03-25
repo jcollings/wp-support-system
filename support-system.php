@@ -7,9 +7,7 @@ Version: 0.0.1
 Author: James Collings
 Author URI: http://www.jamescollings.co.uk
  */
-function support_plugin_url($dir = ''){
-	return plugin_dir_url( __FILE__ ) . $dir;
-}
+
 define('WP_SUPPORT_SYSTEM_DIR', plugin_dir_path(__FILE__));
 define('WP_SUPPORT_SYSTEM_TEMPLATE_DIR', WP_SUPPORT_SYSTEM_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR);
 define('WP_SUPPORT_SYSTEM_ASSETS_DIR', WP_SUPPORT_SYSTEM_DIR . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR );
@@ -26,10 +24,7 @@ require_once 'funcs.support-system.php';
 require_once 'shortcodes.support-system.php';
 
 require_once 'addons/email.support-system.php';
-require_once 'addons/knowledgebase.support-system.php';
-
-$test =& Support_System_Singleton::getInstance();
-echo $test->test;
+// require_once 'addons/knowledgebase.support-system.php';
 
 global $wpengine_support;
 $wpengine_support = new WP_Engine_Support_System();
@@ -44,8 +39,7 @@ class WP_Engine_Support_System
 		'Login' => array('user_email', 'user_pass')
 	);
 
-	public function __construct()
-	{
+	public function __construct(){
 		$this->config =& Support_System_Singleton::getInstance();
 		add_action('init', array($this, 'init'));
         add_action('plugins_loaded', array($this, 'plugins_loaded'));
@@ -53,10 +47,10 @@ class WP_Engine_Support_System
 
 	public function init(){
 		$this->register_support_system();
+		$this->process_forms();
 	}
 
 	public function plugins_loaded(){
-		add_action('wp_head', array($this, 'process_forms'));
 		add_filter('query_vars', array($this, 'register_query_vars'));
 	}
 
@@ -153,8 +147,7 @@ class WP_Engine_Support_System
 	 * @param string $message error message
 	 * @param array  $errors  array of all dodgy fields and indevidual errors
 	 */
-	private function setError($formId, $message, $errors = array())
-	{
+	private function setError($formId, $message, $errors = array()){
 		global $current_user;
 		$current_user = wp_get_current_user();
 		if(!empty($errors))
@@ -163,8 +156,7 @@ class WP_Engine_Support_System
 		return set_transient($formId.'Error_'.$current_user->ID, $message, 60);
 	}
 
-	public function process_forms()
-	{
+	public function process_forms(){
 		if(!isset($_POST['SupportFormType']) || empty($_POST['SupportFormType']))
 			return;
 
@@ -173,36 +165,27 @@ class WP_Engine_Support_System
 
 		$errors = array();
 
-		switch($_POST['SupportFormType'])
-		{
+		switch($_POST['SupportFormType']){
 			case 'SubmitComment':
-			{
 				$ticketId = $_POST['TicketId'];
 				$message = $_POST['SupportResponse'];
 				$author_id = $current_user->ID;
 
-				if(empty($message))
-				{
+				if(empty($message)){
 					$this->setError('SubmitComment', 'Please enter a message');
 					return;
 				}
 
 				insert_support_comment($ticketId, $message, $author_id);
-				break;
-			}
+			break;
 			case 'Login':
-			{
-				//http://codex.wordpress.org/Function_Reference/wp_signon
-				foreach($this->fields['Login'] as $field)
-				{
-					if(empty($_POST[$field]))
-					{
+				foreach($this->fields['Login'] as $field){
+					if(empty($_POST[$field])){
 						$errors[$field] = 'required';
 					}
 				}
 
-				if(!empty($errors))
-				{
+				if(!empty($errors)){
 					$this->setError('Login', 'Errors have occured', $errors);
 					return;
 				}
@@ -213,38 +196,32 @@ class WP_Engine_Support_System
 				$creds['remember'] = true;
 				$user = wp_signon( $creds, false );
 
-				if ( !is_wp_error($user) )
-				{
+				if ( !is_wp_error($user) ){
 					if(isset($_POST['prev_ref']) && !empty($_POST['prev_ref']))
 						wp_redirect(site_url($_POST['prev_ref']));	
 					else
 						wp_redirect(site_url('/'));
-				}
-				else
+					exit();
+				}else{
 					$this->setError('Login', $user->get_error_message());
-				break;
-			}
+				}
+			break;
 			case 'Register':
-			{
 				// http://marketplace.envato.com/api/v3/{USERNAME}/{API-KEY}/verify-purchase:{purchase_code}.json
-				foreach($this->fields['Register'] as $field)
-				{
-					if(empty($_POST[$field]))
-					{
+				foreach($this->fields['Register'] as $field){
+					if(empty($_POST[$field])){
 						$errors[$field] = 'required';
 					}
 				}
 
-				if(!empty($errors))
-				{
+				if(!empty($errors)){
 					set_transient('RegisterField_'.$current_user->ID, $errors, 60);
 					set_transient('RegisterValues_'.$current_user->ID, $_POST, 60);
 					$this->setError('Register', 'Errors have occured');
 					return;
 				}
 
-				$user_id = wp_insert_user(
-					array(
+				$user_id = wp_insert_user(array(
 						'user_login'	=>	$_POST['user_login'],
 						'user_pass'	=>	$_POST['user_pass'],
 						'first_name'	=>	$_POST['user_first_name'],
@@ -253,30 +230,23 @@ class WP_Engine_Support_System
 						'display_name'	=>	$_POST['user_first_name'] . ' ' . $_POST['user_last_name'],
 						'nickname'	=>	$_POST['user_first_name'] . ' ' . $_POST['user_last_name'],
 						'role'		=>	'member'
-					)
-				);
+				));
 
 				if ( !is_wp_error($user_id) ){
 					set_transient('RegisterSuccess_'.$current_user->ID, 'Your ticket has been raised.', 60);
 					return $user_id;
-				}else
-				{
+				}else{
 					$this->setError('Register', $user->get_error_message());
 				}
-				break;
-			}
+			break;
 			case 'SubmitTicket':
-			{
-				foreach($this->fields['SubmitTicket'] as $field)
-				{
-					if(empty($_POST[$field]))
-					{
+				foreach($this->fields['SubmitTicket'] as $field){
+					if(empty($_POST[$field])){
 						$errors[$field] = 'required';
 					}
 				}
 
-				if(!empty($errors))
-				{
+				if(!empty($errors)){
 					$this->setError('SubmitTicket', 'Please fill out all required fields', $errors);
 					return;
 				}
@@ -292,12 +262,10 @@ class WP_Engine_Support_System
 				if($result){
 					set_transient('SubmitTicketSuccess_'.$user_id, 'Your ticket has been raised.', 60);
 					return $result;
-				}else
-				{
+				}else{
 					$this->setError('SubmitTicket', 'An Error occured when submitting your ticket, please try again in a couple of minutes');
 				}
-				break;
-			}
+			break;
 		}
 	}
 }
