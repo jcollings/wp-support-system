@@ -110,7 +110,7 @@ class Admin_Support_System{
 
     		//register settings
     		foreach($options['fields'] as $field){
-    			register_setting($this->settings_optgroup, $field['setting_id']);
+    			register_setting($this->settings_optgroup, $field['setting_id'], array($this, 'save_setting'));
     		}
 
     		// register section
@@ -125,12 +125,59 @@ class Admin_Support_System{
 		            'setting_id' => $field['setting_id']
 		        );
 
+		        if(isset($field['multiple'])){
+		        	$args['multiple'] = $field['multiple'];
+		        }
+
 		        if(isset($field['choices'])){
 		        	$args['choices'] = $field['choices'];
 		        }
 
     			add_settings_field($field['id'], $field['label'], array($this, 'field_callback'), $options['section']['page'], $field['section'], $args);
     		}
+    	}
+    }
+
+    /**
+     * Validate Save Settings
+     * @param  array
+     * @return array
+     */
+    public function save_setting($args){
+
+    	if(isset($args['support_ticket_edit'])){
+    		$this->setup_ticket_roles($args['support_ticket_edit']);
+    	}
+
+    }
+
+    /**
+     * Clear and setup roles
+     * @param  array  $selected_roles list of roles manage support tickets
+     * @return void
+     */
+    private function setup_ticket_roles($selected_roles = array()){
+
+    	// clear all roles for support ticket
+    	$roles = get_editable_roles();
+    	foreach($roles as $key => $r){
+   
+    		$role = get_role( $key );
+    		if(array_key_exists('manage_support_tickets', $r['capabilities'])){
+    			$role->remove_cap( 'manage_support_tickets' );
+    		} 		
+    	}
+
+    	// add cap to selected roles
+    	if(is_array($selected_roles) && !empty($selected_roles)){
+    		foreach($selected_roles as $r){
+	    		$role = get_role($r);
+	    		
+	    		$role->add_cap( 'manage_support_tickets' );		
+    		}
+    	}else{
+    		$role = get_role( 'administrator' );
+    		$role->add_cap( 'manage_support_tickets' );
     	}
     }
 
@@ -145,6 +192,7 @@ class Admin_Support_System{
     		array('type' => 'text', 'id' => 'login_url', 'section' => 'base_section', 'setting_id' => 'support_login_url', 'label' => 'Login Url'),
     		array('type' => 'text', 'id' => 'register_url', 'section' => 'base_section', 'setting_id' => 'support_register_url', 'label' => 'Register Url'),
     		array('type' => 'select', 'id' => 'register_role', 'section' => 'base_section', 'setting_id' => 'support_register_role', 'label' => 'Register Role', 'choices' => $roles_sorted),
+    		array('type' => 'select', 'id' => 'support_ticket_edit', 'section' => 'base_section', 'setting_id' => 'support_ticket_add', 'multiple' => true, 'label' => 'Access Roles', 'choices' => $roles_sorted),
     	);
 
     	$sections = array(
