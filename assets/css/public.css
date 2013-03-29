@@ -12,9 +12,9 @@
 .input label{
 	color:#333;
 }
-.input.text input, .input.textarea textarea{
+.input.text input, .input.textarea textarea, .input.password input {
     width:96%;
-    padding:2%;
+    padding:10px 2%;
 }
 
 .input.textarea textarea{
@@ -33,11 +33,11 @@
 	overflow: hidden;
 }
 .form_cols_2 .input.two_col_left{
-	width:50%;
+	width:47%;
 	float:left;
 }
 .form_cols_2 .input.two_col_right{
-	width:50%;
+	width:47%;
 	float:right;
 }
 
@@ -221,3 +221,7 @@
 .tickets .ticket-10 .meta-head{
 	border-bottom-color: #D8000C;
 }
+
+/**
+ * Suport Tickets Homepage
+ */

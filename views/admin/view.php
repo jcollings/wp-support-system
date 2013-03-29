@@ -34,7 +34,7 @@ $open_tickets = new WP_Query(array(
 					<div class="right">
 						<div class="meta-info">
 							<div class="img-wrapper">
-								<?php echo get_avatar( get_the_author_email(), '96'); ?>
+								<?php echo get_avatar( get_the_author_meta( 'email' ), '96'); ?>
 								<p><?php the_author(); ?></p>
 							</div>
 						</div>
@@ -68,7 +68,7 @@ $open_tickets = new WP_Query(array(
 									<div class="right">
 										<div class="meta-info">
 											<div class="img-wrapper">
-												<?php echo get_avatar( get_the_author_email()); ?>
+												<?php echo get_avatar( get_the_author_meta( 'email' )); ?>
 												<p><?php the_author(); ?></p>
 											</div>
 										</div>
@@ -90,6 +90,10 @@ $open_tickets = new WP_Query(array(
 						 */
 						?>
 						<div class="form">
+							<ul>
+								<li><a href="#">Respond</a></li>
+								<li><a href="#">Internal Notes</a></li>
+							</ul>
 							<form action="#" method="post">
 								<h2>Add Response:</h2>
 								<input type="hidden" name="SupportFormType" id="SupportFormType" value="SubmitComment" />
@@ -108,19 +112,9 @@ $open_tickets = new WP_Query(array(
 									wp_editor( '', $editor_id, $settings);  
 									?>
 								</div>
-								<div class="form_cols_2">
-									<div class="two_col_left">
-										<div class="select">
-											<label>Ticket Status</label>
-											<select>
-												<option value="0">Open</option>
-												<option value="1">Closed</option>
-											</select>
-										</div>
-									</div>
-									<div class="two_col_right">
-									
-									</div>
+								<div class="input support-checkbox">
+									<input type="checkbox" name="SupportCloseTicket" value="SupportCloseTicket" />
+									<label>Close ticket on reply</label>
 								</div>
 								<div class="submit input">
 									<input type="submit" value="Send" /> 

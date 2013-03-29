@@ -27,17 +27,17 @@ function open_support_ticket($title = '', $message = '', $user_id = 0, $args = a
 	$importance = isset($args['importance']) ? $args['importance'] : 0;
 
 	$post = array(
-		'post_type' => 'SupportMessage',
+		'post_type' => 'supportmessage',
 		'post_title' => $title,
 		'post_content' => $message,
-		'post_status' => 'private',
-		'post_author' => $user_id
+		'post_status' => 'publish',
+		'post_author' => $user_id,
+		'tax_input' => array('support_groups' => array($args['group']))
 	);
 
 	$result = wp_insert_post($post);
 	if($result > 0)
 	{
-		wp_set_post_terms( $result, $args['group'], 'support_groups');
 		add_post_meta($result, '_read', 0);			// set flag to not read
 		add_post_meta($result, '_answered', 0);		// set flag to not answered
 		add_post_meta($result, '_importance', $importance);	// set importance of message
@@ -160,6 +160,42 @@ function count_group_tickets($taxonomy = ''){
 	return $query->post_count;
 }
 
+function get_ticket($id = 0){
+	$ticket = new WP_Query(array(
+		'post_type' => 'SupportMessage',
+		'p' => $id
+	));
+
+	return $ticket->post;
+}
+
+function get_latest_comment($ticket_id = 0){
+	$query = new WP_Query(array(
+		'post_type' => 'st_comment',
+		'post_parent' => $ticket_id,
+		'orderby' => 'date',
+		'posts_per_page' => 1
+
+	));
+
+	if($query->post_count == 0)
+		return false;
+
+	return $query->post;
+}
+
 function get_ticket_status($post_id = 0){
 
+	$ticket = get_ticket($post_id);
+	$response = get_latest_comment($post_id);
+
+	if(!$response)
+		return 'Awaiting Response';
+
+	if($ticket->post_author == $response->post_author){
+		// same so must be waiting on action
+		return 'Awaiting Response';
+	}else{
+		return 'Response Send';
+	}
 }

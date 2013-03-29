@@ -58,6 +58,12 @@ class WP_Engine_Form
 		$value = $this->setValue($name);
 		$classes = array('input', 'text');
 
+		if(!empty($class)){
+			if(!is_array($class)){
+				$classes[] = $class;
+			}
+		}
+
 		if($required == true)
 		{
 			if(empty($value) && $this->hasPosted == true)
@@ -73,7 +79,7 @@ class WP_Engine_Form
 
 		$output .= '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" />';
 
-		$output .= $this->setError($name);
+		// $output .= $this->setError($name);
 
 		$output .= '</div>';
 		return $output;
@@ -117,6 +123,12 @@ class WP_Engine_Form
 
 		$value = $this->setValue($name);
 		$classes = array('input', 'password');
+
+		if(!empty($class)){
+			if(!is_array($class)){
+				$classes[] = $class;
+			}
+		}
 
 		if($required == true)
 		{

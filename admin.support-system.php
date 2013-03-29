@@ -26,8 +26,8 @@ class Admin_Support_System{
 	}
 
 	public function register_menu_pages(){
-		add_object_page( 'Support Tickets', 'WP Tickets', 'add_users', 'support-tickets', array($this, 'admin_page'));
-		add_submenu_page('support-tickets', 'Support Groups', 'Support Groups', 'add_users', 'edit-tags.php?taxonomy=support_groups');
+		add_object_page( 'Support Tickets', 'WP Support', 'add_users', 'support-tickets', array($this, 'admin_page'));
+		add_submenu_page('support-tickets', 'Departments', 'Departments', 'add_users', 'edit-tags.php?taxonomy=support_groups&post_type=supportmessage');
 
 		// allow addons to hook into the meny creation
 		do_action('support_system-menu_output');
@@ -149,6 +149,7 @@ class Admin_Support_System{
     		$this->setup_ticket_roles($args['support_ticket_edit']);
     	}
 
+    	return $args;
     }
 
     /**
@@ -262,18 +263,18 @@ class Admin_Support_System{
         }
     }
 
-	private function insert_support_comment($id, $message, $author_id){
-		$time = current_time('mysql');
+	// private function insert_support_comment($id, $message, $author_id){
+	// 	$time = current_time('mysql');
 
-		return wp_insert_post(array(
-			'post_parent' => $id,
-			'post_content' => $message,
-			'post_type' => 'st_comment',
-			'post_date' => $time,
-			'post_author' => $author_id,
-			'post_status' => 'publish'
-		));
-	}
+	// 	return wp_insert_post(array(
+	// 		'post_parent' => $id,
+	// 		'post_content' => $message,
+	// 		'post_type' => 'st_comment',
+	// 		'post_date' => $time,
+	// 		'post_author' => $author_id,
+	// 		'post_status' => 'publish'
+	// 	));
+	// }
 
 	public function add_user_menu_notifications() {
 		global $menu;
@@ -352,7 +353,7 @@ class Admin_Support_System{
 					set_transient('LoginError_'.$author_id, 'Please enter a message.', 60);
 					return;
 				}
-
+				
 				insert_support_comment($ticketId, $message, $author_id);
 				break;
 			}

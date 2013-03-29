@@ -9,6 +9,7 @@ if(!$success)
 	foreach($terms as $term){
 		$options[$term->term_id] = $term->name;
 	}
+
 	$errors = $form->errors();
 
 

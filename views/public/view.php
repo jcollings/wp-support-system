@@ -28,7 +28,7 @@ $open_tickets = new WP_Query(array(
 		<div class="right">
 			<div class="meta-info">
 				<div class="img-wrapper">
-					<?php echo get_avatar( get_the_author_email(), '96'); ?>
+					<?php echo get_avatar( get_the_author_meta( 'email' ), '96'); ?>
 					<p><?php the_author(); ?></p>
 				</div>
 			</div>
@@ -63,7 +63,7 @@ $open_tickets = new WP_Query(array(
 						<div class="right">
 							<div class="meta-info">
 								<div class="img-wrapper">
-									<?php echo get_avatar( get_the_author_email()); ?>
+									<?php echo get_avatar( get_the_author_meta( 'email' )); ?>
 									<p><?php the_author(); ?></p>
 								</div>
 							</div>
