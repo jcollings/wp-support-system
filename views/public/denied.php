@@ -2,7 +2,7 @@
 $login_url = get_option('support_login_url');
 $login = isset($login_url['login_url']) && !empty($login_url['login_url']) ? $login_url['login_url'] : add_query_arg('support-action', 'login');
 $register_url = get_option('support_register_url');
-$register = isset($register_url['register_url']) && !empty($register_url['register_url']) ? $register_url['register_url'] : add_query_arg('support-action', 'login');
+$register = isset($register_url['register_url']) && !empty($register_url['register_url']) ? $register_url['register_url'] : add_query_arg('support-action', 'register');
 ?>
 
 <h1>Restricted Content</h1>
