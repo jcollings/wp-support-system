@@ -48,6 +48,15 @@ function open_support_ticket($title = '', $message = '', $user_id = 0, $args = a
 	}
 }
 
+function close_support_ticket($id = false){
+
+	if(!$id)
+		return false;
+	echo 'closed';
+	return update_post_meta($id, '_answered', 1);
+
+}
+
 function get_ticket_author_id($id = false){
 	if(!$id)
 		return false;
@@ -60,17 +69,24 @@ function get_ticket_author_id($id = false){
 }
 
 
-function insert_support_comment($id, $message, $author_id){
+function insert_support_comment($id, $message, $author_id, $type = 'response'){
 	$time = current_time('mysql');
 
-	$result = wp_insert_post(array(
+	$args = array(
 		'post_parent' => $id,
 		'post_content' => $message,
 		'post_type' => 'st_comment',
 		'post_date' => $time,
 		'post_author' => $author_id,
 		'post_status' => 'publish'
-	));
+	);
+
+	if($type == 'internal'){
+		$args['post_type'] = 'st_comment_internal';
+	}
+
+	$result = wp_insert_post($args);
+
 
 	if ( current_user_can( 'manage_options' ) ) {
 		
@@ -188,6 +204,10 @@ function get_ticket_status($post_id = 0){
 
 	$ticket = get_ticket($post_id);
 	$response = get_latest_comment($post_id);
+
+	if(get_post_meta( $post_id, '_answered', true) == 1){
+		return 'Ticket Closed';
+	}
 
 	if(!$response)
 		return 'Awaiting Response';

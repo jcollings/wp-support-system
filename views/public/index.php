@@ -8,14 +8,14 @@ $page_url =  get_permalink(get_query_var( 'page_id' ));
 // count open tickets
 $open_tickets = new WP_Query(array(
 	'post_type' => 'SupportMessage',
-	'meta_query' => array(
-		array(
-			'key' => '_answered',
-			'value' => 0,
-			'compare' => '=',
-			'type' => 'INT'
-		)
-	),
+	// 'meta_query' => array(
+	// 	array(
+	// 		'key' => '_answered',
+	// 		'value' => 0,
+	// 		'compare' => '=',
+	// 		'type' => 'INT'
+	// 	)
+	// ),
 	'author' => $current_user->ID,
 	'order'		=> 'DESC',
 	'orderby'	=> 'meta_value_num',

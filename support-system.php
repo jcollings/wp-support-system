@@ -133,6 +133,21 @@ class WP_Engine_Support_System
 				'public' => false,
 			)
 		);
+
+		register_post_type( 'st_comment_internal', 
+			array(
+				'capability_type' => 'post',
+				// 'rewrite' => array('slug' => ''),
+				'query_var' => false,
+				'has_archive' => false,
+				'show_in_nav_menus' => false,
+				'labels' => array(
+					'name' => __('Support Messages'),
+				),
+				'show_ui' => false,
+				'public' => false,
+			)
+		);
 	}
 
 	function update_post_count($terms, $taxonomy)

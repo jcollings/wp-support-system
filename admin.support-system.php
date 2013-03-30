@@ -263,19 +263,6 @@ class Admin_Support_System{
         }
     }
 
-	// private function insert_support_comment($id, $message, $author_id){
-	// 	$time = current_time('mysql');
-
-	// 	return wp_insert_post(array(
-	// 		'post_parent' => $id,
-	// 		'post_content' => $message,
-	// 		'post_type' => 'st_comment',
-	// 		'post_date' => $time,
-	// 		'post_author' => $author_id,
-	// 		'post_status' => 'publish'
-	// 	));
-	// }
-
 	public function add_user_menu_notifications() {
 		global $menu;
 
@@ -314,10 +301,6 @@ class Admin_Support_System{
 				include 'views/admin/view.php';
 				break;
 			}
-			case 'close':
-			{
-				update_post_meta($_GET['id'], '_answered', 1);
-			}
 			case 'index':
 			default:
 			{
@@ -347,14 +330,24 @@ class Admin_Support_System{
 				$ticketId = $_POST['TicketId'];
 				$message = $_POST['SupportResponse'];
 				$author_id = $current_user->ID;
+				$type = 'response';
 
 				if(empty($message))
 				{
 					set_transient('LoginError_'.$author_id, 'Please enter a message.', 60);
 					return;
 				}
+
+				if(isset($_POST['SupportInternalNote']) && $_POST['SupportInternalNote'] == 1){
+					$type = 'internal';
+				}
+
+				insert_support_comment($ticketId, $message, $author_id, $type);
+
+				if(isset($_POST['SupportCloseTicket']) && $_POST['SupportCloseTicket'] == 1){
+					close_support_ticket($ticketId);
+				}
 				
-				insert_support_comment($ticketId, $message, $author_id);
 				break;
 			}
 			default:

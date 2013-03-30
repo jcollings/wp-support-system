@@ -9,7 +9,7 @@ $open_tickets = new WP_Query(array(
 ?>
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-posts-post"><br></div>
-	<h2>Support Tickets <a class="add-new-h2" href="<?php echo site_url('/wp-admin/admin.php?page=support-tickets&action=close&id='.$ticket_id); ?>">Close Ticket</a></h2>
+	<h2>Support Tickets</h2>
 
 <div id="poststuff">
 	<div id="post-body" class="metabox-holder columns-2">
@@ -45,7 +45,7 @@ $open_tickets = new WP_Query(array(
 					<div id="comments" class="comments-area">
 						<?php 
 						$query = new WP_Query(array(
-							'post_type' => 'st_comment',
+							'post_type' => array('st_comment', 'st_comment_internal'),
 							'post_parent' => get_the_ID(),
 							'order' => 'ASC'
 						));
@@ -113,7 +113,11 @@ $open_tickets = new WP_Query(array(
 									?>
 								</div>
 								<div class="input support-checkbox">
-									<input type="checkbox" name="SupportCloseTicket" value="SupportCloseTicket" />
+									<input type="checkbox" name="SupportInternalNote" value="1" />
+									<label>Internal Note</label>
+								</div>
+								<div class="input support-checkbox">
+									<input type="checkbox" name="SupportCloseTicket" value="1" />
 									<label>Close ticket on reply</label>
 								</div>
 								<div class="submit input">
