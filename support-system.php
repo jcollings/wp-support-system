@@ -65,7 +65,7 @@ class WP_Engine_Support_System
 		}
 
 		if($this->is_unlocked('email')){
-			include_once 'addons/email.support-system.php';
+			include_once 'addons/email/email.php';
 		}
 	}
 

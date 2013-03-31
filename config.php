@@ -28,13 +28,11 @@ class Support_System_Singleton
     }
 
     private function load_settings(){
-        $kb_serial  = get_option( 'ext_knowledgebase');
-        $email_serial  = get_option( 'ext_email');
-
+        $serials = get_option('serials');
         $settings = array(
             'addons' => array(
-                'knowledgebase' => $kb_serial['ext_knowledgebase'],
-                'email' => $email_serial['ext_email']
+                'knowledgebase' => $serials['ext_knowledgebase'],
+                'email' => $serials['ext_email']
             )
         );
 

@@ -23,6 +23,22 @@ class Admin_Support_System{
 		add_action( 'admin_print_styles', array($this, 'admin_styles' ));
 		add_filter('plugin_action_links_support-system/support-system.php', array($this, 'settings_link'));
 		add_action( 'admin_init', array($this, 'register_settings' ));
+		add_action('wp_dashboard_setup', array($this, 'add_dashboard_widget' ));
+	}
+
+	/**
+	 * Add new dashboard widget
+	 * @return void
+	 */
+	public function add_dashboard_widget(){
+		wp_add_dashboard_widget('support_tickets', 'Open Support Tickets', array($this, 'setup_dashboard_widget'));
+	}
+
+	/**
+	 * Output dashboard widget
+	 * @return void
+	 */
+	public function setup_dashboard_widget(){
 	}
 
 	public function register_menu_pages(){
@@ -117,7 +133,8 @@ class Admin_Support_System{
 
     		//register settings
     		foreach($options['fields'] as $field){
-    			register_setting($this->settings_optgroup, $field['setting_id'], array($this, 'save_setting'));
+    			// register_setting($this->settings_optgroup, $field['setting_id'], array($this, 'save_setting'));
+    			register_setting($options['section']['page'], $field['setting_id'], array($this, 'save_setting'));
     		}
 
     		// register section
@@ -152,9 +169,12 @@ class Admin_Support_System{
      */
     public function save_setting($args){
 
-    	if(isset($args['support_ticket_edit'])){
-    		$this->setup_ticket_roles($args['support_ticket_edit']);
-    	}
+    	// if(isset($args['support_ticket_edit'])){
+    	// 	$this->setup_ticket_roles($args['support_ticket_edit']);
+    	// }
+    	// 
+    	
+    	// print_r($args);
 
     	return $args;
     }
@@ -211,20 +231,20 @@ class Admin_Support_System{
     		'addon_section' => array(
     			'section' => array('page' => 'addon_settings', 'title' => 'Extensions', 'description' => 'Install Addons with your serial keys'),
     			'fields' => array(
-    				array('type' => 'text', 'id' => 'ext_knowledgebase', 'section' => 'addon_section', 'setting_id' => 'ext_knowledgebase', 'label' => 'Unlock Knowledgebase'),
-    				array('type' => 'text', 'id' => 'ext_email', 'section' => 'addon_section', 'setting_id' => 'ext_email', 'label' => 'Unlock Email Tickets')
+    				array('type' => 'text', 'id' => 'ext_knowledgebase', 'section' => 'addon_section', 'setting_id' => 'serials', 'label' => 'Unlock Knowledgebase'),
+    				array('type' => 'text', 'id' => 'ext_email', 'section' => 'addon_section', 'setting_id' => 'serials', 'label' => 'Unlock Email Tickets')
     			)
     		),
     		'notification_section' => array(
     			'section' => array('page' => 'notification_settings', 'title' => 'Notifications', 'description' => 'Setup notifications'),
     			'fields' => array(
+    				array('type' => 'textarea', 'id' => 'notification_msg', 'section' => 'notification_section', 'setting_id' => 'ticket_submit_msg', 'label' => 'Default User Email Response')
     			)
     		)
     	);
 
-
-
     	$sections = array_merge($sections, apply_filters( 'support_system-settings_sections', $sections));
+    	// print_r($sections);
     	$this->settings_sections = $sections;
     }
 
@@ -245,6 +265,14 @@ class Admin_Support_System{
                 $value = isset($options[$field_id]) ? $options[$field_id] : '';
                 ?>
                 <input class='text' type='text' id='<?php echo $setting_id; ?>' name='<?php echo $setting_id; ?>[<?php echo $field_id; ?>]' value='<?php echo $value; ?>' />
+                <?php
+                break;
+            }
+            case 'textarea':
+            {
+                $value = isset($options[$field_id]) ? $options[$field_id] : '';
+                ?>
+                <textarea id='<?php echo $setting_id; ?>' name='<?php echo $setting_id; ?>[<?php echo $field_id; ?>]'><?php echo $value; ?></textarea>
                 <?php
                 break;
             }

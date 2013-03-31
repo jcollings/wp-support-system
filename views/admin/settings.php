@@ -14,7 +14,8 @@
 
     <form action="options.php" method="post" enctype="multipart/form-data">  
         <?php
-        settings_fields($this->settings_optgroup);
+        // settings_fields($this->settings_optgroup);
+        settings_fields( $current_tab );
         do_settings_sections($current_tab);
         ?>  
         <p class="submit">  

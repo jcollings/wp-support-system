@@ -36,7 +36,7 @@ if(isset($_GET['status']) && $_GET['status'] == 'closed'){
 			<table class="wp-list-table widefat fixed">
 			<?php if ( $tickets->have_posts() ) : ?>
 			<thead>
-				<th>Date</th>
+				<th width="70">Date</th>
 				<th>Department</th>
 				<th>Subject</th>
 				<th>Status</th>
@@ -46,7 +46,7 @@ if(isset($_GET['status']) && $_GET['status'] == 'closed'){
 			<?php while ( $tickets->have_posts() ) : $tickets->the_post(); ?>
 			<?php $priority = get_post_meta(get_the_ID(), '_importance', true);  ?>
 			<tr class="priority-<?php echo $priority; ?>">
-				<td><?php the_time('d/m/Y h:i:s'); ?></td>
+				<td><?php the_time('h:i:s\<\b\r \/\>d/m/Y'); ?></td>
 				<td><?php 
 				$post_terms = wp_get_post_terms( get_the_ID(), 'support_groups' );
 				foreach($post_terms as $term){
