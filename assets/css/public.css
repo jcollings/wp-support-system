@@ -223,5 +223,34 @@
 }
 
 /**
- * Suport Tickets Homepage
+ * Knowledgebase
  */
+ul.stkb-index{
+	margin:0;
+	padding:0;
+	list-style: none;
+}
+
+ul.stkb-index li{
+	border:1px solid #DDD;
+	background: #F1F1F1;
+	width: 99%;
+	padding:10px;	
+	margin:5px 0;
+	list-style: none;
+}
+ul.stkb-index h2{
+	margin:0;
+	padding:0;
+}
+
+.stkb-searchbox{
+	width:100%;
+	margin-bottom: 20px;
+}
+.stkb-searchbox input[type=text]{
+	width:70%;
+}
+.stkb-searchbox input[type=submit]{
+	width:20%;
+}

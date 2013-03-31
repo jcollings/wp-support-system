@@ -79,11 +79,18 @@ class Admin_Support_System{
 		$tabs = array(
 		    'base_settings' => array(
 		        'title' => 'General Settings'
+		    ),
+		    'notification_settings' => array(
+		    	'title' => 'Notification Messages'
 		    )
 		);
 
 		// hook to extends setting tabs
 		do_action('support_system-menu_output_action', $tabs);
+
+		$tabs['addon_settings'] = array(
+	    	'title' => 'Addons'
+	    );
 
 		// include view file
 		include 'views/admin/settings.php';
@@ -200,6 +207,18 @@ class Admin_Support_System{
     		'base_section' => array(
     			'section' => array('page' => 'base_settings', 'title' => 'General Settings', 'description' => 'General Settings Description'),
     			'fields' => $fields
+    		),
+    		'addon_section' => array(
+    			'section' => array('page' => 'addon_settings', 'title' => 'Extensions', 'description' => 'Install Addons with your serial keys'),
+    			'fields' => array(
+    				array('type' => 'text', 'id' => 'ext_knowledgebase', 'section' => 'addon_section', 'setting_id' => 'ext_knowledgebase', 'label' => 'Unlock Knowledgebase'),
+    				array('type' => 'text', 'id' => 'ext_email', 'section' => 'addon_section', 'setting_id' => 'ext_email', 'label' => 'Unlock Email Tickets')
+    			)
+    		),
+    		'notification_section' => array(
+    			'section' => array('page' => 'notification_settings', 'title' => 'Notifications', 'description' => 'Setup notifications'),
+    			'fields' => array(
+    			)
     		)
     	);
 

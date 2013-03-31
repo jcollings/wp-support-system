@@ -14,7 +14,6 @@ define('WP_SUPPORT_SYSTEM_ASSETS_DIR', WP_SUPPORT_SYSTEM_DIR . DIRECTORY_SEPARAT
 
 require_once 'config.php';
 
-
 require_once 'helpers/form_helper.php';
 
 if(is_admin())
@@ -23,9 +22,6 @@ if(is_admin())
 require_once 'user.support-system.php';
 require_once 'funcs.support-system.php';
 require_once 'shortcodes.support-system.php';
-
-require_once 'addons/email.support-system.php';
-// require_once 'addons/knowledgebase.support-system.php';
 
 global $wpengine_support;
 $wpengine_support = new WP_Engine_Support_System();
@@ -37,11 +33,40 @@ class WP_Engine_Support_System
 	public function __construct(){
 		$this->config =& Support_System_Singleton::getInstance();
 
+		$this->load_addons();
+
 		add_action('init', array($this, 'register_support_system'));
         add_action('plugins_loaded', array($this, 'plugins_loaded'));
         add_filter('post_class', array($this, 'system_body_class'));
 		add_filter('body_class', array($this, 'system_body_class'));
 		add_filter('query_vars', array($this, 'register_query_vars'));
+	}
+
+	private function is_unlocked($field){
+		$serials = array(
+			'knowledgebase' => md5('PS0F-X6TG-ZEF3-8V1B'),
+			'email' => md5('LK2D-V8ME-UES2-1E4C')
+		);
+
+
+
+
+		if( isset($this->config->config['addons'][$field]) && md5($this->config->config['addons'][$field]) == $serials[$field]){
+			return true;
+		}
+
+		return false;
+	}
+
+	private function load_addons(){
+
+		if($this->is_unlocked('knowledgebase')){
+			include_once 'addons/knowledgebase/knowledgebase.php';
+		}
+
+		if($this->is_unlocked('email')){
+			include_once 'addons/email.support-system.php';
+		}
 	}
 
 	public function plugins_loaded(){	

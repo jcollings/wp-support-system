@@ -26,6 +26,7 @@ if(isset($_GET['status']) && $_GET['status'] == 'closed'){
 		foreach($terms as $term): ?>
 		<li class="support-group"><a href="admin.php?page=support-tickets&group=<?php echo $term->slug; ?>" <?php if($tab == $term->slug): ?>class="current"<?php endif; ?>><?php echo $term->name; ?> <span class="count">(<?php echo count_group_tickets($term->slug); ?>)</span></a> |</li>
 		<?php endforeach; ?>
+		<li class="close"><a href="admin.php?page=support-tickets&status=closed" <?php if($tab == 'closed'): ?>class="current"<?php endif; ?>>Closed <span class="count">(<?php echo $open_tickets->post_count; ?>)</span></a></li>
 	</ul>
 
 <div id="poststuff" class="support_tickets">

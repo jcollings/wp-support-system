@@ -74,11 +74,11 @@ $open_tickets = new WP_Query(array(
 										</div>
 									</div>
 								</div>
-								<div class="actions">
+								<!--<div class="actions">
 									<ul>
 										<li><a href="#">Response Pending</a></li>
 									</ul>
-								</div>
+								</div>-->
 							</li>
 							<?php endwhile; ?>
 						</ul>
@@ -90,10 +90,6 @@ $open_tickets = new WP_Query(array(
 						 */
 						?>
 						<div class="form">
-							<ul>
-								<li><a href="#">Respond</a></li>
-								<li><a href="#">Internal Notes</a></li>
-							</ul>
 							<form action="#" method="post">
 								<h2>Add Response:</h2>
 								<input type="hidden" name="SupportFormType" id="SupportFormType" value="SubmitComment" />
@@ -137,7 +133,28 @@ $open_tickets = new WP_Query(array(
 
 
 		</div><!-- /#post-body-content -->
+		
 		<div id="postbox-container-1" class="postbox-container">
+			<div id="postimagediv" class="postbox ">
+				<h3 class="hndle"><span>Transfer Department</span></h3>
+				<div class="inside">
+					<table width="100%">
+						<tr>
+							<?php $terms = get_terms( 'support_groups' ); ?>
+							<td>
+								<select>
+									<option>Choose Department</option>
+									<?php foreach($terms as $term): ?>
+									<option value="<?php echo $term->term_id; ?>"><?php echo $term->name; ?></option>
+									<?php endforeach; ?>
+								</select>
+							</td>
+							<td><input type="submit" value="Go" /></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+
 		</div><!-- /postbox-container-1 -->
 	</div><!-- /#post-body -->
 </div><!-- /#poststuff -->	
