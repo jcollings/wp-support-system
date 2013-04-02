@@ -29,11 +29,15 @@ class Support_System_Singleton
 
     private function load_settings(){
         $serials = get_option('serials');
+        $notifications['user'] = get_option('notification_user');
+        $notifications['admin'] = get_option('notification_admin');
+        
         $settings = array(
             'addons' => array(
                 'knowledgebase' => $serials['ext_knowledgebase'],
                 'email' => $serials['ext_email']
-            )
+            ),
+            'notifications' => $notifications
         );
 
         $this->config = $settings;

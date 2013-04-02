@@ -48,9 +48,6 @@ class WP_Engine_Support_System
 			'email' => md5('LK2D-V8ME-UES2-1E4C')
 		);
 
-
-
-
 		if( isset($this->config->config['addons'][$field]) && md5($this->config->config['addons'][$field]) == $serials[$field]){
 			return true;
 		}

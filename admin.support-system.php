@@ -43,7 +43,7 @@ class Admin_Support_System{
 
 	public function register_menu_pages(){
 		add_object_page( 'Support Tickets', 'WP Support', 'add_users', 'support-tickets', array($this, 'admin_page'));
-		add_submenu_page('support-tickets', 'Departments', 'Departments', 'add_users', 'edit-tags.php?taxonomy=support_groups&post_type=supportmessage');
+		add_submenu_page('support-tickets', 'Departments', 'Departments', 'add_users', 'edit-tags.php?taxonomy=support_groups');
 
 		// allow addons to hook into the meny creation
 		do_action('support_system-menu_output');
@@ -169,12 +169,9 @@ class Admin_Support_System{
      */
     public function save_setting($args){
 
-    	// if(isset($args['support_ticket_edit'])){
-    	// 	$this->setup_ticket_roles($args['support_ticket_edit']);
-    	// }
-    	// 
-    	
-    	// print_r($args);
+    	if(isset($args['support_ticket_edit'])){
+    		$this->setup_ticket_roles($args['support_ticket_edit']);
+    	}
 
     	return $args;
     }
@@ -217,8 +214,8 @@ class Admin_Support_System{
     	}
 
     	$fields = array(
-    		array('type' => 'text', 'id' => 'login_url', 'section' => 'base_section', 'setting_id' => 'support_login_url', 'label' => 'Login Url'),
-    		array('type' => 'text', 'id' => 'register_url', 'section' => 'base_section', 'setting_id' => 'support_register_url', 'label' => 'Register Url'),
+    		array('type' => 'text', 'id' => 'login', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Login Url'),
+    		array('type' => 'text', 'id' => 'register', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Register Url'),
     		array('type' => 'select', 'id' => 'register_role', 'section' => 'base_section', 'setting_id' => 'support_register_role', 'label' => 'Register Role', 'choices' => $roles_sorted),
     		array('type' => 'select', 'id' => 'support_ticket_edit', 'section' => 'base_section', 'setting_id' => 'support_ticket_add', 'multiple' => true, 'label' => 'Access Roles', 'choices' => $roles_sorted),
     	);
@@ -235,16 +232,23 @@ class Admin_Support_System{
     				array('type' => 'text', 'id' => 'ext_email', 'section' => 'addon_section', 'setting_id' => 'serials', 'label' => 'Unlock Email Tickets')
     			)
     		),
-    		'notification_section' => array(
-    			'section' => array('page' => 'notification_settings', 'title' => 'Notifications', 'description' => 'Setup notifications'),
+    		'notification_user' => array(
+    			'section' => array('page' => 'notification_settings', 'title' => 'User Notification', 'description' => 'Confirmation email sent to user once a ticket has been submitted.'),
     			'fields' => array(
-    				array('type' => 'textarea', 'id' => 'notification_msg', 'section' => 'notification_section', 'setting_id' => 'ticket_submit_msg', 'label' => 'Default User Email Response')
+    				array('type' => 'text', 'id' => 'msg_title', 'section' => 'notification_user', 'setting_id' => 'notification_user', 'label' => 'Response Subject'),
+    				array('type' => 'textarea', 'id' => 'msg_body', 'section' => 'notification_user', 'setting_id' => 'notification_user', 'label' => 'Response Message'),
+    			)
+    		),
+    		'notification_admin' => array(
+    			'section' => array('page' => 'notification_settings', 'title' => 'Admin Notification', 'description' => 'Notification email sent to admins once a ticket has been submitted.'),
+    			'fields' => array(
+    				array('type' => 'text', 'id' => 'msg_title', 'section' => 'notification_admin', 'setting_id' => 'notification_admin', 'label' => 'Response Subject'),
+    				array('type' => 'textarea', 'id' => 'msg_body', 'section' => 'notification_admin', 'setting_id' => 'notification_admin', 'label' => 'Response Message'),
     			)
     		)
     	);
 
     	$sections = array_merge($sections, apply_filters( 'support_system-settings_sections', $sections));
-    	// print_r($sections);
     	$this->settings_sections = $sections;
     }
 
@@ -264,7 +268,7 @@ class Admin_Support_System{
             {
                 $value = isset($options[$field_id]) ? $options[$field_id] : '';
                 ?>
-                <input class='text' type='text' id='<?php echo $setting_id; ?>' name='<?php echo $setting_id; ?>[<?php echo $field_id; ?>]' value='<?php echo $value; ?>' />
+                <input class='text' type='text' id='<?php echo $setting_id; ?>-<?php echo $field_id; ?>' name='<?php echo $setting_id; ?>[<?php echo $field_id; ?>]' value='<?php echo $value; ?>' />
                 <?php
                 break;
             }
@@ -272,7 +276,7 @@ class Admin_Support_System{
             {
                 $value = isset($options[$field_id]) ? $options[$field_id] : '';
                 ?>
-                <textarea id='<?php echo $setting_id; ?>' name='<?php echo $setting_id; ?>[<?php echo $field_id; ?>]'><?php echo $value; ?></textarea>
+                <textarea id='<?php echo $setting_id; ?>-<?php echo $field_id; ?>' name='<?php echo $setting_id; ?>[<?php echo $field_id; ?>]'><?php echo $value; ?></textarea>
                 <?php
                 break;
             }

@@ -252,3 +252,10 @@ tr.priority-0 td, tr.priority-5 td, tr.priority-10 td{
 .tickets .ticket-10 .meta-head{
 	border-bottom-color: #D8000C;
 }
+#notification_user-msg_title, #notification_admin-msg_title{
+	width:100%;
+}
+#notification_user-msg_body, #notification_admin-msg_body{
+	width:100%;
+	height:100px;
+}

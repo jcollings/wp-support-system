@@ -36,14 +36,12 @@ function open_support_ticket($title = '', $message = '', $user_id = 0, $args = a
 	);
 
 	$result = wp_insert_post($post);
-	if($result > 0)
-	{
+	if($result > 0){
 		add_post_meta($result, '_read', 0);			// set flag to not read
 		add_post_meta($result, '_answered', 0);		// set flag to not answered
 		add_post_meta($result, '_importance', $importance);	// set importance of message
 		return $result;
-	}else
-	{
+	}else{
 		return false;
 	}
 }
@@ -96,8 +94,9 @@ function insert_support_comment($id, $message, $author_id, $type = 'response'){
 		$data = get_post($id);
 		$user_id = $data->post_author;
 		$user = get_userdata( $user_id );
-		wp_mail( $user->user_email, 'Re:'.$data->post_title, 'Response: '.$message, $headers);
-		
+		if($type != 'internal'){
+			wp_mail( $user->user_email, 'Re:'.$data->post_title, 'Response: '.$message, $headers);	
+		}
 	}
 
 	return $result;
