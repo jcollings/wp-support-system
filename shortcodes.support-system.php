@@ -151,6 +151,8 @@ function support_system( $atts , $content = null )
 	extract( shortcode_atts( array(
 	), $atts ) );
 
+	$config =& Support_System_Singleton::getInstance();
+
 	// Get params and render view.
 	switch($view)
 	{
@@ -170,12 +172,12 @@ function support_system( $atts , $content = null )
 		case 'index':
 		case 'browse':
 		{
-			if (!current_user_can( 'read' )){
+			if ($config->require_account == 1 && !current_user_can( 'read' )){
 				$view = 'denied';
 			}
 
 			ob_start();
-			include 'views/public/'.$view.'.php';
+			include 'views/member/'.$view.'.php';
 			$myvar = ob_get_contents();
 			ob_end_clean();
 			$output .= $myvar;

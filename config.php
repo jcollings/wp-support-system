@@ -16,6 +16,7 @@ class Support_System_Singleton
         'fields' => array()
     );
 
+    public $require_account = 1; // 0 = public ||  1 = members
     public $config = array();
 
     public static function getInstance()
@@ -31,6 +32,10 @@ class Support_System_Singleton
         $serials = get_option('serials');
         $notifications['user'] = get_option('notification_user');
         $notifications['admin'] = get_option('notification_admin');
+        $config = get_option('support_system_config');
+
+        if(!empty($config))
+            $this->require_account = $config['require_account'];
         
         $settings = array(
             'addons' => array(

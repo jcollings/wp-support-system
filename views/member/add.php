@@ -1,4 +1,7 @@
 <?php
+global $current_user;
+$current_user = wp_get_current_user();
+
 $output = '<p><a href="' .get_permalink(get_query_var( 'page_id' )). '">Back to Open Tickets</a></p>';
 $form = new WP_Engine_Form('SubmitTicket');
 $success = $form->complete();
@@ -12,7 +15,6 @@ if(!$success)
 
 	$errors = $form->errors();
 
-
 	$output .= '<div class="form_wrapper">';
 	$output .= '<div class="form_header">';
 	$output .= "<h1>Submit Support Ticket</h1>";
@@ -24,8 +26,12 @@ if(!$success)
 		$output .= '<div class="error_msg warn"><p>' . $errors['message']. '</p></div>';
 	}
 
-
 	$output .= $form->create();
+	if($current_user->ID == 0){
+		$output .= $form->text('SupportUserName', array('required' => true, 'label' => 'Name'));	
+		$output .= $form->text('SupportUserEmail', array('required' => true, 'label' => 'Email'));
+	}
+
 	$output .= $form->text('SupportSubject', array('required' => true, 'label' => 'Subject'));
 	$output .= $form->textarea('SupportMessage', array('required' => true, 'label' => 'Message'));
 	$output .= '<div class="form_cols_2">';

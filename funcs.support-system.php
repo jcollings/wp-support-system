@@ -35,11 +35,50 @@ function open_support_ticket($title = '', $message = '', $user_id = 0, $args = a
 		'tax_input' => array('support_groups' => array($args['group']))
 	);
 
+	if($user_id > 0){
+		$user_data = get_userdata( $user_id );
+		$email = $user_data->data->user_email;	
+	}else{
+		$email = $args['user_email'];
+	}
+
+	$user_msg = get_option('notification_user');
+    $admin_msg = get_option('notification_admin');
+
 	$result = wp_insert_post($post);
 	if($result > 0){
 		add_post_meta($result, '_read', 0);			// set flag to not read
 		add_post_meta($result, '_answered', 0);		// set flag to not answered
 		add_post_meta($result, '_importance', $importance);	// set importance of message
+		
+
+		if($user_id == 0){
+			$password = wp_generate_password();
+			add_post_meta( $result, '_name', $args['user_name']);	// set public name
+			add_post_meta( $result, '_email', $args['user_email']);	// set public email
+			add_post_meta( $result, '_pass', md5( $password ) );
+		}
+
+		$subject = parse_support_tags($user_msg['msg_title'], $result);
+		$message = parse_support_tags($user_msg['msg_body'], $result);
+
+		if($user_id == 0){
+			$message .= "\n Password: ".$password . "\n You can view the ticket here: ".site_url( '/support-system/?support-action=view&id='.$result);
+		}
+
+		// send user notification emails
+		wp_mail( $email, $subject, $message);
+
+		// send admin notification emails
+		$subject = parse_support_tags($admin_msg['msg_title'], $result);
+		$message = parse_support_tags($admin_msg['msg_body'], $result);
+		$admin_emails = array();
+		$users = new WP_User_Query(array('role' => 'Administrator'));
+		foreach($users->results as $user){
+			$admin_emails[] = $user->data->user_email;
+		}
+		wp_mail( $admin_emails, $subject, $message);
+
 		return $result;
 	}else{
 		return false;
@@ -217,4 +256,55 @@ function get_ticket_status($post_id = 0){
 	}else{
 		return 'Response Send';
 	}
+}
+
+/**
+ * Parse Support System merge tags and return the result
+ * @param  string $message
+ * @param  int post_id
+ * @return string
+ */
+function parse_support_tags($message, $post_id = false){
+
+	$post = get_post( $post_id );
+
+	$priority = get_post_meta( $post_id, '_importance', true);
+	switch ($priority) {
+		case 10:
+			$priority = 'High';
+			break;
+		case 5:
+			$priority = 'Medium';
+			break;
+		case 0:
+			$priority = 'Low';
+			break;
+	}
+
+	$author_id = $post->post_author;
+	if($author_id > 0){
+		$user_data = get_userdata( $author_id );
+		$name = $user_data->data->user_nicename;	
+	}else{
+		$name = get_post_meta( $post_id, '_email', true );
+	}
+
+	$pattern = array(
+		'/{message}/i',
+		'/{ticket_id}/i',
+		'/{name}/i',
+		'/{priority}/i',
+		'/{subject}/i',
+	);
+	$replacement = array(
+		$post->post_content,
+		$post_id,
+		$name,
+		$priority,
+		$post->post_title
+	);
+
+	$message = preg_replace($pattern, $replacement, $message);
+
+	return $message;
 }

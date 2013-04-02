@@ -218,6 +218,7 @@ class Admin_Support_System{
     		array('type' => 'text', 'id' => 'register', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Register Url'),
     		array('type' => 'select', 'id' => 'register_role', 'section' => 'base_section', 'setting_id' => 'support_register_role', 'label' => 'Register Role', 'choices' => $roles_sorted),
     		array('type' => 'select', 'id' => 'support_ticket_edit', 'section' => 'base_section', 'setting_id' => 'support_ticket_add', 'multiple' => true, 'label' => 'Access Roles', 'choices' => $roles_sorted),
+    		array('type' => 'select', 'id' => 'require_account', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Require Wordpress Account', 'choices' => array('No', 'Yes'))
     	);
 
     	$sections = array(
@@ -283,7 +284,7 @@ class Admin_Support_System{
             case 'select':
             {
                     ?>
-                    <select id="<?php echo $setting_id; ?>" name="<?php echo $setting_id; ?>[<?php echo $field_id; ?>][]" <?php if($multiple === true): ?>multiple<?php endif; ?>>
+                    <select id="<?php echo $setting_id; ?>" name="<?php echo $setting_id; ?>[<?php echo $field_id; ?>]<?php if($multiple === true): ?>[]<?php endif; ?>" <?php if($multiple === true): ?>multiple<?php endif; ?>>
                     <?php
                     foreach($choices as $id => $name):?>
                         <?php if(isset($options[$field_id]) && is_array($options[$field_id]) && in_array($id,$options[$field_id])): ?>

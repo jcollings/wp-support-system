@@ -142,10 +142,18 @@ class User_Support_System{
 				$user_id =  $current_user->ID;
 				$importance = intval($_POST['SupportImportance']);
 				$group = $_POST['SupportGroup'];
-				$result = open_support_ticket($_POST['SupportSubject'], $_POST['SupportMessage'], $user_id, array(
+				$args = array(
 					'importance' => $importance,
 					'group' => $group
-				));
+				);
+
+				// if is public 
+				if($user_id == 0 && !empty($_POST['SupportUserName']) && !empty($_POST['SupportUserEmail'])){
+					$args['user_name'] = $_POST['SupportUserName'];
+					$args['user_email'] = $_POST['SupportUserEmail'];
+				}
+
+				$result = open_support_ticket($_POST['SupportSubject'], $_POST['SupportMessage'], $user_id, $args);
 				if($result){
 					set_transient('SubmitTicketSuccess_'.$user_id, 'Your ticket has been raised.', 60);
 					return $result;
