@@ -2,7 +2,7 @@
 global $post, $page;
 $open_tickets = new WP_Query(array(
 	'post_type' => 'SupportMessage',
-	'p' => $_GET['id']
+	'p' => intval($_GET['id'])
 ));
 ?>
 
@@ -10,8 +10,9 @@ $open_tickets = new WP_Query(array(
 
 <?php if ( $open_tickets->have_posts() && $open_tickets->post_count == 1 ) : ?>
 	<?php while ( $open_tickets->have_posts() ) : $open_tickets->the_post(); ?>
-<?php 
 
+<?php 
+// if password protected show the content to display password box
 if ( post_password_required() ){
 	the_content();
 	return;
@@ -26,12 +27,21 @@ function my_title_function($title){
 	return $title;
 }
 
+$ticket_id = get_the_ID();
+$author_id = get_the_author_meta( 'ID' );
+$priority = get_post_meta(get_the_ID(), '_importance', true);
+
+if($author_id > 0){
+	// member ticket
+	$author_name = get_the_author();
+	$author_email = get_the_author_meta( 'email' );
+}else{
+	// public ticket
+	$author_name = get_post_meta( get_the_ID(), '_name', true);
+	$author_email = get_post_meta( get_the_ID(), '_email', true);
+}
+
 ?>
-
-		<?php $ticket_id = get_the_ID(); ?>
-
-<?php $priority = get_post_meta(get_the_ID(), '_importance', true);  ?>
-
 <div id="post-<?php the_ID(); ?>" class="support-ticket single">
 	<div class="question">
 		<div class="left">
@@ -46,8 +56,8 @@ function my_title_function($title){
 		<div class="right">
 			<div class="meta-info">
 				<div class="img-wrapper">
-					<?php echo get_avatar( get_the_author_meta( 'email' ), '96'); ?>
-					<p><?php the_author(); ?></p>
+					<?php echo get_avatar( $author_email, '96'); ?>
+					<p><?php echo $author_name; ?></p>
 				</div>
 			</div>
 		</div>
