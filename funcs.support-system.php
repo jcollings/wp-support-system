@@ -26,13 +26,16 @@ function open_support_ticket($title = '', $message = '', $user_id = 0, $args = a
 	
 	$importance = isset($args['importance']) ? $args['importance'] : 0;
 
+	$password = wp_generate_password();
+
 	$post = array(
 		'post_type' => 'supportmessage',
 		'post_title' => $title,
 		'post_content' => $message,
 		'post_status' => 'publish',
 		'post_author' => $user_id,
-		'tax_input' => array('support_groups' => array($args['group']))
+		'tax_input' => array('support_groups' => array($args['group'])),
+		'post_password' => $password
 	);
 
 	if($user_id > 0){
@@ -53,7 +56,6 @@ function open_support_ticket($title = '', $message = '', $user_id = 0, $args = a
 		
 
 		if($user_id == 0){
-			$password = wp_generate_password();
 			add_post_meta( $result, '_name', $args['user_name']);	// set public name
 			add_post_meta( $result, '_email', $args['user_email']);	// set public email
 			add_post_meta( $result, '_pass', md5( $password ) );
@@ -166,7 +168,7 @@ function get_tickets($args = array()){
 		$open = 0;
 
 	$args = array(
-		'post_type' => 'SupportMessage',
+		'post_type' => 'supportmessage',
 		'meta_query' => array(
 			array(
 				'key' => '_answered',
@@ -198,7 +200,7 @@ function get_tickets($args = array()){
 
 function count_group_tickets($taxonomy = ''){
 	$args = array(
-		'post_type' => 'SupportMessage',
+		'post_type' => 'supportmessage',
 		'support_groups' => $taxonomy,
 		'meta_query' => array(
 			array(
@@ -216,7 +218,7 @@ function count_group_tickets($taxonomy = ''){
 
 function get_ticket($id = 0){
 	$ticket = new WP_Query(array(
-		'post_type' => 'SupportMessage',
+		'post_type' => 'supportmessage',
 		'p' => $id
 	));
 
@@ -307,4 +309,45 @@ function parse_support_tags($message, $post_id = false){
 	$message = preg_replace($pattern, $replacement, $message);
 
 	return $message;
+}
+
+/**
+ * Check to see if post_author = 0
+ * @param  int  $post_id
+ * @return boolean
+ */
+function is_public_ticket($post_id){
+	
+	if(!is_user_logged_in()){
+		$query = new WP_Query(array(
+			'post_type' => 'supportmessage',
+			'author' => 0,
+			'p' => $post_id,
+		));
+
+		if($query->post_count == 1){
+			return true;
+		}
+	}	
+
+	return false;
+}
+
+function is_ticket_author($post_id){
+
+	global $current_user;
+
+	if(is_user_logged_in() && $current_user->ID > 0){
+		$query = new WP_Query(array(
+			'post_type' => 'supportmessage',
+			'author' => $current_user->ID,
+			'p' => $post_id,
+		));
+		
+		if($query->post_count == 1){
+			return true;
+		}
+	}
+
+	return false;
 }

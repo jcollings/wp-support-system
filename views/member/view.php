@@ -10,6 +10,24 @@ $open_tickets = new WP_Query(array(
 
 <?php if ( $open_tickets->have_posts() && $open_tickets->post_count == 1 ) : ?>
 	<?php while ( $open_tickets->have_posts() ) : $open_tickets->the_post(); ?>
+<?php 
+
+if ( post_password_required() ){
+	the_content();
+	return;
+}
+
+/**
+ * Remove Private/Protected from title
+ */
+add_filter( 'the_title', 'my_title_function' );
+function my_title_function($title){
+	$title = preg_replace( array('#Protected:#', '#Private:#'), '', $title);
+	return $title;
+}
+
+?>
+
 		<?php $ticket_id = get_the_ID(); ?>
 
 <?php $priority = get_post_meta(get_the_ID(), '_importance', true);  ?>

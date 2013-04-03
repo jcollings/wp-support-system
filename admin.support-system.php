@@ -287,7 +287,7 @@ class Admin_Support_System{
                     <select id="<?php echo $setting_id; ?>" name="<?php echo $setting_id; ?>[<?php echo $field_id; ?>]<?php if($multiple === true): ?>[]<?php endif; ?>" <?php if($multiple === true): ?>multiple<?php endif; ?>>
                     <?php
                     foreach($choices as $id => $name):?>
-                        <?php if(isset($options[$field_id]) && is_array($options[$field_id]) && in_array($id,$options[$field_id])): ?>
+                        <?php if(isset($options[$field_id]) && ((is_array($options[$field_id]) && in_array($id,$options[$field_id])) || (!is_array($options[$field_id]) && $options[$field_id] == $id))): ?>
                         <option value="<?php echo $id; ?>" selected="selected"><?php echo $name; ?></option>
                         <?php else: ?>
                         <option value="<?php echo $id; ?>"><?php echo $name; ?></option>
