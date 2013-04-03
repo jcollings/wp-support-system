@@ -16,10 +16,24 @@ $open_tickets = new WP_Query(array(
 		<div id="post-body-content">
 
 			<?php if ( $open_tickets->have_posts() ) : ?>
-			<?php while ( $open_tickets->have_posts() ) : $open_tickets->the_post(); ?>
-			<!-- Content -->
-			<?php $priority = get_post_meta(get_the_ID(), '_importance', true);  ?>
+			<?php while ( $open_tickets->have_posts() ) : $open_tickets->the_post();
 
+$ticket_id = get_the_ID();
+$author_id = get_the_author_meta( 'ID' );
+$priority = get_post_meta(get_the_ID(), '_importance', true);
+
+if($author_id > 0){
+	// member ticket
+	$author_name = get_the_author();
+	$author_email = get_the_author_meta( 'email' );
+}else{
+	// public ticket
+	$author_name = get_post_meta( get_the_ID(), '_name', true);
+	$author_email = get_post_meta( get_the_ID(), '_email', true);
+}
+?>
+
+			<!-- Content -->
 			<article id="post-<?php the_ID(); ?>" class="support-ticket single">
 				<div class="question">
 					<div class="left">
@@ -34,8 +48,8 @@ $open_tickets = new WP_Query(array(
 					<div class="right">
 						<div class="meta-info">
 							<div class="img-wrapper">
-								<?php echo get_avatar( get_the_author_meta( 'email' ), '96'); ?>
-								<p><?php the_author(); ?></p>
+								<?php echo get_avatar( $author_email, '96'); ?>
+								<p><?php echo $author_name; ?></p>
 							</div>
 						</div>
 					</div>
@@ -54,12 +68,24 @@ $open_tickets = new WP_Query(array(
 						if($query->have_posts()): ?>
 						<ul>
 							<?php while($query->have_posts()): $query->the_post(); ?>
+							<?php
+							$author_id = get_the_author_meta( 'ID' );
+							if($author_id > 0){
+								// member ticket
+								$author_name = get_the_author();
+								$author_email = get_the_author_meta( 'email' );
+							}else{
+								// public ticket
+								$author_name = get_post_meta( get_the_ID(), '_name', true);
+								$author_email = get_post_meta( get_the_ID(), '_email', true);
+							}
+							?>
 							<li>
 								<div class="response">
 									<div class="left">
 										<div class="meta-head">
 											<h1><?php the_title(); ?></h1>
-											<p class="desc">Posted by <?php the_author(); ?> on <?php the_time('F j, Y \a\t g:i a'); ?></p>
+											<p class="desc">Posted on <?php the_time('F j, Y \a\t g:i a'); ?></p>
 										</div>
 										<div class="meta-content">
 											<?php the_support_content(); ?>
@@ -68,8 +94,8 @@ $open_tickets = new WP_Query(array(
 									<div class="right">
 										<div class="meta-info">
 											<div class="img-wrapper">
-												<?php echo get_avatar( get_the_author_meta( 'email' )); ?>
-												<p><?php the_author(); ?></p>
+												<?php echo get_avatar( $author_email); ?>
+												<p><?php echo $author_name; ?></p>
 											</div>
 										</div>
 									</div>

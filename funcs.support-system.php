@@ -125,7 +125,10 @@ function insert_support_comment($id, $message, $author_id, $type = 'response'){
 	}
 
 	$result = wp_insert_post($args);
-
+	if($author_id == 0){
+		add_post_meta( $result, '_name', get_post_meta( $id, '_name', true ));	// set public name
+		add_post_meta( $result, '_email', get_post_meta( $id, '_email', true ));	// set public email
+	}
 
 	if ( current_user_can( 'manage_options' ) ) {
 		

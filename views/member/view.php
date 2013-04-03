@@ -77,12 +77,25 @@ if($author_id > 0){
 			if($query->have_posts()): ?>
 			<ul>
 				<?php while($query->have_posts()): $query->the_post(); ?>
+
+				<?php
+				$author_id = get_the_author_meta( 'ID' );
+				if($author_id > 0){
+					// member ticket
+					$author_name = get_the_author();
+					$author_email = get_the_author_meta( 'email' );
+				}else{
+					// public ticket
+					$author_name = get_post_meta( get_the_ID(), '_name', true);
+					$author_email = get_post_meta( get_the_ID(), '_email', true);
+				}
+				?>
 				<li>
 					<div class="response">
 						<div class="left">
 							<div class="meta-head">
 								<h1><?php the_title(); ?></h1>
-								<p class="desc">Posted by <?php the_author(); ?> on <?php the_time('F j, Y \a\t g:i a'); ?></p>
+								<p class="desc">Posted on <?php the_time('F j, Y \a\t g:i a'); ?></p>
 							</div>
 							<div class="meta-content">
 								<?php the_support_content(); ?>
@@ -91,8 +104,8 @@ if($author_id > 0){
 						<div class="right">
 							<div class="meta-info">
 								<div class="img-wrapper">
-									<?php echo get_avatar( get_the_author_meta( 'email' )); ?>
-									<p><?php the_author(); ?></p>
+									<?php echo get_avatar( $author_email ); ?>
+									<p><?php echo $author_name; ?></p>
 								</div>
 							</div>
 						</div>
