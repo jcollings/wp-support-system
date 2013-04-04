@@ -31,14 +31,17 @@ class WP_Engine_Form
 		$file = null;
 		extract($args);
 
+		$form_name = $this->_settings['name'];
+
 		if(!is_null($file))
 			$file = 'enctype="multipart/form-data"';
 		// if form has been submitted
-		if(isset($_POST['SupportFormType']) && $_POST['SupportFormType'] == $this->_settings['name'])
+		if(isset($_POST['SupportFormType']) && $_POST['SupportFormType'] == $form_name)
 			$this->hasPosted = true;
 
-		$output = '<form name="'.$this->_settings['name'].'" id="'.$this->_settings['name'].'" method="POST" action="" '.$file.' >';
-		$output .= '<input type="hidden" name="SupportFormType" id="SupportFormType" value="'.$this->_settings['name'].'" />';
+		$output = '<form name="'.$form_name.'" id="'.$form_name.'" method="POST" action="" '.$file.' >';
+		$output .= '<input type="hidden" name="SupportFormType" id="SupportFormType" value="'.$form_name.'" />';
+		$output .=   wp_nonce_field('support_form_nonce_'.strtolower($form_name),'SupportFormNonce_'.$form_name, true, false);
 		return $output;
 	}
 

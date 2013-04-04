@@ -146,8 +146,12 @@ class Admin_Support_System{
 		            'type' => $field['type'],
 		            'field_id' => $field['id'],
 		            'section_id' => $field['section'],
-		            'setting_id' => $field['setting_id']
+		            'setting_id' => $field['setting_id'],
 		        );
+
+		        if(isset($field['value'])){
+		        	$args['value'] = $field['value'];
+		        }
 
 		        if(isset($field['multiple'])){
 		        	$args['multiple'] = $field['multiple'];
@@ -216,9 +220,9 @@ class Admin_Support_System{
     	$fields = array(
     		array('type' => 'text', 'id' => 'login', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Login Url'),
     		array('type' => 'text', 'id' => 'register', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Register Url'),
-    		array('type' => 'select', 'id' => 'register_role', 'section' => 'base_section', 'setting_id' => 'support_register_role', 'label' => 'Register Role', 'choices' => $roles_sorted),
-    		array('type' => 'select', 'id' => 'support_ticket_edit', 'section' => 'base_section', 'setting_id' => 'support_ticket_add', 'multiple' => true, 'label' => 'Access Roles', 'choices' => $roles_sorted),
-    		array('type' => 'select', 'id' => 'require_account', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Require Wordpress Account', 'choices' => array('No', 'Yes'))
+    		// array('type' => 'select', 'id' => 'register_role', 'section' => 'base_section', 'setting_id' => 'support_register_role', 'label' => 'Register Role', 'choices' => $roles_sorted),
+    		// array('type' => 'select', 'id' => 'support_ticket_edit', 'section' => 'base_section', 'setting_id' => 'support_ticket_add', 'multiple' => true, 'label' => 'Access Roles', 'choices' => $roles_sorted),
+    		array('type' => 'select', 'id' => 'require_account', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Require Wordpress Account', 'choices' => array('No', 'Yes'), 'value' => $this->config->require_account)
     	);
 
     	$sections = array(
@@ -236,15 +240,15 @@ class Admin_Support_System{
     		'notification_user' => array(
     			'section' => array('page' => 'notification_settings', 'title' => 'User Notification', 'description' => 'Confirmation email sent to user once a ticket has been submitted.'),
     			'fields' => array(
-    				array('type' => 'text', 'id' => 'msg_title', 'section' => 'notification_user', 'setting_id' => 'notification_user', 'label' => 'Response Subject'),
-    				array('type' => 'textarea', 'id' => 'msg_body', 'section' => 'notification_user', 'setting_id' => 'notification_user', 'label' => 'Response Message'),
+    				array('type' => 'text', 'id' => 'msg_title', 'section' => 'notification_user', 'setting_id' => 'notification_user', 'label' => 'Response Subject', 'value' => $this->config->notifications['user']['msg_title']),
+    				array('type' => 'textarea', 'id' => 'msg_body', 'section' => 'notification_user', 'setting_id' => 'notification_user', 'label' => 'Response Message', 'value' => $this->config->notifications['user']['msg_body']),
     			)
     		),
     		'notification_admin' => array(
     			'section' => array('page' => 'notification_settings', 'title' => 'Admin Notification', 'description' => 'Notification email sent to admins once a ticket has been submitted.'),
     			'fields' => array(
-    				array('type' => 'text', 'id' => 'msg_title', 'section' => 'notification_admin', 'setting_id' => 'notification_admin', 'label' => 'Response Subject'),
-    				array('type' => 'textarea', 'id' => 'msg_body', 'section' => 'notification_admin', 'setting_id' => 'notification_admin', 'label' => 'Response Message'),
+    				array('type' => 'text', 'id' => 'msg_title', 'section' => 'notification_admin', 'setting_id' => 'notification_admin', 'label' => 'Response Subject', 'value' => $this->config->notifications['admin']['msg_title']),
+    				array('type' => 'textarea', 'id' => 'msg_body', 'section' => 'notification_admin', 'setting_id' => 'notification_admin', 'label' => 'Response Message', 'value' => $this->config->notifications['admin']['msg_body']),
     			)
     		)
     	);
@@ -260,14 +264,15 @@ class Admin_Support_System{
      */
     public function field_callback($args)
     {
+    	$value = '';
         $multiple = false;
         extract($args);
         $options = get_option($setting_id);
+        $value = isset($options[$field_id]) ? $options[$field_id] : $value;
         switch($args['type'])
         {
             case 'text':
             {
-                $value = isset($options[$field_id]) ? $options[$field_id] : '';
                 ?>
                 <input class='text' type='text' id='<?php echo $setting_id; ?>-<?php echo $field_id; ?>' name='<?php echo $setting_id; ?>[<?php echo $field_id; ?>]' value='<?php echo $value; ?>' />
                 <?php
@@ -275,7 +280,6 @@ class Admin_Support_System{
             }
             case 'textarea':
             {
-                $value = isset($options[$field_id]) ? $options[$field_id] : '';
                 ?>
                 <textarea id='<?php echo $setting_id; ?>-<?php echo $field_id; ?>' name='<?php echo $setting_id; ?>[<?php echo $field_id; ?>]'><?php echo $value; ?></textarea>
                 <?php
@@ -283,18 +287,18 @@ class Admin_Support_System{
             }
             case 'select':
             {
-                    ?>
-                    <select id="<?php echo $setting_id; ?>" name="<?php echo $setting_id; ?>[<?php echo $field_id; ?>]<?php if($multiple === true): ?>[]<?php endif; ?>" <?php if($multiple === true): ?>multiple<?php endif; ?>>
-                    <?php
-                    foreach($choices as $id => $name):?>
-                        <?php if(isset($options[$field_id]) && ((is_array($options[$field_id]) && in_array($id,$options[$field_id])) || (!is_array($options[$field_id]) && $options[$field_id] == $id))): ?>
-                        <option value="<?php echo $id; ?>" selected="selected"><?php echo $name; ?></option>
-                        <?php else: ?>
-                        <option value="<?php echo $id; ?>"><?php echo $name; ?></option>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                    </select>
-                    <?php
+                ?>
+                <select id="<?php echo $setting_id; ?>" name="<?php echo $setting_id; ?>[<?php echo $field_id; ?>]<?php if($multiple === true): ?>[]<?php endif; ?>" <?php if($multiple === true): ?>multiple<?php endif; ?>>
+                <?php
+                foreach($choices as $id => $name):?>
+                    <?php if(isset($value) && ((is_array($value) && in_array($id,$value)) || (!is_array($value) && $value == $id))): ?>
+                    <option value="<?php echo $id; ?>" selected="selected"><?php echo $name; ?></option>
+                    <?php else: ?>
+                    <option value="<?php echo $id; ?>"><?php echo $name; ?></option>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                </select>
+                <?php
                 break;
             }
             case 'upload':
@@ -306,7 +310,6 @@ class Admin_Support_System{
             }
             case 'password':
             {
-                $value = isset($options[$field_id]) ? $options[$field_id] : '';
                 ?>
                 <input class='text' type='password' id='<?php echo $setting_id; ?>' name='<?php echo $setting_id; ?>[<?php echo $field_id; ?>]' value='<?php echo $value; ?>' />
                 <?php

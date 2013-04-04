@@ -45,8 +45,8 @@ class User_Support_System{
 		$current_user = wp_get_current_user();
 
 		$errors = array();
-
-		switch($_POST['SupportFormType']){
+		$form_type = $_POST['SupportFormType'];
+		switch($form_type){
 			case 'SubmitComment':
 				$ticketId = $_POST['TicketId'];
 				$message = $_POST['SupportResponse'];
@@ -54,6 +54,12 @@ class User_Support_System{
 
 				if(empty($message)){
 					$this->setError('SubmitComment', 'Please enter a message');
+					return;
+				}
+
+				// nonce field
+				if(!wp_verify_nonce($_POST['SupportFormNonce_'.$form_type],'support_form_nonce_'.strtolower($form_type))){
+					$this->setError('SubmitTicket', 'Sorry but your form could not be submitted');
 					return;
 				}
 
@@ -75,6 +81,12 @@ class User_Support_System{
 				// validate email
 				if(!is_email( $_POST['user_email'] )){
 					$this->setError('Login', 'Please enter a valid email address');
+					return;
+				}
+
+				// nonce field
+				if(!wp_verify_nonce($_POST['SupportFormNonce_'.$form_type],'support_form_nonce_'.strtolower($form_type))){
+					$this->setError('SubmitTicket', 'Sorry but your form could not be submitted');
 					return;
 				}
 
@@ -109,6 +121,12 @@ class User_Support_System{
 					return;
 				}
 
+				// nonce field
+				if(!wp_verify_nonce($_POST['SupportFormNonce_'.$form_type],'support_form_nonce_'.strtolower($form_type))){
+					$this->setError('SubmitTicket', 'Sorry but your form could not be submitted');
+					return;
+				}
+
 				$user = wp_insert_user(array(
 						'user_login'	=>	$_POST['user_email'],
 						'user_pass'	=>	$_POST['user_pass'],
@@ -136,6 +154,12 @@ class User_Support_System{
 
 				if(!empty($errors)){
 					$this->setError('SubmitTicket', 'Please fill out all required fields', $errors);
+					return;
+				}
+
+				// nonce field
+				if(!wp_verify_nonce($_POST['SupportFormNonce_'.$form_type],'support_form_nonce_'.strtolower($form_type))){
+					$this->setError('SubmitTicket', 'Sorry but your form could not be submitted');
 					return;
 				}
 
