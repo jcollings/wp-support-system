@@ -1,80 +1,97 @@
-<?php 
+<?php  
 /*
-Plugin Name: WP Support System
+Plugin Name: WP Support System V2
 Plugin URI: http://www.jamescollings.co.uk
-Description: Support System Plugin
-Version: 0.0.1
+Description: Support System Plugin V2
+Version: 0.0.2
 Author: James Collings
 Author URI: http://www.jamescollings.co.uk
  */
 
-define('WP_SUPPORT_SYSTEM_DIR', plugin_dir_path(__FILE__));
-define('WP_SUPPORT_SYSTEM_TEMPLATE_DIR', WP_SUPPORT_SYSTEM_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR);
-define('WP_SUPPORT_SYSTEM_ASSETS_DIR', WP_SUPPORT_SYSTEM_DIR . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR );
+$SupportSystem = new SupportSystem();
 
-require_once 'config.php';
+class SupportSystem{
 
-require_once 'helpers/form_helper.php';
+	var $version = '0.0.2';
+	var $plugin_dir = false;
+	var $plugin_url = false;
+	var $support_page = 4;
+	var $require_account = 1;
+	var $notifications = array(
+		'user' => array(
+			'msg_title' => 'Support Ticket #{ticket_id} has been sent',
+			'msg_body' => 'Hi {name},
+We will try and get your problem sorted soon as, but in the mean time have you checked our knowledgebase.
+Regards
+Theme Dev Team'
+		),
+		'admin' => array(
+			'msg_title' => '{priority} - Ticket #{ticket_id}',
+			'msg_body' => '{name} has raised a new support ticket.
+Subject: {subject}
+Message: {message}'
+		)
+	);
 
-if(is_admin())
-	require_once 'admin.support-system.php';
+	function __construct(){
 
-require_once 'user.support-system.php';
-require_once 'funcs.support-system.php';
-require_once 'shortcodes.support-system.php';
+		$this->plugin_dir =  plugin_dir_path( __FILE__ );
+		$this->plugin_url = plugins_url( '/', __FILE__ );
+		$this->load_modules();
+		$this->load_settings();
 
-global $wpengine_support;
-$wpengine_support = new WP_Engine_Support_System();
-
-class WP_Engine_Support_System
-{
-	private $config = null;
-
-	public function __construct(){
-		$this->config =& Support_System_Singleton::getInstance();
-
-		$this->load_addons();
-
-		add_action('init', array($this, 'register_support_system'));
-        add_action('plugins_loaded', array($this, 'plugins_loaded'));
-        add_filter('post_class', array($this, 'system_body_class'));
-		add_filter('body_class', array($this, 'system_body_class'));
-		add_filter('query_vars', array($this, 'register_query_vars'));
+		add_action('init', array($this, 'register'));
+		add_action('query_vars', array($this, 'register_query_vars') );
+		add_filter('generate_rewrite_rules', array($this, 'my_rewrite'));
 	}
 
-	private function is_unlocked($field){
-		$serials = array(
-			'knowledgebase' => md5('PS0F-X6TG-ZEF3-8V1B'),
-			'email' => md5('LK2D-V8ME-UES2-1E4C')
-		);
+	function load_modules(){
 
-		if( isset($this->config->serials['ext_'.$field]) && md5($this->config->serials['ext_'.$field]) == $serials[$field]){
-			return true;
-		}
+		include 'functions.php';
+		include 'TicketModel.php';
+		include 'helpers/form.php';
+		include 'TicketNotification.php';
 
-		return false;
+		// Load Ticket Admin
+		include 'TicketAdmin.php';
+		$TicketAdmin = new TicketAdmin($this);
+
+		// Load Department Admin
+		include 'DepartmentAdmin.php';
+		$DepartmentAdmin = new DepartmentAdmin($this);
+
+		// Load Ticket View Controller
+		include 'TicketViewController.php';
+		$TicketViewController = new TicketViewController($this);
+
+		// Load Ticket View
+		include 'TicketView.php';
+		$TicketView = new TicketView($this);
+
+		TicketNotification::init($this);
 	}
 
-	private function load_addons(){
+	function load_settings(){
+		
+		// check if user notifications exist
+        $user_notifications = get_option('notification_user');
+        if(isset($user_notifications) && !empty($user_notifications)){
+            $this->notifications['user'] = $user_notifications;
+        }
 
-		if($this->is_unlocked('knowledgebase')){
-			include_once 'addons/knowledgebase/knowledgebase.php';
-		}
+        // check if admin notification exist
+        $admin_notifications = get_option('notification_admin');
+        if(isset($admin_notifications) && !empty($admin_notifications)){
+            $this->notifications['admin'] = $admin_notifications;
+        }
 
-		if($this->is_unlocked('email')){
-			include_once 'addons/email/email.php';
-		}
+        // check if an account is required to submit a ticket
+        $config = get_option('support_system_config');
+        if(!empty($config))
+            $this->require_account = $config['require_account'];
 	}
 
-	public function plugins_loaded(){	
-	}
-
-	public function register_query_vars($public_query_vars) {
-		$public_query_vars[] = 'support-action';
-		return $public_query_vars;
-	}
-
-	public function register_support_system() {
+	function register() {
 
 		$result = add_role('member', 'Member', array(
 		    'read' => true, // True allows that capability
@@ -111,22 +128,6 @@ class WP_Engine_Support_System
 				// 'show_ui' => true,
 				'public' => false,
 			)
-		);
-
-		register_taxonomy(  
-			'support_groups',  
-			'supportmessage',  
-			array(  
-				'label' => 'Support Ticket Groups',  
-				'public' => true,
-		        'show_in_nav_menus' => true,
-		        'show_ui' => true,
-		        'show_tagcloud' => false,
-		        'show_admin_column' => true,
-		        'hierarchical' => true,
-		        'rewrite' => true,
-		        'query_var' => 'support_groups'
-			)  
 		); 
 
 		register_post_type( 'st_comment', 
@@ -172,30 +173,34 @@ class WP_Engine_Support_System
 		);
 	}
 
-	function update_post_count($terms, $taxonomy)
-	{
-	    global $wpdb;
-	    foreach ( (array) $terms as $term)
-	    {
-	        do_action( 'edit_term_taxonomy', $term, $taxonomy );
+	function register_query_vars($public_query_vars) {
+		$public_query_vars[] = 'support-action';
+		$public_query_vars[] = 'ticket_id';
+		return $public_query_vars;
+	}
 
-	        // Do stuff to get your count
-	        $count = 15;
-
-	        $wpdb->update( $wpdb->term_taxonomy, array( 'count' => $count ), array( 'term_taxonomy_id' => $term ) );
-	        do_action( 'edited_term_taxonomy', $term, $taxonomy );
-	    }
+	function my_rewrite($wp_rewrite) {
+		$wp_rewrite->rules = array_merge(
+			array(
+				'^support/([^/]+)/?$' => 'index.php?page_id='.$this->support_page.'&support-action=$matches[1]',
+				'^support/view/([^/]+)/?$' => 'index.php?page_id='.$this->support_page.'&support-action=view&ticket_id=$matches[1]',
+			), $wp_rewrite->rules );
+		return $wp_rewrite;
 	}
 
 	/**
-	 * Add support class to body
+	 * Setup plugin on activation
+	 * @return void
 	 */
-	public function system_body_class($classes) {
-		$query_var = get_query_var('support-action');
-
-		if(!empty($query_var) || is_page(80))
-			$classes[] = 'support-system';
-
-		return $classes;
+	function activate(){
 	}
+
+	/**
+	 * Deactivate Plugin
+	 * @return void
+	 */
+	function deactivate(){
+	}
+
 }
+?>

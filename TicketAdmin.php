@@ -1,33 +1,165 @@
 <?php 
-
-class Admin_Support_System{
+/**
+ * Ticket Admin
+ * 
+ * Handles all administration functions
+ * 
+ * @author James Collings <james@jclabs.co.uk>
+ * @package Support System
+ * @since 0.0.2
+ */
+class TicketAdmin{
 
 	private $config = null;
-	private $settings_optgroup = null;
+	private $settings_optgroup = 'wp-support-system';
 	private $settings_sections = array();
 	
-	public function __construct(){
-		$this->config =& Support_System_Singleton::getInstance();
+	public function __construct(&$config){
+		$this->config = $config;
 
-		// set class config
-		$this->settings_optgroup = $this->config->settings_api['optgroup'];
 		add_action('plugins_loaded', array($this, 'plugins_loaded'));
 	}
 
 	public function plugins_loaded(){
+		if(is_admin()){
+			add_action( 'init', array( $this, 'setup_forms'));
+			add_action('wp_loaded', array($this, 'process_forms'));
+		}
 		add_action( 'admin_menu', array( $this, 'register_menu_pages' ) );
 		add_action( 'admin_menu', array($this, 'add_user_menu_notifications'));
-		add_action( 'admin_head', array($this, 'admin_forms'));
-		add_action( 'parent_file', array($this, 'support_groups_menu_highlight'));
 		add_action( 'admin_print_scripts', array($this, 'admin_scripts' ));
 		add_action( 'admin_print_styles', array($this, 'admin_styles' ));
-		add_filter('plugin_action_links_support-system/support-system.php', array($this, 'settings_link'));
+		add_filter( 'plugin_action_links_support-system/support-system.php', array($this, 'settings_link'));
 		add_action( 'admin_init', array($this, 'register_settings' ));
-		add_action('wp_dashboard_setup', array($this, 'add_dashboard_widget' ));
+		add_action( 'wp_dashboard_setup', array($this, 'add_dashboard_widget' ));
+		// add_filter( 'admin_body_class', array($this, 'admin_body_class'));
+	}
+
+	function admin_body_class($classes){
+		if(isset($_GET['taxonomy']) && $_GET['taxonomy'] == 'support_groups'){
+			$classes = $classes . 'toplevel_page_support-tickets';
+		}
+		return $classes;
+	}
+
+	/**
+	 * Setup Form Validation Rules
+	 * 
+	 * @return void
+	 */
+	function setup_forms(){
+		$forms = array(
+			'AdminTicketComment' => array(
+				'validation' => array(
+					'response' => array(
+						'rule' => array('required'),
+						'message' => 'This Field is required'
+					)
+				)
+			)
+		);
+		$this->config->forms = $forms;
+
+	}
+
+	/**
+	 * Process Submitted Forms
+	 * 
+	 * Load up the correct function for submitting the form
+	 * 
+	 * @return void
+	 */
+	function process_forms(){
+		FormHelper::init($this->config->forms);
+
+		if(isset($_POST['ticket_form_action'])){
+			
+			switch($_POST['ticket_form_action']){
+				case 'AdminTicketComment':
+					$this->process_response_form();
+				break;
+				case 'DepartmentTransfer':
+					$this->process_department_transfer_form();
+				break;
+				case 'TicketPriority':
+					$this->process_priority_form();
+				break;
+				case 'StatusChange':
+					$this->process_status_form();
+				break;
+			}
+
+		}
+	}
+
+	function process_status_form(){
+		FormHelper::process_form('StatusChange');
+
+		if(FormHelper::is_complete()){
+			$ticket_id = $_POST['ticket_id'];
+			$status = $_POST['ticket_status'];
+			update_post_meta( $ticket_id, '_answered', intval($status));
+		}
+	}
+
+	function process_department_transfer_form(){
+		FormHelper::process_form('DepartmentTransfer');
+
+		if(FormHelper::is_complete()){
+			$ticket_id = $_POST['ticket_id'];
+			$departemnt_id = $_POST['ticket_department'];
+			wp_set_post_terms( $ticket_id, $departemnt_id, 'support_groups');
+		}
+	}
+
+	function process_priority_form(){
+		FormHelper::process_form('TicketPriority');
+
+		if(FormHelper::is_complete()){
+			$ticket_id = $_POST['ticket_id'];
+			$priority = $_POST['ticket_priority'];
+			update_post_meta( $ticket_id, '_importance', intval($priority));
+		}
+	}
+
+	/**
+	 * Process Response Form
+	 * 
+	 * Add new response, internal note to a ticket.
+	 * 
+	 * @return void
+	 */
+	private function process_response_form(){
+		global $current_user;
+
+		FormHelper::process_form('AdminTicketComment');
+
+		if(FormHelper::is_complete()){
+
+			$ticket_id = $_POST['ticket_id'];
+			$message = $_POST['ticket_response'];
+			$author_id = $current_user->ID;
+			$type = 'response';
+
+			if(isset($_POST['ticket_note']) && $_POST['ticket_note'] == 1){
+				$type = 'internal';
+			}
+
+			$comment_id = TicketModel::insert_comment($ticket_id, $message, $author_id, $type);
+			
+			if($type == 'response')
+				TicketNotification::new_comment_alert($ticket_id, $comment_id);
+
+			if(isset($_POST['ticket_close']) && $_POST['ticket_close'] == 1){
+				TicketModel::close_support_ticket($ticket_id);
+			}
+		}
+
 	}
 
 	/**
 	 * Add new dashboard widget
+	 * 
 	 * @return void
 	 */
 	public function add_dashboard_widget(){
@@ -36,32 +168,33 @@ class Admin_Support_System{
 
 	/**
 	 * Output dashboard widget
+	 * 
 	 * @return void
 	 */
 	public function setup_dashboard_widget(){
 	}
 
+	/**
+	 * Register Administration Menu
+	 * 
+	 * Allow for addonds to hook onto the action and add a menu
+	 * @return void
+	 */
 	public function register_menu_pages(){
 		add_object_page( 'Support Tickets', 'WP Support', 'add_users', 'support-tickets', array($this, 'admin_page'));
 		add_submenu_page('support-tickets', 'Departments', 'Departments', 'add_users', 'edit-tags.php?taxonomy=support_groups');
 
 		// allow addons to hook into the meny creation
 		do_action('support_system-menu_output');
-		
 		add_submenu_page('support-tickets', 'Settings', 'Settings', 'add_users', 'support-ticket-settings', array($this, 'admin_settings_page'));
 		
 	}
 
-	public function support_groups_menu_highlight($parent_file) {
-		global $current_screen;
-		$taxonomy = $current_screen->taxonomy;
-		if ($taxonomy == 'support_groups')
-			$parent_file = 'support-tickets';
-		return $parent_file;
-	}
-
 	/**
-     * Add settings link to plugins table
+     * Add settings link
+     * 
+     * Display settings link to the left of activate and deactivate plugin
+     * 
      * @param  array $args links 
      * @return arrary
      */
@@ -72,22 +205,31 @@ class Admin_Support_System{
 
 	/**
      * Inject Javascript
+     * 
      * @return void
      */
 	function admin_scripts()
 	{
-		wp_enqueue_script('support-admin-js', support_plugin_url( 'assets/js/admin.js'));
+		wp_enqueue_script('support-admin-js', $this->config->plugin_url . 'assets/js/admin.js');
 	}
 
 	/**
 	 * Inject Stylesheets
+	 * 
 	 * @return void
 	 */
 	function admin_styles()
 	{
-		wp_enqueue_style( 'support-admin-css', support_plugin_url( 'assets/css/admin.css'));
+		wp_enqueue_style( 'support-admin-css', $this->config->plugin_url . 'assets/css/admin.css');
 	}
 
+	/**
+	 * Load Admin Settings Page
+	 * 
+	 * Load view form settings page, allow addons to add new tabs
+	 * 
+	 * @return void
+	 */
 	public function admin_settings_page()
 	{
 		global $tabs;
@@ -104,16 +246,13 @@ class Admin_Support_System{
 		// hook to extends setting tabs
 		do_action('support_system-menu_output_action', $tabs);
 
-		$tabs['addon_settings'] = array(
-	    	'title' => 'Addons'
-	    );
-
 		// include view file
 		include 'views/admin/settings.php';
 	}
 
 	/**
 	 * General Section Callback
+	 * 
 	 * @param  array $args passed arguments
 	 * @return void
 	 */
@@ -123,6 +262,7 @@ class Admin_Support_System{
 
 	/**
      * Register Plugin Settings
+     * 
      * @return void
      */
     public function register_settings()
@@ -168,6 +308,7 @@ class Admin_Support_System{
 
     /**
      * Validate Save Settings
+     * 
      * @param  array
      * @return array
      */
@@ -182,6 +323,7 @@ class Admin_Support_System{
 
     /**
      * Clear and setup roles
+     * 
      * @param  array  $selected_roles list of roles manage support tickets
      * @return void
      */
@@ -210,32 +352,23 @@ class Admin_Support_System{
     	}
     }
 
+    /**
+     * Load Support System Settings
+     * 
+     * Setup settings to be outputted via wordpress Settings API
+     * 
+     * @return void
+     */
     private function load_settings_api(){
-    	$roles = get_editable_roles();
-    	$roles_sorted = array();
-    	foreach($roles as $key => $role){
-    		$roles_sorted[$key] = $role['name'];
-    	}
-
-    	$fields = array(
-    		array('type' => 'text', 'id' => 'login', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Login Url'),
-    		array('type' => 'text', 'id' => 'register', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Register Url'),
-    		// array('type' => 'select', 'id' => 'register_role', 'section' => 'base_section', 'setting_id' => 'support_register_role', 'label' => 'Register Role', 'choices' => $roles_sorted),
-    		// array('type' => 'select', 'id' => 'support_ticket_edit', 'section' => 'base_section', 'setting_id' => 'support_ticket_add', 'multiple' => true, 'label' => 'Access Roles', 'choices' => $roles_sorted),
-    		array('type' => 'select', 'id' => 'require_account', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Require Wordpress Account', 'choices' => array('No', 'Yes'), 'value' => $this->config->require_account)
-    	);
 
     	$sections = array(
     		'base_section' => array(
     			'section' => array('page' => 'base_settings', 'title' => 'General Settings', 'description' => 'General Settings Description'),
-    			'fields' => $fields
-    		),
-    		'addon_section' => array(
-    			'section' => array('page' => 'addon_settings', 'title' => 'Extensions', 'description' => 'Install Addons with your serial keys'),
     			'fields' => array(
-    				array('type' => 'text', 'id' => 'ext_knowledgebase', 'section' => 'addon_section', 'setting_id' => 'serials', 'label' => 'Unlock Knowledgebase'),
-    				array('type' => 'text', 'id' => 'ext_email', 'section' => 'addon_section', 'setting_id' => 'serials', 'label' => 'Unlock Email Tickets')
-    			)
+		    		array('type' => 'text', 'id' => 'login', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Login Url'),
+		    		array('type' => 'text', 'id' => 'register', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Register Url'),
+		    		array('type' => 'select', 'id' => 'require_account', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Require Wordpress Account', 'choices' => array('No', 'Yes'), 'value' => $this->config->require_account)
+		    	)
     		),
     		'notification_user' => array(
     			'section' => array('page' => 'notification_settings', 'title' => 'User Notification', 'description' => 'Confirmation email sent to user once a ticket has been submitted.'),
@@ -259,6 +392,7 @@ class Admin_Support_System{
 
     /**
      * Generate the output for all settings fields
+     * 
      * @param  array $args options for each field
      * @return void
      */
@@ -318,24 +452,18 @@ class Admin_Support_System{
         }
     }
 
+    /**
+     * Add Menu Notifications
+     * 
+     * Add ammount of open tickets to the Support Menu Item
+     * 
+     * @return void
+     */
 	public function add_user_menu_notifications() {
 		global $menu;
 
-		$open_tickets = new WP_Query(array(
-			'post_type' => 'SupportMessage',
-			'meta_query' => array(
-				array(
-					'key' => '_answered',
-					'value' => 0,
-					'compare' => '=',
-					'type' => 'INT'
-				)
-			),
-			'order'		=> 'DESC',
-			'orderby'	=> 'meta_value_num',
-			'meta_key' 	=> '_importance',
-			'posts_per_page' => -1
-		));
+		$open_tickets = TicketModel::get_tickets(array('open' => 0));
+
 		$count = $open_tickets->post_count;
 		if($count > 0){
 			foreach($menu as $key => $item){
@@ -346,6 +474,11 @@ class Admin_Support_System{
 		}
 	}
 
+	/**
+	 * Display Correct Admin Page
+	 * 
+	 * @return void
+	 */
 	public function admin_page()
 	{
 		$page = isset($_GET['action']) ? $_GET['action'] : 'index';
@@ -364,55 +497,5 @@ class Admin_Support_System{
 			}
 		}
 	}
-
-	public function admin_forms()
-	{
-		// not correct page
-		if(!isset($_GET['page']) || $_GET['page'] != 'support-tickets')
-			return;
-
-		// no published form content
-		if(!isset($_POST['SupportFormType']))
-			return;
-
-		global $current_user;
-		$current_user = wp_get_current_user();
-
-		switch($_POST['SupportFormType'])
-		{
-			case 'SubmitComment':
-			{
-				$ticketId = $_POST['TicketId'];
-				$message = $_POST['SupportResponse'];
-				$author_id = $current_user->ID;
-				$type = 'response';
-
-				if(empty($message))
-				{
-					set_transient('LoginError_'.$author_id, 'Please enter a message.', 60);
-					return;
-				}
-
-				if(isset($_POST['SupportInternalNote']) && $_POST['SupportInternalNote'] == 1){
-					$type = 'internal';
-				}
-
-				insert_support_comment($ticketId, $message, $author_id, $type);
-
-				if(isset($_POST['SupportCloseTicket']) && $_POST['SupportCloseTicket'] == 1){
-					close_support_ticket($ticketId);
-				}
-				
-				break;
-			}
-			default:
-			{
-				break;
-			}
-		}
-	}
-
 }
-
-$Admin_Support_System = new Admin_Support_System();
 ?>

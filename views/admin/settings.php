@@ -4,7 +4,7 @@
 
     <?php $current_tab = isset($_GET['tab']) ? $_GET['tab'] : key($tabs); ?>
 
-    <p><strong>Next Scheduled Check:</strong> <?php echo date('H:i:s \o\n \t\h\e d/m/Y', wp_next_scheduled( 'jc_support_system_cron')); ?></p>
+    <?php /*<p><strong>Next Scheduled Check:</strong> <?php echo date('H:i:s \o\n \t\h\e d/m/Y', wp_next_scheduled( 'jc_support_system_cron')); ?></p>*/ ?>
 
     <h3 class="nav-tab-wrapper">
         <?php foreach($tabs as $id => $tab): ?>

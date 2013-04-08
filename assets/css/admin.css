@@ -1,3 +1,16 @@
+.toplevel_page_support-tickets #icon-edit, #icon-support-tickets, .wp-support_page_support-ticket-settings #icon-edit{
+	background: url('../img/icon_32.png') no-repeat center center;
+}
+
+#adminmenu #toplevel_page_support-tickets div.wp-menu-image{
+	background:transparent url('../img/icon_16_grey.png') no-repeat center center;
+}
+
+#adminmenu #toplevel_page_support-tickets:hover div.wp-menu-image,
+#adminmenu #toplevel_page_support-tickets.wp-has-current-submenu div.wp-menu-image{
+	background:transparent url('../img/icon_16.png') no-repeat center center;
+}
+
 tr.priority-0 td:last-child{
 	background:#DFF2BF;
 }

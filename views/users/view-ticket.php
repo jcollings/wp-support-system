@@ -1,9 +1,6 @@
 <?php 
-global $post, $page;
-$open_tickets = new WP_Query(array(
-	'post_type' => 'SupportMessage',
-	'p' => intval($_GET['id'])
-));
+global $post;
+$open_tickets = TicketModel::get_ticket(get_query_var( 'ticket_id' ));
 ?>
 
 <p><a href="<?php the_permalink(get_query_var( 'page_id' )); ?>">Back to Open Tickets</a></p>
@@ -28,18 +25,9 @@ function my_title_function($title){
 }
 
 $ticket_id = get_the_ID();
-$author_id = get_the_author_meta( 'ID' );
-$priority = get_post_meta(get_the_ID(), '_importance', true);
-
-if($author_id > 0){
-	// member ticket
-	$author_name = get_the_author();
-	$author_email = get_the_author_meta( 'email' );
-}else{
-	// public ticket
-	$author_name = get_post_meta( get_the_ID(), '_name', true);
-	$author_email = get_post_meta( get_the_ID(), '_email', true);
-}
+$priority = TicketModel::get_ticket_priority($ticket_id);
+$author_name = TicketModel::get_ticket_author($ticket_id);
+$author_email = TicketModel::get_ticket_email($ticket_id);
 
 ?>
 <div id="post-<?php the_ID(); ?>" class="support-ticket single">
@@ -66,29 +54,15 @@ if($author_id > 0){
 	<footer class="meta-footer">
 		<div id="comments" class="comments-area">
 			<?php 
-			$query = new WP_Query(array(
-				'post_type' => 'st_comment',
-				'post_parent' => get_the_ID(),
-				'order' => 'ASC',
-				'nopaging' => true,
-			));
+			$query = TicketModel::get_ticket_comments($ticket_id);
 			
 
 			if($query->have_posts()): ?>
 			<ul>
-				<?php while($query->have_posts()): $query->the_post(); ?>
-
-				<?php
-				$author_id = get_the_author_meta( 'ID' );
-				if($author_id > 0){
-					// member ticket
-					$author_name = get_the_author();
-					$author_email = get_the_author_meta( 'email' );
-				}else{
-					// public ticket
-					$author_name = get_post_meta( get_the_ID(), '_name', true);
-					$author_email = get_post_meta( get_the_ID(), '_email', true);
-				}
+				<?php while($query->have_posts()): $query->the_post();
+				$response_id = get_the_ID();
+				$author_name = TicketModel::get_ticket_author($response_id);
+				$author_email = TicketModel::get_ticket_email($response_id);
 				?>
 				<li>
 					<div class="response">
@@ -120,31 +94,13 @@ if($author_id > 0){
 			/**
 			 * Display Comment Form
 			 */
+			echo FormHelper::create('SubmitTicketComment', array(
+				'title' => 'Add Response',
+			));
+			echo FormHelper::hidden('id', array('value' => $ticket_id));
+			echo FormHelper::wysiwyg('response', array('label' => 'Message'));
+			echo FormHelper::end('Send');
 			?>
-			<div class="form">
-				<form action="#" method="post">
-					<h2>Add Response:</h2>
-					<input type="hidden" name="SupportFormType" id="SupportFormType" value="SubmitComment" />
-					<input type="hidden" name="TicketId" id="TicketId" value="<?php echo $ticket_id ?>">
-					<div class="textarea">
-						<label>Message:</label>
-						<?php 
-						$editor_id = 'SupportResponse';
-						$settings =   array(
-						    'wpautop' => false, // use wpautop?
-						    'media_buttons' => false, // show insert/upload button(s)
-						    'textarea_rows' => 10,
-						    'teeny' => false, // output the minimal editor config used in Press This
-						    'tinymce' => false
-						);
-						wp_editor( '', $editor_id, $settings);  
-						?>
-					</div>
-					<div class="submit input">
-						<input type="submit" value="Send" /> 
-					</div>
-				</form>
-			</div>
 		</div>
 	</footer>
 </div>

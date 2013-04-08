@@ -1,11 +1,16 @@
 <?php 
-global $post;
-$ticket_id = $_GET['id'];
-$open_tickets = new WP_Query(array(
-	'post_type' => 'SupportMessage',
-	'p' => $ticket_id
-));
+$ticket_id = intval($_GET['id']);
+$open_tickets = TicketModel::get_ticket($ticket_id);
+$ticket = $open_tickets->post;
+$department = '';
+$post_terms = wp_get_post_terms( $ticket_id, 'support_groups' );
 
+$status = get_post_meta( $ticket_id, '_answered', true);
+$status_word = $status == 1 ? 'Closed' : 'Open';
+
+foreach($post_terms as $term){
+	$department .= $term->name;
+}
 ?>
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-posts-post"><br></div>
@@ -17,21 +22,10 @@ $open_tickets = new WP_Query(array(
 
 			<?php if ( $open_tickets->have_posts() ) : ?>
 			<?php while ( $open_tickets->have_posts() ) : $open_tickets->the_post();
-
-$ticket_id = get_the_ID();
-$author_id = get_the_author_meta( 'ID' );
-$priority = get_post_meta(get_the_ID(), '_importance', true);
-
-if($author_id > 0){
-	// member ticket
-	$author_name = get_the_author();
-	$author_email = get_the_author_meta( 'email' );
-}else{
-	// public ticket
-	$author_name = get_post_meta( get_the_ID(), '_name', true);
-	$author_email = get_post_meta( get_the_ID(), '_email', true);
-}
-?>
+				$priority = TicketModel::get_ticket_priority($ticket_id);
+				$author_name = TicketModel::get_ticket_author($ticket_id);
+				$author_email = TicketModel::get_ticket_email($ticket_id);
+			?>
 
 			<!-- Content -->
 			<article id="post-<?php the_ID(); ?>" class="support-ticket single">
@@ -58,27 +52,14 @@ if($author_id > 0){
 				<footer class="meta-footer">
 					<div id="comments" class="comments-area">
 						<?php 
-						$query = new WP_Query(array(
-							'post_type' => array('st_comment', 'st_comment_internal'),
-							'post_parent' => get_the_ID(),
-							'order' => 'ASC'
-						));
-						
-
+						$query = TicketModel::get_ticket_comments($ticket_id, array('st_comment', 'st_comment_internal'));
 						if($query->have_posts()): ?>
 						<ul>
 							<?php while($query->have_posts()): $query->the_post(); ?>
 							<?php
-							$author_id = get_the_author_meta( 'ID' );
-							if($author_id > 0){
-								// member ticket
-								$author_name = get_the_author();
-								$author_email = get_the_author_meta( 'email' );
-							}else{
-								// public ticket
-								$author_name = get_post_meta( get_the_ID(), '_name', true);
-								$author_email = get_post_meta( get_the_ID(), '_email', true);
-							}
+							$response_id = get_the_ID();
+							$author_name = TicketModel::get_ticket_author($response_id);
+							$author_email = TicketModel::get_ticket_email($response_id);
 							?>
 							<li>
 								<div class="response">
@@ -114,39 +95,15 @@ if($author_id > 0){
 						/**
 						 * Display Comment Form
 						 */
+						echo FormHelper::create('AdminTicketComment', array(
+							'title' => 'Add Response',
+						));
+						echo FormHelper::hidden('id', array('value' => $ticket_id));
+						echo FormHelper::wysiwyg('response', array('label' => 'Message'));
+						echo FormHelper::checkbox('note', array('label' => 'Internal Note'));
+						echo FormHelper::checkbox('close', array('label' => 'Close ticket on reply'));
+						echo FormHelper::end('Send');
 						?>
-						<div class="form">
-							<form action="#" method="post">
-								<h2>Add Response:</h2>
-								<input type="hidden" name="SupportFormType" id="SupportFormType" value="SubmitComment" />
-								<input type="hidden" name="TicketId" id="TicketId" value="<?php echo $ticket_id ?>">
-								<div class="textarea">
-									<label>Message:</label>
-									<?php 
-									$editor_id = 'SupportResponse';
-									$settings =   array(
-									    'wpautop' => false, // use wpautop?
-									    'media_buttons' => false, // show insert/upload button(s)
-									    'textarea_rows' => 10,
-									    'teeny' => false, // output the minimal editor config used in Press This
-									    'tinymce' => false
-									);
-									wp_editor( '', $editor_id, $settings);  
-									?>
-								</div>
-								<div class="input support-checkbox">
-									<input type="checkbox" name="SupportInternalNote" value="1" />
-									<label>Internal Note</label>
-								</div>
-								<div class="input support-checkbox">
-									<input type="checkbox" name="SupportCloseTicket" value="1" />
-									<label>Close ticket on reply</label>
-								</div>
-								<div class="submit input">
-									<input type="submit" value="Send" /> 
-								</div>
-							</form>
-						</div>
 
 					</div><!-- #comments .comments-area -->
 				</footer>
@@ -157,27 +114,57 @@ if($author_id > 0){
 		<?php endwhile; ?>
 		<?php endif; ?>
 
-
 		</div><!-- /#post-body-content -->
 		
 		<div id="postbox-container-1" class="postbox-container">
 			<div id="postimagediv" class="postbox ">
-				<h3 class="hndle"><span>Transfer Department</span></h3>
+				<h3 class="hndle"><span>Ticket Info</span></h3>
 				<div class="inside">
-					<table width="100%">
-						<tr>
-							<?php $terms = get_terms( 'support_groups' ); ?>
-							<td>
-								<select>
-									<option>Choose Department</option>
-									<?php foreach($terms as $term): ?>
-									<option value="<?php echo $term->term_id; ?>"><?php echo $term->name; ?></option>
-									<?php endforeach; ?>
-								</select>
-							</td>
-							<td><input type="submit" value="Go" /></td>
-						</tr>
-					</table>
+					<?php
+					switch($priority){
+						case 10:
+						$priority = 'high';
+						break;
+						case 5:
+						$priority = 'medium';
+						break;
+						case 0:
+						$priority = 'low';
+						break;
+					}
+					?>
+					<p><strong>Priority:</strong> <?php echo $priority; ?> - <a href="#edit-department" onclick="if(document.getElementById('edit-priority').style.display == 'block'){show = 'none';}else{ show='block';}document.getElementById('edit-priority').style.display=show; return false;">Edit</a></p>
+					<div id="edit-priority" style="display:none;">
+					<?php 
+					echo FormHelper::create('TicketPriority');
+					echo FormHelper::hidden('id', array('value' => $ticket_id));
+					echo FormHelper::select('priority', array('options' => array('' => 'Choose Priority', 0 => 'low', 5 => 'Medium', 10 => 'High'), 'label' => false));
+					echo FormHelper::end('Update');
+					?>
+					</div>
+					<p><strong>Department:</strong> <?php echo $department; ?> - <a href="#edit-department" onclick="if(document.getElementById('edit-department').style.display == 'block'){show = 'none';}else{ show='block';}document.getElementById('edit-department').style.display=show; return false;">Edit</a></p>
+					<div id="edit-department" style="display:none;">
+					<?php 
+					$terms = get_terms( 'support_groups', array('hide_empty' => 0 ) );
+					$support_groups = array('' => 'Choose Departemnt');
+					foreach($terms as $term){
+						$support_groups[$term->term_id] = $term->name;
+					}
+					echo FormHelper::create('DepartmentTransfer');
+					echo FormHelper::hidden('id', array('value' => $ticket_id));
+					echo FormHelper::select('department', array('options' => $support_groups, 'label' => false));
+					echo FormHelper::end('Update');
+					?>
+					</div>
+					<p><strong>Status:</strong> <?php echo $status_word; ?> - <a href="#edit-status" onclick="if(document.getElementById('edit-status').style.display == 'block'){show = 'none';}else{ show='block';}document.getElementById('edit-status').style.display=show; return false;">Edit</a></p>
+					<div id="edit-status" style="display:none;">
+					<?php 
+					echo FormHelper::create('StatusChange');
+					echo FormHelper::hidden('id', array('value' => $ticket_id));
+					echo FormHelper::select('status', array('options' => array(0=> 'Open', 1 => 'Close'), 'label' => false));
+					echo FormHelper::end('Update');
+					?>
+					</div>
 				</div>
 			</div>
 
