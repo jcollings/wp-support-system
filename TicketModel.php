@@ -86,24 +86,27 @@ class TicketModel{
 	 * @param  string $taxonomy 
 	 * @return int
 	 */
-	static function count_group_tickets($taxonomy = ''){
+	static function count_group_tickets($taxonomy = '', $answered = 0){
 		$args = array(
 			'post_type' => 'supportmessage',
-			'tax_query' => array(
-				array('taxonomy' => 'support_groups',
-				'field' => 'slug',
-				'terms' => $taxonomy)
-			),
 			'meta_query' => array(
 				array(
 					'key' => '_answered',
-					'value' => 0,
+					'value' => $answered,
 					'compare' => '=',
 					'type' => 'INT'
 				)
 			),
 			'nopaging' => true
 		);
+
+		if(!empty($taxonomy)){
+			$args['tax_query'] = array(
+				array('taxonomy' => 'support_groups',
+				'field' => 'slug',
+				'terms' => $taxonomy)
+			);
+		}
 		$query = new WP_Query($args);
 		return $query->post_count;
 	}

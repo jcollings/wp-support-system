@@ -186,6 +186,19 @@ class TicketAdmin{
 	 * @return void
 	 */
 	public function setup_dashboard_widget(){
+
+		$terms = get_terms( 'support_groups', array('hide_empty' => false) ); 
+		?>
+		<a href="admin.php?page=support-tickets">All</a> <span class="count">(<?php echo TicketModel::count_group_tickets(); ?>)</span>
+		<?php
+		foreach($terms as $term){ 
+			?>
+			<p><a href="admin.php?page=support-tickets&group=<?php echo $term->slug; ?>"><?php echo $term->name; ?></a> <span class="count">(<?php echo TicketModel::count_group_tickets($term->slug); ?>)</span></p>
+			<?php
+		}
+		?>
+		<a href="admin.php?page=support-tickets">Closed</a> <span class="count">(<?php echo TicketModel::count_group_tickets('',1); ?>)</span>
+		<?php
 	}
 
 	/**
