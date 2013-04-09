@@ -10,6 +10,14 @@
  */
 class TicketModel{
 
+	/**
+	 * Get Ticket
+	 * 
+	 * Get support ticket by id
+	 * 
+	 * @param  integer $ticket_id 
+	 * @return WP_Query
+	 */
 	static function get_ticket($ticket_id = 0){
 		$ticket = new WP_Query(array(
 			'post_type' => 'supportmessage',
@@ -19,6 +27,14 @@ class TicketModel{
 		return $ticket;
 	}
 
+	/**
+	 * Get Tickets
+	 * 
+	 * Get a list of support tickets, based on the passed arguments
+	 * 
+	 * @param  array  $args 
+	 * @return WP_Query
+	 */
 	static function get_tickets($args = array()){
 		$open = isset($args['open']) ? $args['open'] : 0;
 		$today = isset($args['today']) ? $args['today'] : false;
@@ -62,6 +78,14 @@ class TicketModel{
 		return $tickets;
 	}
 
+	/**
+	 * Count Group Tickets
+	 * 
+	 * Count open tickets for the specified taxonomy
+	 * 
+	 * @param  string $taxonomy 
+	 * @return int
+	 */
 	static function count_group_tickets($taxonomy = ''){
 		$args = array(
 			'post_type' => 'supportmessage',
@@ -84,15 +108,24 @@ class TicketModel{
 		return $query->post_count;
 	}
 
+	/**
+	 * Insert Ticket
+	 * 
+	 * Add a new support ticket
+	 * 
+	 * @param  string  $title   
+	 * @param  string  $message 
+	 * @param  integer $user_id 
+	 * @param  array   $args    
+	 * @return boolean
+	 */
 	static function insert_ticket($title = '', $message = '', $user_id = 0, $args = array()){
 
 		$importance = isset($args['importance']) ? $args['importance'] : 0;
 		$password = '';
 
-		if($user_id == 0){
+		if($user_id == 0)
 			$password = wp_generate_password();
-			// $user_id = 1;
-		}
 
 		$post = array(
 			'post_type' => 'supportmessage',
@@ -100,16 +133,14 @@ class TicketModel{
 			'post_content' => $message,
 			'post_status' => 'publish',
 			'post_author' => $user_id,
-			// 'tax_input' => array('support_groups' => array($args['group'])),
 			'post_password' => $password
 		);
 
 		$result = wp_insert_post($post);
 
 		// add to taxonomy manually
-		if(intval($args['group']) > 0){
+		if(intval($args['group']) > 0)
 			wp_set_post_terms( $result, $args['group'], 'support_groups');
-		}
 
 		if($result > 0){
 			add_post_meta($result, '_read', 0);			// set flag to not read
@@ -120,7 +151,6 @@ class TicketModel{
 			if($user_id == 0){
 				add_post_meta( $result, '_name', $args['user_name']);	// set public name
 				add_post_meta( $result, '_email', $args['user_email']);	// set public email
-				// add_post_meta( $result, '_pass', md5( $password ) );
 			}
 
 			TicketNotification::new_ticket_alert($result);
@@ -131,10 +161,17 @@ class TicketModel{
 
 	}
 
-	static function set_ticket_group($ticket_id, $group_id){
-
-	}
-
+	/**
+	 * Insert Comment
+	 * 
+	 * Add new response or note to a support ticket
+	 * 
+	 * @param  int $ticket_id 
+	 * @param  string $message   
+	 * @param  int $author_id 
+	 * @param  string $type      
+	 * @return boolean
+	 */
 	static function insert_comment($ticket_id, $message, $author_id, $type = 'response'){
 		$time = current_time('mysql');
 
@@ -159,18 +196,14 @@ class TicketModel{
 		return $result;
 	}
 
-	static function insert_note($ticket_id){
-
-	}
-
-	static function insert_group(){
-
-	}
-
-	static function update_group($group_id){
-
-	}
-
+	/**
+	 * Close Support Ticket
+	 * 
+	 * Mark the ticket as answered
+	 * 
+	 * @param  boolean $id 
+	 * @return boolean
+	 */
 	static function close_support_ticket($id = false){
 
 		if(!$id)
@@ -179,6 +212,14 @@ class TicketModel{
 
 	}
 
+	/**
+	 * Get Ticket Status
+	 * 
+	 * get the status of the current ticket 
+	 * 
+	 * @param  int $ticket_id 
+	 * @return string
+	 */
 	static function get_ticket_status($ticket_id){
 		$ticket = self::get_ticket($ticket_id);
 		$ticket = $ticket->post;
@@ -200,6 +241,15 @@ class TicketModel{
 
 	}
 
+	/**
+	 * Get Ticket Comments
+	 * 
+	 * Get a list of selected ticket comments
+	 * 
+	 * @param  int $ticket_id
+	 * @param  string $type      
+	 * @return WP_Query
+	 */
 	static function get_ticket_comments($ticket_id, $type = 'st_comment'){
 		$query = new WP_Query(array(
 			'post_type' => $type,
@@ -211,7 +261,12 @@ class TicketModel{
 	}
 
 	
-
+	/**
+	 * Get Latest Comment
+	 * 
+	 * @param  integer $ticket_id 
+	 * @return array
+	 */
 	static function get_latest_comment($ticket_id = 0){
 		$query = new WP_Query(array(
 			'post_type' => 'st_comment',
@@ -227,10 +282,23 @@ class TicketModel{
 		return $query->post;
 	}
 
+	/**
+	 * Get Tickets Priority
+	 * 
+	 * @param  int $ticket_id 
+	 * @return int
+	 */
 	static function get_ticket_priority($ticket_id){
 		return get_post_meta($ticket_id, '_importance', true);
 	}
 
+	/**
+	 * Get Ticket Author
+	 * 
+	 * Return ticket author name
+	 * 
+	 * @return string
+	 */
 	static function get_ticket_author(){
 		global $post;
 		$ticket_id = get_the_ID();
@@ -243,6 +311,14 @@ class TicketModel{
 		return $name;
 	}
 
+	/**
+	 * Get Ticket Email
+	 * 
+	 * Return ticket author email
+	 * 
+	 * @param  boolean $ticket_id
+	 * @return string
+	 */
 	static function get_ticket_email($ticket_id = false){
 		global $post;
 

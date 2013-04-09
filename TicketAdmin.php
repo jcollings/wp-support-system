@@ -14,13 +14,14 @@ class TicketAdmin{
 	private $settings_optgroup = 'wp-support-system';
 	private $settings_sections = array();
 	
+	/**
+	 * Setup Hooks
+	 * 
+	 * @return void
+	 */
 	public function __construct(&$config){
 		$this->config = $config;
 
-		add_action('plugins_loaded', array($this, 'plugins_loaded'));
-	}
-
-	public function plugins_loaded(){
 		if(is_admin()){
 			add_action( 'init', array( $this, 'setup_forms'));
 			add_action('wp_loaded', array($this, 'process_forms'));
@@ -32,14 +33,6 @@ class TicketAdmin{
 		add_filter( 'plugin_action_links_support-system/support-system.php', array($this, 'settings_link'));
 		add_action( 'admin_init', array($this, 'register_settings' ));
 		add_action( 'wp_dashboard_setup', array($this, 'add_dashboard_widget' ));
-		// add_filter( 'admin_body_class', array($this, 'admin_body_class'));
-	}
-
-	function admin_body_class($classes){
-		if(isset($_GET['taxonomy']) && $_GET['taxonomy'] == 'support_groups'){
-			$classes = $classes . 'toplevel_page_support-tickets';
-		}
-		return $classes;
 	}
 
 	/**
@@ -92,6 +85,13 @@ class TicketAdmin{
 		}
 	}
 
+	/**
+	 * Process Status Form
+	 * 
+	 * Ticket view form to change the status of the ticket
+	 * 
+	 * @return void
+	 */
 	function process_status_form(){
 		FormHelper::process_form('StatusChange');
 
@@ -102,6 +102,13 @@ class TicketAdmin{
 		}
 	}
 
+	/**
+	 * Process Department Transfer
+	 * 
+	 * Ticket view form to change ticket department form
+	 * 
+	 * @return void
+	 */
 	function process_department_transfer_form(){
 		FormHelper::process_form('DepartmentTransfer');
 
@@ -112,6 +119,13 @@ class TicketAdmin{
 		}
 	}
 
+	/**
+	 * Process Priority Form
+	 * 
+	 * Ticket view form to change the tickets priority
+	 * 
+	 * @return void
+	 */
 	function process_priority_form(){
 		FormHelper::process_form('TicketPriority');
 

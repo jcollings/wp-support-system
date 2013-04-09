@@ -12,12 +12,21 @@ class TicketNotification{
 
 	static $config;
 
+	/**
+	 * Setup the config
+	 * 
+	 * Called to setup the global config
+	 * 
+	 * @param  Class &$config 
+	 * @return void
+	 */
 	static function init(&$config){
 		self::$config = $config;
 	}
 
 	/**
 	 * Notify all of new ticket
+	 * 
 	 * @param  int $ticket_id 
 	 * @return void
 	 */
@@ -55,6 +64,7 @@ class TicketNotification{
 
 	/**
 	 * Notify users of new comment
+	 * 
 	 * @param  int $ticket_id  
 	 * @param  int $comment_id 
 	 * @return void
@@ -74,25 +84,5 @@ class TicketNotification{
 		
 		wp_mail( $email, 'Re:'.$subject, 'Response: '.$message);
 	}
-
-	/**
-	 * Notify admins of new note
-	 * @param  int $ticket_id 
-	 * @param  int $note_id   
-	 * @return void
-	 */
-	static function new_note_alert($ticket_id, $note_id){
-
-	}
-
-	/**
-	 * Notify all of ticket transfer
-	 * @return void
-	 */
-	static function group_transfer_alert(){
-
-	}
-
 }
-
 ?>

@@ -10,6 +10,12 @@
  */
 class DepartmentAdmin{
 
+
+	/**
+	 * Setup Hooks
+	 * 
+	 * @param [type] &$config [description]
+	 */
 	public function __construct(&$config){
 		$this->config = $config;
 
@@ -26,6 +32,7 @@ class DepartmentAdmin{
 	}
 	/**
 	 * Register Taxonomoy
+	 * 
 	 * @return void
 	 */
 	function register_tax(){

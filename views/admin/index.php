@@ -29,6 +29,7 @@ if(isset($_GET['status']) && $_GET['status'] == 'closed'){
 
 <div id="poststuff" class="support_tickets">
 	<div id="post-body" class="metabox-holder columns-2">
+
 		<div id="post-body-content">
 			
 			<table class="wp-list-table widefat fixed">
@@ -69,27 +70,8 @@ if(isset($_GET['status']) && $_GET['status'] == 'closed'){
 			</table>
 
 		</div><!-- /#post-body-content -->
+
 		<div id="postbox-container-1" class="postbox-container">
-			<?php /*
-			<div id="postimagediv" class="postbox ">
-				<h3 class="hndle"><span>Todays Progress</span></h3>
-				<div class="inside">
-					<?php
-					$today_open = $today_open_tickets->post_count;
-					$today_closed = $today_closed_tickets->post_count; 
-					$today_total = $today_open + $today_closed; 
-					?>
-					<table width="100%">
-						<tr>
-							<td>Open Tickets: <?php echo $today_open; ?></td>
-							<td>Closed Tickets: <?php echo $today_closed; ?></td>
-						</tr>
-						<tr>
-							<td>Progress: <?php echo round(($today_closed / $today_total) * 100,0); ?>%</td>
-						</tr>
-					</table>
-				</div>
-			</div> */ ?>
 
 			<div id="postimagediv" class="postbox ">
 				<h3 class="hndle"><span>Total Progress</span></h3>
@@ -112,6 +94,7 @@ if(isset($_GET['status']) && $_GET['status'] == 'closed'){
 			</div>
 
 		</div><!-- /postbox-container-1 -->
+	
 	</div><!-- /#post-body -->
 </div><!-- /#poststuff -->	
 </div>

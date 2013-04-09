@@ -42,9 +42,16 @@ Message: {message}'
 
 		add_action('init', array($this, 'register'));
 		add_action('query_vars', array($this, 'register_query_vars') );
-		add_filter('generate_rewrite_rules', array($this, 'my_rewrite'));
+		add_filter('generate_rewrite_rules', array($this, 'rewrite_rules'));
 	}
 
+	/**
+	 * Load Libraries
+	 * 
+	 * Setup and load all modules for the plugin, passing this class as the config
+	 * 
+	 * @return void
+	 */
 	function load_modules(){
 
 		include 'functions.php';
@@ -71,6 +78,13 @@ Message: {message}'
 		TicketNotification::init($this);
 	}
 
+	/**
+	 * Load Settings
+	 * 
+	 * Get saved settings from database, or used defaults.
+	 * 
+	 * @return void
+	 */
 	function load_settings(){
 		
 		// check if user notifications exist
@@ -91,6 +105,11 @@ Message: {message}'
             $this->require_account = $config['require_account'];
 	}
 
+	/**
+	 * Register Post Types
+	 * 
+	 * @return void
+	 */
 	function register() {
 
 		$result = add_role('member', 'Member', array(
@@ -173,13 +192,25 @@ Message: {message}'
 		);
 	}
 
+	/**
+	 * Register Query Vars
+	 * 
+	 * @param  array $public_query_vars 
+	 * @return array
+	 */
 	function register_query_vars($public_query_vars) {
 		$public_query_vars[] = 'support-action';
 		$public_query_vars[] = 'ticket_id';
 		return $public_query_vars;
 	}
 
-	function my_rewrite($wp_rewrite) {
+	/**
+	 * Rewrite Rules
+	 * 
+	 * @param  array $wp_rewrite 
+	 * @return array
+	 */
+	function rewrite_rules($wp_rewrite) {
 		$wp_rewrite->rules = array_merge(
 			array(
 				'^support/([^/]+)/?$' => 'index.php?page_id='.$this->support_page.'&support-action=$matches[1]',
@@ -190,6 +221,7 @@ Message: {message}'
 
 	/**
 	 * Setup plugin on activation
+	 * 
 	 * @return void
 	 */
 	function activate(){
@@ -197,6 +229,7 @@ Message: {message}'
 
 	/**
 	 * Deactivate Plugin
+	 * 
 	 * @return void
 	 */
 	function deactivate(){

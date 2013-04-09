@@ -12,6 +12,11 @@ class TicketView{
 
 	private $config = null;
 
+	/**
+	 * Add Hooks
+	 * 
+	 * @param class &$config 
+	 */
 	function __construct(&$config){
 		$this->config = $config;
 
@@ -25,6 +30,7 @@ class TicketView{
 
 	/**
      * Inject Javascript
+     * 
      * @return void
      */
 	public function public_scripts()
@@ -34,6 +40,7 @@ class TicketView{
 
 	/**
 	 * Inject Stylesheets
+	 * 
 	 * @return void
 	 */
 	public function public_styles()
@@ -41,6 +48,14 @@ class TicketView{
 		wp_enqueue_style( 'support-public-css', $this->config->plugin_url . 'assets/css/public.css');
 	}
 
+	/**
+	 * Display Support System
+	 * 
+	 * Choose which page to display
+	 * 
+	 * @param  array  $atts 
+	 * @return void
+	 */
 	function show_support_system($atts = array()){
 
 		$action = get_query_var('support-action');
@@ -66,6 +81,11 @@ class TicketView{
 		
 	}
 
+	/**
+	 * Display Add Ticket Page
+	 * 
+	 * @return string
+	 */
 	function show_ticket_add(){
 
 		// show denied if not logged in
@@ -82,6 +102,11 @@ class TicketView{
 		return $this->load_view('users/add-ticket', array('groups' => $groups));
 	}
 
+	/**
+	 * Show Ticket Homepage
+	 * 
+	 * @return string
+	 */
 	function show_index(){
 
 		// show denied if not logged in
@@ -91,10 +116,20 @@ class TicketView{
 		return $this->load_view('users/index');	
 	}
 
+	/**
+	 * Show Access Denied Page
+	 * 
+	 * @return void
+	 */
 	function show_denied(){
 		return $this->load_view('users/denied');
 	}
 
+	/**
+	 * Show Single Ticket Page
+	 * 
+	 * @return void
+	 */
 	function show_ticket_view(){
 
 		// show denied if not logged in
@@ -104,14 +139,34 @@ class TicketView{
 		return $this->load_view('users/view-ticket');
 	}
 
+	/**
+	 * Show Login Page
+	 * 
+	 * @param  array  $atts 
+	 * @return string
+	 */
 	function show_login($atts = array()){
 		return $this->load_view('users/login');
 	}
 
+	/**
+	 * Show Register Page
+	 * @param  array  $atts 
+	 * @return string
+	 */
 	function show_register($atts = array()){
 		return $this->load_view('users/register');
 	}
 
+	/**
+	 * Load View
+	 * 
+	 * return chosen file as string
+	 * 
+	 * @param  boolean $file 
+	 * @param  array   $vars 
+	 * @return string
+	 */
 	private function load_view($file = false, $vars = array()){
 
 		foreach($vars as $a => $b){

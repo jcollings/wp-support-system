@@ -15,17 +15,23 @@ foreach($post_terms as $term){
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-posts-post"><br></div>
 	<h2>Support Tickets</h2>
+	<ul class="subsubsub">
+		<li><a href="admin.php?page=support-tickets">&larr; Back to Tickets</a></li>
+	</ul>
 
 <div id="poststuff">
 	<div id="post-body" class="metabox-holder columns-2">
-		<div id="post-body-content">
 
-			<?php if ( $open_tickets->have_posts() ) : ?>
-			<?php while ( $open_tickets->have_posts() ) : $open_tickets->the_post();
-				$priority = TicketModel::get_ticket_priority($ticket_id);
-				$author_name = TicketModel::get_ticket_author($ticket_id);
-				$author_email = TicketModel::get_ticket_email($ticket_id);
-			?>
+	<?php if ( $open_tickets->have_posts() ) : ?>
+		<?php while ( $open_tickets->have_posts() ) : $open_tickets->the_post();
+			$priority = TicketModel::get_ticket_priority($ticket_id);
+			$author_name = TicketModel::get_ticket_author($ticket_id);
+			$author_email = TicketModel::get_ticket_email($ticket_id);
+		?>
+
+		
+
+		<div id="post-body-content">
 
 			<!-- Content -->
 			<article id="post-<?php the_ID(); ?>" class="support-ticket single">
@@ -115,7 +121,7 @@ foreach($post_terms as $term){
 		<?php endif; ?>
 
 		</div><!-- /#post-body-content -->
-		
+
 		<div id="postbox-container-1" class="postbox-container">
 			<div id="postimagediv" class="postbox ">
 				<h3 class="hndle"><span>Ticket Info</span></h3>
@@ -169,6 +175,7 @@ foreach($post_terms as $term){
 			</div>
 
 		</div><!-- /postbox-container-1 -->
+		
 	</div><!-- /#post-body -->
 </div><!-- /#poststuff -->	
 </div>

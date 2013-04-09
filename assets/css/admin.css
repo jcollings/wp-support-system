@@ -272,3 +272,7 @@ tr.priority-0 td, tr.priority-5 td, tr.priority-10 td{
 	width:100%;
 	height:100px;
 }
+
+.form_header h1{
+	margin:20px;
+}
