@@ -34,6 +34,7 @@ class SupportSystem{
 	var $support_page = 4;
 	var $require_account = 1;
 	var $default_support_group = 0;
+	var $email_domain = false;
 	var $notifications = array(
 		'user' => array(
 			'msg_title' => 'Support Ticket #{ticket_id} has been sent',
@@ -122,10 +123,27 @@ Message: {message}'
         // check if an account is required to submit a ticket
         $config = get_option('support_system_config');
         if(!empty($config)){
-            $this->require_account = $config['require_account'];
-            $this->default_support_group = $config['default_group'];
-            $this->support_page = $config['support_page'];
+        	if(isset($config['require_account']))
+	            $this->require_account = $config['require_account'];
+            if(isset($config['default_group']))
+	            $this->default_support_group = $config['default_group'];
+            if(isset($config['support_page']))
+		        $this->support_page = $config['support_page'];
+            if(isset($config['email_domain']))
+           		$this->email_domain = $config['email_domain'];
         }
+
+        // setup email domain
+        if(empty($this->email_domain)){
+	        $site_url = str_replace(array(
+	        	'https://www.', 
+	        	'http://www.',
+	        	'https://',
+	        	'http://'
+	        ), '', site_url( '/'));
+	        $parts = explode('/', $site_url);
+			$this->email_domain = $parts[0];
+		}
 
 	}
 

@@ -410,7 +410,8 @@ class TicketAdmin{
     				array('type' => 'select', 'id' => 'default_group', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Default Unassigned Group', 'choices' => $support_groups, 'value' => $this->config->default_support_group),
 		    		array('type' => 'select', 'id' => 'require_account', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Require Wordpress Account', 'choices' => array('No', 'Yes'), 'value' => $this->config->require_account),
 		    		array('type' => 'text', 'id' => 'login', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Login Url'),
-		    		array('type' => 'text', 'id' => 'register', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Register Url')
+		    		array('type' => 'text', 'id' => 'register', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Register Url'),
+		    		array('type' => 'text', 'id' => 'email_domain', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Email Domain', 'value' => $this->config->email_domain)
 		    	)
     		),
     		'notification_user' => array(

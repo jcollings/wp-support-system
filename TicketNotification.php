@@ -82,7 +82,8 @@ class TicketNotification{
 		$ticket = get_post($comment_id);
 		$subject = $ticket->post_title;
 		
-		wp_mail( $email, 'Re:'.$subject, 'Response: '.$message);
+		$headers = 'From: Support System <'.$ticket_id.'@'.self::$config->email_domain.'>' . "\r\n";
+		wp_mail( $email, 'Re:'.$subject, 'Response: '.$message, $headers);
 	}
 }
 ?>

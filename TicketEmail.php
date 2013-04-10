@@ -78,11 +78,13 @@ class TicketEmail{
 	 */
 	private static function get_email_to($email = ''){
 		$matches  = array();
+		$test = array();
 
 		if(preg_match('/\nTo:(.*?)\n/i', $email, $matches)){
 			$to = $matches[1];	
-			$to = str_replace(array('<','>', ' '), '', $to);
-			return $to;
+			
+			preg_match('/<(.*?)>/i', $matches[1], $test);
+			return $test[1];
 		}
 
 		return false;
