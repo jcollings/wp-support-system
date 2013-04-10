@@ -11,19 +11,25 @@ An easy to install/use Wordpress Support Ticketing System.
 
 
 ## Features
-* Email Support Ticket
+* Email Support Tickets via Email Pipes
+* Public / Member Tickets
 * Ticket Priority
 * Email Notifications
 * Support Ticket Groups
 * Support System Page Shortcode
+* Knowledgebase Addon
 
 ## Upcoming Features
-* Knowledge Base Features
-* Extension Filters
 * Gravity Forms Implementation
 * Marketplace Registration API
 
 ## Change log
 
+### Version 0.0.2
+1. Minor Design Changes
+2. Switched IMAP Email tickets for Email Pipe
+3. Seperated Knowledgebase from plugin into addon
+4. Added default Category Group
+
 ### Version 0.0.1
-Initial Beta Release for Testing.
+1. Initial Beta Release for Testing.
