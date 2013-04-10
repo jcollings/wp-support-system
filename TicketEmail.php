@@ -36,22 +36,29 @@ class TicketEmail{
 		$from = self::get_email_from($email);
 		$subject = self::get_email_subject($email);
 		$message = self::get_email_message($email);
-		$allowed = array('support');
+		
+		$allowed = array(); // not used yet
+
+		// check to see if allowed public tickets
+		if(self::$config->require_account == 1 && !TicketModel::is_registered_member($from)){
+			return false;
+		}
 
 		$email_name = substr($to, 0, strpos($to,'@'));
+
 		$ticket_id = intval($email_name);
 		
-
 		if($ticket_id > 0){
 			// new ticket response
 			return TicketModel::insert_comment($ticket_id, $message);
 		}else{
 			// new ticket
 			$args = array('user_email' => $from);
+			$term = term_exists($email_name , 'support_groups');
 
-			if(term_exists($email_name , 'support_groups')){
-				$args['group'] = $email_name;
-			}elseif(!in_array($email_name, $allowed)){
+			if($term){
+				$args['group'] = $term['term_id'];
+			}elseif(!in_array($to, $allowed)){
 				return false;
 			}
 
@@ -73,7 +80,9 @@ class TicketEmail{
 		$matches  = array();
 
 		if(preg_match('/\nTo:(.*?)\n/i', $email, $matches)){
-			return $matches[1];	
+			$to = $matches[1];	
+			$to = str_replace(array('<','>', ' '), '', $to);
+			return $to;
 		}
 
 		return false;
@@ -89,9 +98,13 @@ class TicketEmail{
 	 */
 	private static function get_email_from($email = ''){
 		$matches  = array();
+		$test = array();
 
 		if(preg_match('/\nFrom:(.*?)\n/i', $email, $matches)){
-			return $matches[1];	
+			$from = $matches[1];	
+			
+			preg_match('/<(.*?)>/i', $matches[1], $test);
+			return $test[1];	
 		}
 
 		return false;

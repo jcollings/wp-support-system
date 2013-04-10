@@ -94,6 +94,23 @@ class TicketModel{
 	}
 
 	/**
+	 * Check if registered member
+	 * 
+	 * @param  string $email 
+	 * @return boolean
+	 */
+	static function is_registered_member($email = ''){
+
+		if(!is_email($email))
+			return false;
+
+		if(get_user_by('email', $email))
+			return true;
+
+		return false;
+	}
+
+	/**
 	 * Count Group Tickets
 	 * 
 	 * Count open tickets for the specified taxonomy
