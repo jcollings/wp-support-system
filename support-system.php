@@ -59,6 +59,7 @@ Message: {message}'
 		include 'TicketModel.php';
 		include 'helpers/form.php';
 		include 'TicketNotification.php';
+		include 'TicketEmail.php';
 
 		// Load Ticket Admin
 		include 'TicketAdmin.php';
@@ -78,6 +79,7 @@ Message: {message}'
 
 		TicketNotification::init($this);
 		TicketModel::init($this);
+		TicketEmail::init($this);
 	}
 
 	/**

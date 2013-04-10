@@ -194,7 +194,7 @@ class TicketModel{
 	 * @param  string $type      
 	 * @return boolean
 	 */
-	static function insert_comment($ticket_id, $message, $author_id, $type = 'response'){
+	static function insert_comment($ticket_id, $message, $author_id = 0, $type = 'response'){
 		$time = current_time('mysql');
 
 		$args = array(
