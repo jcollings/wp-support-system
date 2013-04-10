@@ -208,7 +208,7 @@ class TicketAdmin{
 	 * @return void
 	 */
 	public function register_menu_pages(){
-		add_object_page( 'Support Tickets', 'WP Support', 'add_users', 'support-tickets', array($this, 'admin_page'));
+		add_object_page( 'Support Tickets', 'Support', 'add_users', 'support-tickets', array($this, 'admin_page'));
 		add_submenu_page('support-tickets', 'Departments', 'Departments', 'add_users', 'edit-tags.php?taxonomy=support_groups');
 
 		// allow addons to hook into the meny creation
@@ -388,13 +388,29 @@ class TicketAdmin{
      */
     private function load_settings_api(){
 
+    	$terms = get_terms( 'support_groups', array('hide_empty' => 0) );
+    	$support_groups = array('' => 'Select a Term');
+    	
+    	foreach($terms as $term){
+    		$support_groups[$term->term_id] = $term->name; 
+    	}
+
+    	$site_pages = get_pages();
+    	$pages = array();
+    	foreach($site_pages as $page){
+    		$pages[$page->ID] = $page->post_title;
+    	}
+    	
+
     	$sections = array(
     		'base_section' => array(
     			'section' => array('page' => 'base_settings', 'title' => 'General Settings', 'description' => 'General Settings Description'),
     			'fields' => array(
+    				array('type' => 'select', 'id' => 'support_page', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Support System Page', 'choices' => $pages, 'value' => $this->config->support_page),
+    				array('type' => 'select', 'id' => 'default_group', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Default Unassigned Group', 'choices' => $support_groups, 'value' => $this->config->default_support_group),
+		    		array('type' => 'select', 'id' => 'require_account', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Require Wordpress Account', 'choices' => array('No', 'Yes'), 'value' => $this->config->require_account),
 		    		array('type' => 'text', 'id' => 'login', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Login Url'),
-		    		array('type' => 'text', 'id' => 'register', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Register Url'),
-		    		array('type' => 'select', 'id' => 'require_account', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Require Wordpress Account', 'choices' => array('No', 'Yes'), 'value' => $this->config->require_account)
+		    		array('type' => 'text', 'id' => 'register', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Register Url')
 		    	)
     		),
     		'notification_user' => array(

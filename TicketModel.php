@@ -10,6 +10,21 @@
  */
 class TicketModel{
 
+	static $config;
+
+	/**
+	 * Setup the config
+	 * 
+	 * Called to setup the global config
+	 * 
+	 * @param  Class &$config 
+	 * @return void
+	 */
+	static function init(&$config){
+		self::$config = $config;
+	}
+
+
 	/**
 	 * Get Ticket
 	 * 
@@ -142,8 +157,12 @@ class TicketModel{
 		$result = wp_insert_post($post);
 
 		// add to taxonomy manually
-		if(intval($args['group']) > 0)
+		if(intval($args['group']) > 0){
 			wp_set_post_terms( $result, $args['group'], 'support_groups');
+		}else{
+			if(self::$config->default_support_group > 0)
+				wp_set_post_terms( $result, self::$config->default_support_group, 'support_groups');
+		}
 
 		if($result > 0){
 			add_post_meta($result, '_read', 0);			// set flag to not read

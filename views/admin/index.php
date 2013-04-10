@@ -87,7 +87,12 @@ if(isset($_GET['status']) && $_GET['status'] == 'closed'){
 							<td>Closed Tickets: <?php echo $closed; ?></td>
 						</tr>
 						<tr>
-							<td>Progress: <?php echo round(($closed / $total) * 100,0); ?>%</td>
+							<td>Progress: <?php 
+							if($total > 0)
+								echo round(($closed / $total) * 100,0); 
+							else
+								echo 0;
+							?>%</td>
 						</tr>
 					</table>
 				</div>

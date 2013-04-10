@@ -96,7 +96,8 @@ class TicketView{
 		$groups = array();
 		$terms = get_terms( 'support_groups', array('hide_empty' => false));
 		foreach($terms as $term){
-			$groups[$term->term_id] = $term->name;
+			if($term->term_id != $this->config->default_support_group)
+				$groups[$term->term_id] = $term->name;
 		}
 
 		return $this->load_view('users/add-ticket', array('groups' => $groups));

@@ -17,6 +17,7 @@ class SupportSystem{
 	var $plugin_url = false;
 	var $support_page = 4;
 	var $require_account = 1;
+	var $default_support_group = 0;
 	var $notifications = array(
 		'user' => array(
 			'msg_title' => 'Support Ticket #{ticket_id} has been sent',
@@ -76,6 +77,7 @@ Message: {message}'
 		$TicketView = new TicketView($this);
 
 		TicketNotification::init($this);
+		TicketModel::init($this);
 	}
 
 	/**
@@ -101,8 +103,12 @@ Message: {message}'
 
         // check if an account is required to submit a ticket
         $config = get_option('support_system_config');
-        if(!empty($config))
+        if(!empty($config)){
             $this->require_account = $config['require_account'];
+            $this->default_support_group = $config['default_group'];
+            $this->support_page = $config['support_page'];
+        }
+
 	}
 
 	/**
