@@ -8,6 +8,9 @@ An easy to install/use Wordpress Support Ticketing System.
 2. Extract the zip archive and copy the plugin to your wordpress plugins directory.
 3. Login to your website, goto the plugins section of the administration area and activate the Support System Plugin.
 4. Add a new page to your website and add the following shortcode to your page __\[support_system\]__
+5. Click on the settings section of the support menu, Under the General Settings tab set the Support on the drop down menu labelled Support System Page to the new page you added.
+
+__Note:__ Make sure you update wordpress permalinks by visiting the page Settings > Permalinks
 
 
 ## Features
@@ -17,11 +20,6 @@ An easy to install/use Wordpress Support Ticketing System.
 * Email Notifications
 * Support Ticket Groups
 * Support System Page Shortcode
-* Knowledgebase Addon
-
-## Upcoming Features
-* Gravity Forms Implementation
-* Marketplace Registration API
 
 ## Change log
 
