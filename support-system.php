@@ -34,6 +34,7 @@ class SupportSystem{
 	var $support_page = 4;
 	var $require_account = 1;
 	var $default_support_group = 0;
+	var $ticket_expiry = 7;
 	var $email_domain = false;
 	var $notifications = array(
 		'user' => array(
@@ -131,6 +132,8 @@ Message: {message}'
 		        $this->support_page = $config['support_page'];
             if(isset($config['email_domain']))
            		$this->email_domain = $config['email_domain'];
+           	if(isset($config['ticket_expiry']))
+           		$this->ticket_expiry = $config['ticket_expiry'];
         }
 
         // setup email domain

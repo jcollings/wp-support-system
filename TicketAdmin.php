@@ -407,11 +407,17 @@ class TicketAdmin{
     			'section' => array('page' => 'base_settings', 'title' => 'General Settings', 'description' => 'General Settings Description'),
     			'fields' => array(
     				array('type' => 'select', 'id' => 'support_page', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Support System Page', 'choices' => $pages, 'value' => $this->config->support_page),
-    				array('type' => 'select', 'id' => 'default_group', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Default Unassigned Group', 'choices' => $support_groups, 'value' => $this->config->default_support_group),
 		    		array('type' => 'select', 'id' => 'require_account', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Require Wordpress Account', 'choices' => array('No', 'Yes'), 'value' => $this->config->require_account),
 		    		array('type' => 'text', 'id' => 'login', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Login Url'),
 		    		array('type' => 'text', 'id' => 'register', 'section' => 'base_section', 'setting_id' => 'url_redirect', 'label' => 'Register Url'),
 		    		array('type' => 'text', 'id' => 'email_domain', 'section' => 'base_section', 'setting_id' => 'support_system_config', 'label' => 'Email Domain', 'value' => $this->config->email_domain)
+		    	)
+    		),
+			'ticket_section' => array(
+    			'section' => array('page' => 'base_settings', 'title' => 'Ticket Settings', 'description' => 'General Ticket Settings'),
+    			'fields' => array(
+    				array('type' => 'select', 'id' => 'default_group', 'section' => 'ticket_section', 'setting_id' => 'support_system_config', 'label' => 'Default Unassigned Group', 'choices' => $support_groups, 'value' => $this->config->default_support_group),
+    				array('type' => 'text', 'id' => 'ticket_expiry', 'section' => 'ticket_section', 'setting_id' => 'support_system_config', 'label' => 'Close Tickets after x days', 'value' => $this->config->ticket_expiry)
 		    	)
     		),
     		'notification_user' => array(
