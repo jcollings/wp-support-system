@@ -227,6 +227,7 @@ class FormHelper{
 	{
 		// set default arg values
 		$required = false;
+		$default = 0;
 		$label = $name;
 		$options = array();
 		$empty = false;
@@ -267,7 +268,10 @@ class FormHelper{
 
 		foreach($options as $id => $option)
 		{
-			$output .= '<option value="'.$id.'">'.$option.'</option>';
+			if($id == $default)
+				$output .= '<option value="'.$id.'" selected="selected">'.$option.'</option>';
+			else
+				$output .= '<option value="'.$id.'">'.$option.'</option>';
 		}
 
 		$output .= '</select>';

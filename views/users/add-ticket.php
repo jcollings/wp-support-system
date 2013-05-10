@@ -17,8 +17,24 @@ if(!FormHelper::is_complete()){
 	echo FormHelper::textarea('message');
 	?>
 	<div class="form_cols_2">
-	<?php echo FormHelper::select('group', array('options' => $groups, 'empty' => true, 'class' => 'two_col_left')); ?>
-	<?php echo FormHelper::select('priority', array('options' => array(0 => 'low', 5 => 'medium', 10 => 'high'), 'empty' => true, 'class' => 'two_col_right')); ?>
+	<?php
+	if(count($groups) > 1){
+		echo FormHelper::select('group', array('options' => $groups, 'empty' => true, 'class' => 'two_col_left'));
+	}else{
+		$key = 0;
+		foreach($groups as $k => $g){
+			$key = $k;
+		}	
+		echo FormHelper::hidden('group', array('value' => $key, 'class' => 'two_col_left'));
+	}
+	?>
+	<?php 
+	if(count($groups) > 1){
+		echo FormHelper::select('priority', array('options' => array(0 => 'low', 5 => 'medium', 10 => 'high'), 'empty' => true, 'default' => 5, 'class' => 'two_col_right'));
+	}else{
+		echo FormHelper::select('priority', array('options' => array(0 => 'low', 5 => 'medium', 10 => 'high'), 'empty' => true, 'default' => 5, 'class' => 'two_col_left'));	
+	}
+	?>
 	</div>
 	<?php echo FormHelper::end('Send Ticket');
 }else{

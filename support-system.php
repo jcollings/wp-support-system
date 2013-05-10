@@ -62,6 +62,10 @@ Message: {message}'
 		add_action('init', array($this, 'register'));
 		add_action('query_vars', array($this, 'register_query_vars') );
 		add_filter('generate_rewrite_rules', array($this, 'rewrite_rules'));
+
+		// activation
+		register_activation_hook( __FILE__, array($this, 'activation') );
+		add_action('admin_init',array($this, 'load_plugin'));
 	}
 
 	/**
@@ -270,6 +274,18 @@ Message: {message}'
 	 * @return void
 	 */
 	function activate(){
+		add_option('Activated_Plugin','support-system');
+	}
+
+	function load_plugin() {
+	    if(is_admin()&&get_option('Activated_Plugin')=='support-system') {
+	     	delete_option('Activated_Plugin');
+	     	$terms = get_terms( 'support_groups', array('hide_empty' => false) );
+	     	if(!$terms){
+	     		wp_insert_term( 'support', 'support_groups' );
+	     	}
+
+	    }
 	}
 
 	/**
