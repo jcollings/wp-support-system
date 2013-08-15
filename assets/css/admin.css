@@ -1,4 +1,4 @@
-.toplevel_page_support-tickets #icon-edit, #icon-support-tickets, .wp-support_page_support-ticket-settings #icon-edit{
+.toplevel_page_support-tickets #icon-edit, #icon-support-tickets, .wp-support_page_support-ticket-settings #icon-edit, .support_page_support-ticket-settings #icon-edit, .support_page_support-ticket-addons #icon-edit{
 	background: url('../img/icon_32.png') no-repeat center center;
 }
 

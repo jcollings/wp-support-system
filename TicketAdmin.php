@@ -214,6 +214,7 @@ class TicketAdmin{
 		// allow addons to hook into the meny creation
 		do_action('support_system-menu_output');
 		add_submenu_page('support-tickets', 'Settings', 'Settings', 'add_users', 'support-ticket-settings', array($this, 'admin_settings_page'));
+		add_submenu_page('support-tickets', 'Addons', 'Addons', 'add_users', 'support-ticket-addons', array($this, 'admin_addon_page'));
 		
 	}
 
@@ -275,6 +276,17 @@ class TicketAdmin{
 
 		// include view file
 		include 'views/admin/settings.php';
+	}
+
+	/**
+	 * Load Admin Addon Page
+	 *
+	 * Load view from addon page
+	 * 
+	 * @return void
+	 */
+	public function admin_addon_page(){
+		include 'views/admin/addons.php';
 	}
 
 	/**
