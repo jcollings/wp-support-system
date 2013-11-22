@@ -175,8 +175,6 @@ class TicketImap{
 	 */
 	private function is_support_user($email = false){
 
-		return 1;
-
 		if(!$email)
 			return false;
 
