@@ -102,6 +102,10 @@ Message: {message}'
 		TicketNotification::init($this);
 		TicketModel::init($this);
 		TicketEmail::init($this);
+
+		// Load Ticket Imap
+		include 'TicketImap.php';
+		$TicketImap = new TicketImap();
 	}
 
 	/**
