@@ -90,12 +90,13 @@ class WT_TicketComment{
 
 		global $wptickets;
 
-		$comment = get_comment($comment_id);
+		$config = get_option('support_system_config');	// load config
+		$comment = get_comment($comment_id);			// load comment details
 
 		if($comment->user_id == 0){
 			
 			// public author
-			wp_set_object_terms( $ticket_id, 'awaiting-response', 'status');
+			wp_set_object_terms( $ticket_id, intval($config['ticket_reply_status']), 'status');
 
 		}else{
 
@@ -103,12 +104,12 @@ class WT_TicketComment{
 			if($comment->user_id == $ticket->post_author){
 				
 				// author
-				wp_set_object_terms( $ticket_id, 'awaiting-response', 'status');
+				wp_set_object_terms( $ticket_id, intval($config['ticket_reply_status']), 'status');
 				
 			}else{
 
 				// admin
-				wp_set_object_terms( $ticket_id, 'responded', 'status');
+				wp_set_object_terms( $ticket_id, intval($config['ticket_responded_status']), 'status');
 			}
 		}
 	}

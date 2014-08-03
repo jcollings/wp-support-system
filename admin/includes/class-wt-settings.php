@@ -132,6 +132,8 @@ class WT_AdminSettings{
     				array('type' => 'select', 'id' => 'default_group', 'section' => 'ticket_section', 'setting_id' => 'support_system_config', 'label' => 'Default Unassigned Group', 'choices' => $support_groups, 'value' => ''),
                     array('type' => 'select', 'id' => 'ticket_open_status', 'section' => 'ticket_section', 'setting_id' => 'support_system_config', 'label' => 'Ticket Opened Status', 'choices' => $ticket_status, 'value' => ''),
                     array('type' => 'select', 'id' => 'ticket_close_status', 'section' => 'ticket_section', 'setting_id' => 'support_system_config', 'label' => 'Ticket Closed Status', 'choices' => $ticket_status, 'value' => ''),
+                    array('type' => 'select', 'id' => 'ticket_responded_status', 'section' => 'ticket_section', 'setting_id' => 'support_system_config', 'label' => 'Ticket Team Reply Status', 'choices' => $ticket_status, 'value' => ''),
+                    array('type' => 'select', 'id' => 'ticket_reply_status', 'section' => 'ticket_section', 'setting_id' => 'support_system_config', 'label' => 'Ticket Author Reply Status', 'choices' => $ticket_status, 'value' => ''),
 		    	)
     		),
             'theme_section' => array(
