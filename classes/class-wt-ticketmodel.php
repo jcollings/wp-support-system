@@ -236,4 +236,26 @@ class WT_TicketModel{
 
 		return false;
 	}
+
+	/**
+	 * Mark ticket as closed
+	 * 
+	 * @param  integer $ticket_id 
+	 * @return boolean
+	 */
+	public function close_ticket($ticket_id = 0){
+
+		$config = get_option('support_system_config');	// load config
+
+		if($ticket_id == 0)
+			return false;
+
+		$result = wp_set_object_terms( $ticket_id, intval($config['ticket_close_status']), 'status');
+		if(is_wp_error($result)){
+			return false;
+		}
+
+		do_action('wt/after_ticket_close', $ticket_id);
+		return true;
+	}
 }

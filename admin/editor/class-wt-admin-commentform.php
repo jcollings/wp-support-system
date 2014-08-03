@@ -15,6 +15,7 @@ class WT_Admin_CommentForm{
 		$ticket_id = isset($_POST['ticket_id']) && !empty($_POST['ticket_id']) ? $_POST['ticket_id'] : false ;
 		$message = isset($_POST['response']) && !empty($_POST['response']) ? $_POST['response'] : false ;
 		$access = isset($_POST['access']) && $_POST['access'] == 'private' ? $_POST['access'] : 'public' ;
+		$close_ticket = isset($_POST['close_ticket']) && $_POST['close_ticket'] == 1 ? 1 : 0;
 		$user_id = 0;
 
 		if(!$message)
@@ -34,6 +35,11 @@ class WT_Admin_CommentForm{
 
 		$result = $wptickets->tickets->insert_comment($ticket_id, $message, $user_id, $args);
 		if($result){
+
+			//todo close ticket if checkbox is selected
+			if($close_ticket){
+				$wptickets->tickets->close_ticket($ticket_id);
+			}
 
 			wp_redirect( admin_url('/post.php?post='.$ticket_id.'&action=edit' ) );
 			exit;

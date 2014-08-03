@@ -9,6 +9,11 @@
 			<input type="checkbox" name="access" value="private" />
 		</div>
 
+		<div class="input checkbox">
+			<label>Close ticket on reply</label>
+			<input type="checkbox" name="close_ticket" value="1" />
+		</div>
+
 		<div class="input textarea">
 			<label>Response</label>
 			<textarea name="response"></textarea>
