@@ -1,0 +1,30 @@
+.admin-support-comment{
+
+	clear:both;
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+	border-bottom: 1px dashed #CCC;
+	overflow:hidden;
+
+	.comment-left, .comment-right{
+		float:left;
+	}
+
+	p{
+		margin:0;
+		padding:0;
+	}
+
+	.meta-head{
+		// margin-left:10px;
+		margin: 0 0 10px 10px;
+		border-bottom: 1px solid #DDD;
+	}
+
+	.meta-content{
+		margin-left:10px;
+		p{
+			margin-bottom: 10px;
+		}
+	}
+}

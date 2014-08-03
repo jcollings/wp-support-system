@@ -2,8 +2,8 @@
 
 require 'class-wt-admin-commentform.php';
 
-add_action( 'add_meta_boxes', 'wt_meta_boxes' );
-function wt_meta_boxes(){
+add_action( 'add_meta_boxes', 'wt_add_meta_boxes' );
+function wt_add_meta_boxes(){
 
 	// publish meta box
 	add_meta_box( 'wpticket-ticket-actions', __( 'Ticket Actions', 'wp-tickets' ), 'wt_ticket_actions_meta_box', 'ticket', 'side', 'high');
@@ -16,6 +16,17 @@ function wt_meta_boxes(){
 
 	// ticket comment meta box
 	add_meta_box( 'wpticket-ticket-comments', __( 'Comments', 'wp-tickets' ), 'wt_ticket_comment_meta_box', 'ticket', 'normal', 'high');
+}
+
+add_action( 'admin_menu' , 'wt_remove_meta_boxes' );
+function wt_remove_meta_boxes() {
+	
+	// remove department and status
+	remove_meta_box( 'departmentdiv', 'ticket', 'side' );
+	remove_meta_box( 'statusdiv', 'ticket', 'side' );
+
+	// remove slug
+	remove_meta_box('slugdiv', 'ticket', 'normal' );
 }
 
 /**
@@ -76,9 +87,9 @@ function wt_ticket_info_meta_box(){
 	<p><strong>Subject:</strong> <?php the_title(); ?></p>
 	<p><strong>Author:</strong> James Collings</p>
 	<p><strong>Submitted:</strong> <?php the_date(); ?></p>
-	<p><strong>Priority:</strong> <?php echo wt_get_ticket_priority(); ?></p>
+	<!-- <p><strong>Priority:</strong> <?php echo wt_get_ticket_priority(); ?></p>
 	<p><strong>Status:</strong> <?php echo wt_get_ticket_status(); ?></p>
-	<p><strong>Department:</strong> <?php echo wt_get_ticket_department(); ?></p>
+	<p><strong>Department:</strong> <?php echo wt_get_ticket_department(); ?></p> -->
 	<hr/>
 	<p><strong>Message:</strong> </p>
 	<?php

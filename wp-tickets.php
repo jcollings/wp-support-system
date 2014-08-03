@@ -209,7 +209,7 @@ class WP_Tickets{
 		if($this->disable_css)
 			return;
 
-		wp_enqueue_style('support-public-css', $this->plugin_url . 'assets/css/single-ticket.css');
+		wp_enqueue_style('support-public-css', $this->plugin_url . 'assets/css/main.css');
 	}
 
 	public function load_settings(){

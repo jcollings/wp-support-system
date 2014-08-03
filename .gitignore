@@ -3,6 +3,7 @@
 tests/
 phpunit.xml
 *.scssc
+node_modules/*
 
 # Compiled source #
 ###################
