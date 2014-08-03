@@ -4,8 +4,8 @@ class WT_Admin_CommentForm{
 	public function __construct(){
 
 		add_action('wt/process_admin_add_comment', array($this, 'process_form_add_comment'));
-		add_action('wt_admin_comment_box', array($this, 'show_ticket_comments'), 10);
-		add_action('wt_admin_comment_box', array($this, 'show_ticket_commentform'), 20);
+		add_action('wt_admin_comment_box', array($this, 'show_admin_ticket_comments'), 10);
+		add_action('wt_admin_comment_box', array($this, 'show_admin_ticket_commentform'), 20);
 	}
 
 	public function process_form_add_comment(){
@@ -43,12 +43,16 @@ class WT_Admin_CommentForm{
 
 	public function show_admin_ticket_comments(){
 
-		global $post, $wptickets;
+		global $post, $wptickets, $comment;
 		setup_postdata($post);
 		
 		// todo: gather and display ticket comments 
-		$comments = $wptickets->tickets->get_comments($post->ID);
-		print_r($comments);
+		$comments = $wptickets->tickets->get_comments($post->ID, array('type' => 'admin'));
+
+		foreach($comments as $comment){
+			require $wptickets->plugin_dir . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'editor' . DIRECTORY_SEPARATOR . 'comments.php';
+		}
+		// print_r($comments);
 
 	}
 	public function show_admin_ticket_commentform(){

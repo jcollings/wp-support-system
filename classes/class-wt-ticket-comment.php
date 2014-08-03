@@ -6,6 +6,7 @@ class WT_TicketComment{
 		add_action('wp_insert_comment', array($this, 'wt_insert_comment'), 10,2);
 		add_action('wt_after_ticket_comments', array($this, 'wt_show_ticket_commentform'));
 		add_action('wt_ticket_comments', array($this, 'wt_show_ticket_comments'));
+		add_action('wt/after_comment_create', array( $this, 'set_ticket_status'), 10, 2);
 	}
 
 
@@ -62,7 +63,7 @@ class WT_TicketComment{
 		global $wptickets;
 		global $comment;
 
-		$comments = $wptickets->tickets->get_comments(get_the_ID());
+		$comments = $wptickets->tickets->get_comments(get_the_ID(), array('type' => 'public'));
 		
 		foreach($comments as $comment){
 			
@@ -77,6 +78,39 @@ class WT_TicketComment{
 	 */
 	function wt_show_ticket_commentform(){
 		wt_get_template_part( 'single-ticket/commentform' );
+	}
+
+	/**
+	 * Set ticket status once a support comment has been submitted
+	 * 
+	 * @param int $ticket_id  
+	 * @param int $comment_id 
+	 */
+	function set_ticket_status($ticket_id, $comment_id){
+
+		global $wptickets;
+
+		$comment = get_comment($comment_id);
+
+		if($comment->user_id == 0){
+			
+			// public author
+			wp_set_object_terms( $ticket_id, 'awaiting-response', 'status');
+
+		}else{
+
+			$ticket = $wptickets->tickets->get_ticket($ticket_id);
+			if($comment->user_id == $ticket->post_author){
+				
+				// author
+				wp_set_object_terms( $ticket_id, 'awaiting-response', 'status');
+				
+			}else{
+
+				// admin
+				wp_set_object_terms( $ticket_id, 'responded', 'status');
+			}
+		}
 	}
 }
 new WT_TicketComment();

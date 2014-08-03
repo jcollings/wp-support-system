@@ -38,7 +38,7 @@ function wt_ticket_actions_meta_box(){
 	}
 	</style>
 
-	<!-- <div class="misc-pub-section misc-pub-visibility" id="Status">
+	<div class="misc-pub-section misc-pub-visibility" id="Status">
 		Department: <strong><?php echo wt_get_ticket_department(); ?></strong>
 	</div>
 	<div class="misc-pub-section misc-pub-visibility" id="Status">
@@ -46,7 +46,7 @@ function wt_ticket_actions_meta_box(){
 	</div>
 	<div class="misc-pub-section misc-pub-visibility" id="Status">
 		Priority: <strong><?php echo wt_get_ticket_priority(); ?></strong>
-	</div> -->
+	</div>
 
 	<div id="major-publishing-actions">
 		<div id="delete-action">
@@ -81,8 +81,9 @@ function wt_ticket_info_meta_box(){
 	<p><strong>Department:</strong> <?php echo wt_get_ticket_department(); ?></p>
 	<hr/>
 	<p><strong>Message:</strong> </p>
-	<?php the_content(); ?>
 	<?php
+	
+	the_content();
 }
 
 /**

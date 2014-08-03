@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WP Tickets
+ * Plugin Name: WP Support System
  * Plugin URI: http://jamescollings.co.uk/wordpress-plugins/wp-tickets
  * Description: A Support Ticket system for wordpress
  * Version: 0.0.1

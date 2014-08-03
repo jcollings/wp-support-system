@@ -15,7 +15,7 @@
 		</div>
 
 		<div class="submit">
-			<input type="submit" value="Add Comment" />
+			<input type="submit" value="Add Comment" class="button button-primary" />
 		</div>
 	</form>
 </div>

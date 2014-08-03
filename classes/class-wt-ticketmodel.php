@@ -51,8 +51,7 @@ class WT_TicketModel{
 
 	public function get_comments($ticket_id = null, $args = array()){
 
-		// todo: get internal comments, comments without internal comments, or all comments
-		
+		// todo: get internal comments, comments without internal comments, public or private, or all comments
 		if($ticket_id){
 			$this->ID = $ticket_id;
 		}
@@ -61,10 +60,47 @@ class WT_TicketModel{
 			return false;
 		}
 
-		return get_comments(array(
+		$comment_args = array(
 			'post_id' => $this->ID,
-			'order' => 'ASC'
-		));
+			'order' => 'ASC',
+		);
+
+		$type = isset($args['type']) ? $args['type'] : 'public';
+
+		switch($type){
+			case 'admin':
+				// admin [internal, private, public]
+			break;
+			case 'author':
+				// author [private, public]
+				$comment_args['meta_query'] = array(
+					'relation' => 'OR',
+					array('key' => '_comment_access', 'value' => 'public'),
+					array('key' => '_comment_access', 'value' => 'private')
+				);
+			break;
+			case 'internal':
+				// private  [private]
+				$comment_args['meta_query'] = array(
+					array('key' => '_comment_access', 'value' => 'internal')
+				);
+			break;
+			case 'private':
+				// private  [private]
+				$comment_args['meta_query'] = array(
+					array('key' => '_comment_access', 'value' => 'private')
+				);
+			break;
+			case 'public':
+			default:
+				// public  [public]
+				$comment_args['meta_query'] = array(
+					array('key' => '_comment_access', 'value' => 'public')
+				);
+			break;
+		}
+
+		return get_comments($comment_args);
 	}
 
 	public function insert_ticket($title, $message, $user_id = 0, $args = array()){
@@ -145,7 +181,7 @@ class WT_TicketModel{
 			}
 			add_comment_meta( $comment_id, '_comment_access', $access);
 
-			do_action('wt/after_comment_create', $ticket_id);
+			do_action('wt/after_comment_create', $ticket_id, $comment_id);
 			return true;
 		}
 
