@@ -28,3 +28,29 @@
 		}
 	}
 }
+
+.wpss-two-cols{
+	width: 100%;
+	overflow: hidden;
+
+	.wpss-one-col{
+		width: 50%;
+	}
+
+	.wpss-two-col{
+		width: 100%;
+	}
+}
+
+.wpss-pull-left{
+	float:left;
+}
+.wpss-pull-right{
+	float:right;
+}
+
+dl.wpss-dl{
+	dt{
+		font-weight: bold;
+	}
+}

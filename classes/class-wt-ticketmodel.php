@@ -106,13 +106,15 @@ class WT_TicketModel{
 	public function insert_ticket($title, $message, $user_id = 0, $args = array()){
 
 		global $wptickets;
+
+		$config = get_option('support_system_config');
 		
 		// set ticket department
-		$department = isset($args['department']) ? $args['department'] : null;
+		$department = isset($args['department']) ? $args['department'] : intval($config['default_group']);
 		$department = apply_filters( 'wt/set_ticket_department', $department );
 
 		// set ticket status
-		$ticket_status = isset($args['status']) ? $args['status'] : 'opened';
+		$ticket_status = isset($args['status']) ? $args['status'] : intval($config['ticket_open_status']);
 		$ticket_status = apply_filters( 'wt/set_ticket_status', $ticket_status );
 
 		// set ticket access
@@ -182,6 +184,32 @@ class WT_TicketModel{
 			add_comment_meta( $comment_id, '_comment_access', $access);
 
 			do_action('wt/after_comment_create', $ticket_id, $comment_id);
+			return true;
+		}
+
+		return false;
+	}
+
+	public function insert_internal_note($ticket_id = null, $content = null, $author_id = 0){
+
+		if(empty($ticket_id) || empty($content))
+			return false;
+
+		$commentdata = array(
+			'comment_post_ID' => $ticket_id,
+			'comment_content' => $content
+		);
+
+		if(!$author_id){
+			$commentdata['comment_author_email'] = get_post_meta( $ticket_id, '_user_email', true );
+			$commentdata['comment_author'] = get_post_meta( $ticket_id, '_user_name', true );
+		}else{
+			$commentdata['user_id'] = $author_id;
+		}
+
+		if($comment_id = wp_insert_comment($commentdata)){
+
+			add_comment_meta( $comment_id, '_comment_access', 'internal');
 			return true;
 		}
 

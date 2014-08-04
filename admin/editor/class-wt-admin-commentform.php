@@ -4,6 +4,8 @@ class WT_Admin_CommentForm{
 	public function __construct(){
 
 		add_action('wt/process_admin_add_comment', array($this, 'process_form_add_comment'));
+		
+		add_action('wt_admin_comment_box', array($this, 'show_admin_ticket_message'), 5);
 		add_action('wt_admin_comment_box', array($this, 'show_admin_ticket_comments'), 10);
 		add_action('wt_admin_comment_box', array($this, 'show_admin_ticket_commentform'), 20);
 
@@ -14,13 +16,16 @@ class WT_Admin_CommentForm{
 
 		global $wptickets;
 
+		// todo: make sure it only happens when the add comment button is pressed
+
 		$ticket_id = isset($_POST['ticket_id']) && !empty($_POST['ticket_id']) ? $_POST['ticket_id'] : false ;
+		$action = isset($_POST['wptickets-action-button']) && $_POST['wptickets-action-button'] == 'Add Comment' ? $_POST['wptickets-action-button'] : false;
 		$message = isset($_POST['response']) && !empty($_POST['response']) ? $_POST['response'] : false ;
 		$access = isset($_POST['access']) && $_POST['access'] == 'private' ? $_POST['access'] : 'public' ;
 		$close_ticket = isset($_POST['close_ticket']) && $_POST['close_ticket'] == 1 ? 1 : 0;
 		$user_id = 0;
 
-		if(!$message)
+		if(!$message || !$action)
 			return false;
 
 		// failed to auth public
@@ -69,6 +74,13 @@ class WT_Admin_CommentForm{
 
 		// todo: display form to add comment
 		require_once $wptickets->plugin_dir . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'editor' . DIRECTORY_SEPARATOR . 'commentform.php';
+	}
+
+	public function show_admin_ticket_message(){
+		global $post, $wptickets;
+		setup_postdata( $post );
+
+		require_once $wptickets->plugin_dir . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'editor' . DIRECTORY_SEPARATOR . 'message.php';
 	}
 
 	public function admin_enqueue_scripts(){

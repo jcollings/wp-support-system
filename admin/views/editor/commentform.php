@@ -20,7 +20,7 @@
 		</div>
 
 		<div class="submit">
-			<input type="submit" value="Add Comment" class="button button-primary" />
+			<input type="submit" name="wptickets-action-button" value="Add Comment" class="button button-primary" />
 		</div>
 	</form>
 </div>

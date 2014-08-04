@@ -1,6 +1,7 @@
 <?php
 
 require 'class-wt-admin-commentform.php';
+require 'class-wt-admin-actionbox.php';
 
 add_action( 'add_meta_boxes', 'wt_add_meta_boxes' );
 function wt_add_meta_boxes(){
@@ -15,7 +16,7 @@ function wt_add_meta_boxes(){
 	// add_meta_box( 'wpticket-ticket-internal-comments', __( 'Internal Comments', 'wp-tickets' ), 'wt_ticket_internal_comment_meta_box', 'ticket', 'normal', 'high');
 
 	// ticket comment meta box
-	add_meta_box( 'wpticket-ticket-comments', __( 'Comments', 'wp-tickets' ), 'wt_ticket_comment_meta_box', 'ticket', 'normal', 'high');
+	add_meta_box( 'wpticket-ticket-comments', __( 'Ticket Thread', 'wp-tickets' ), 'wt_ticket_comment_meta_box', 'ticket', 'normal', 'high');
 }
 
 add_action( 'admin_menu' , 'wt_remove_meta_boxes' );
@@ -48,21 +49,15 @@ function wt_ticket_actions_meta_box(){
 		padding:0;
 	}
 	</style>
-
-	<div class="misc-pub-section misc-pub-visibility" id="Status">
-		Department: <strong><?php echo wt_get_ticket_department(); ?></strong>
-	</div>
-	<div class="misc-pub-section misc-pub-visibility" id="Status">
-		Ticket Status: <strong><?php echo wt_get_ticket_status(); ?></strong>
-	</div>
-	<div class="misc-pub-section misc-pub-visibility" id="Status">
-		Priority: <strong><?php echo wt_get_ticket_priority(); ?></strong>
-	</div>
-
+	<?php
+	/**
+	 * Hooked:
+	 *
+	 * show_action_box 10
+	 */
+	do_action( 'wt_admin_action_box' );
+	?>
 	<div id="major-publishing-actions">
-		<div id="delete-action">
-			<a class="submitdelete deletion" href="<?php echo esc_url( get_delete_post_link( $post->ID ) ); ?>">Move to Trash</a>
-		</div>
 
 		<div id="publishing-action">
 			<span class="spinner"></span>
@@ -84,17 +79,39 @@ function wt_ticket_info_meta_box(){
 
 	// todo: gather and display ticket information
 	?>
-	<p><strong>Subject:</strong> <?php the_title(); ?></p>
-	<p><strong>Author:</strong> James Collings</p>
-	<p><strong>Submitted:</strong> <?php the_date(); ?></p>
-	<!-- <p><strong>Priority:</strong> <?php echo wt_get_ticket_priority(); ?></p>
-	<p><strong>Status:</strong> <?php echo wt_get_ticket_status(); ?></p>
-	<p><strong>Department:</strong> <?php echo wt_get_ticket_department(); ?></p> -->
-	<hr/>
-	<p><strong>Message:</strong> </p>
+	<div class="wpss-two-cols">
+		<dl class="wpss-pull-left wpss-one-col wpss-dl">
+			
+			<dt>Subject:</dt>
+			<dd><?php the_title(); ?></dd>
+
+			<dt>Department:</dt>
+			<dd><?php echo wt_get_ticket_department(); ?></dd>
+
+			<dt>Status:</dt>
+			<dd><?php echo wt_get_ticket_status(); ?></dd>
+
+			<dt>Priority:</dt>
+			<dd><?php echo wt_get_ticket_priority(); ?></dd>
+
+			<dt>Source</dt>
+			<dd><?php echo wt_get_ticket_source($post->ID); ?></dd>
+
+			<dt>Created:</dt>
+			<dd><?php the_date('F j, Y \a\t g:i a'); ?></dd>
+
+		</dl>
+
+		<dl class="wpss-pull-right wpss-one-col wpss-dl">
+			<dt>Author:</dt>
+			<dd><?php echo wt_get_ticket_author_meta($post->ID, 'name'); ?></dd>
+
+			<dt>Email:</dt>
+			<dd><?php echo wt_get_ticket_author_meta($post->ID, 'email'); ?></dd>
+
+		</dl>
+	</div>
 	<?php
-	
-	the_content();
 }
 
 /**
@@ -106,6 +123,7 @@ function wt_ticket_comment_meta_box(){
 	/**
 	 * Hooked:
 	 *
+	 * show_admin_ticket_message 5
 	 * show_admin_ticket_comments 10
 	 * show_admin_ticket_commentform 20
 	 */

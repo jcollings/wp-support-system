@@ -25,9 +25,9 @@
 	<div class="input">
 		<label>Department</label>
 		<select name="department">
-			<option>Choose One</option>
+			<option value="">Choose One</option>
 			<?php
-			$departments = get_terms( 'department', array('hide_empty' => false) );
+			$departments = wt_list_ticket_departments();
 			foreach($departments as $dept): ?>
 			<option value="<?php echo $dept->slug; ?>"><?php echo $dept->name; ?></option>
 			<?php endforeach; ?>

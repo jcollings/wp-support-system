@@ -122,6 +122,14 @@ function wt_list_ticket_priorities(){
 	return $priorities;
 }
 
+function wt_list_ticket_departments(){
+	return get_terms( 'department', array('hide_empty' => false) );
+}
+
+function wt_list_ticket_status(){
+	return get_terms( 'status', array('hide_empty' => false) );
+}
+
 function wt_get_ticket_department(){
 	global $post;
 	$output = array();
@@ -133,6 +141,49 @@ function wt_get_ticket_department(){
 	
 	return implode(', ', $output);
 }
+
+function wt_get_ticket_author_meta($ticket_id, $key = ''){
+
+	switch($key){
+		case 'email':
+
+			if(is_member_ticket($ticket_id)){
+
+				// get member email
+				$ticket = get_post($ticket_id);
+				$author_id = $ticket->post_author;
+				return get_the_author_meta('user_email', $author_id);
+
+			}else{
+
+				// get public email
+				return get_post_meta( $ticket_id, '_user_email', true );
+			}
+		break;
+		case 'name':
+
+			if(is_member_ticket($ticket_id)){
+
+				// get member email
+				$ticket = get_post($ticket_id);
+				$author_id = $ticket->post_author;
+				return get_the_author_meta('user_nicename', $author_id);
+
+			}else{
+
+				// get public email
+				return get_post_meta( $ticket_id, '_user_name', true );
+			}
+		break;
+	}
+
+	return false;
+}
+
+function wt_get_ticket_source($ticket_id){
+	return 'web';
+}
+
 
 /**
  * Comment Functions

@@ -16,3 +16,20 @@
     margin-left: 10px; }
     .admin-support-comment .meta-content p {
       margin-bottom: 10px; }
+
+.wpss-two-cols {
+  width: 100%;
+  overflow: hidden; }
+  .wpss-two-cols .wpss-one-col {
+    width: 50%; }
+  .wpss-two-cols .wpss-two-col {
+    width: 100%; }
+
+.wpss-pull-left {
+  float: left; }
+
+.wpss-pull-right {
+  float: right; }
+
+dl.wpss-dl dt {
+  font-weight: bold; }

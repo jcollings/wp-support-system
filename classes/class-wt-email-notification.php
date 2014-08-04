@@ -24,33 +24,9 @@ class WT_EmailNotification{
 	public function get_ticket_admin_emails($ticket_id){
 
 		// todo: fetch list of real admin addresses
-
 		return array(
 			'james@jclabs.co.uk'
 		);
-	}
-
-	/**
-	 * Get the ticket authors email
-	 * 
-	 * @param  int $ticket_id 
-	 * @return array/string
-	 */
-	public function get_ticket_email($ticket_id){
-
-		if(is_member_ticket($ticket_id)){
-
-			// get member email
-			$ticket = get_post($ticket_id);
-			$author_id = $ticket->post_author;
-			return get_the_author_meta('user_email', $author_id);
-
-		}else{
-
-			// get public email
-			return get_post_meta( $ticket_id, '_user_email', true );
-		}
-		
 	}
 
 	/**
@@ -87,7 +63,7 @@ class WT_EmailNotification{
 	public function after_ticket_create($ticket_id){
 
 		$admin_emails = $this->get_ticket_admin_emails($ticket_id);
-		$author_email = $this->get_ticket_email($ticket_id);
+		$author_email = $this->wt_get_ticket_author_meta($ticket_id, 'email');
 
 		// send admin emails
 		$template = $this->set_email_template( 'email/admin/new-ticket', array('test' => 'Admin'));
@@ -121,7 +97,7 @@ class WT_EmailNotification{
 	public function after_comment_create($ticket_id){
 
 		$admin_emails = $this->get_ticket_admin_emails($ticket_id);
-		$author_email = $this->get_ticket_email($ticket_id);
+		$author_email = $this->wt_get_ticket_author_meta($ticket_id, 'email');
 
 		//todo: send out comment to author or admin depending on who sent it
 
