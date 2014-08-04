@@ -14,7 +14,7 @@
 
 		<!-- Comment meta info -->
 		<div class="meta-head">
-			<p class="desc">Posted by <?php echo wt_get_ticket_author_meta($post->ID, 'name') ?> on <?php echo the_date( 'F j, Y \a\t g:i a'); ?> - (<?php echo wt_get_ticket_access(); ?>)</p>
+			<p class="desc">Posted by <?php echo wt_get_ticket_author_meta($post->ID, 'name') ?> on <?php echo the_time( 'F j, Y \a\t g:i a'); ?> - (<?php echo wt_get_ticket_access(); ?>)</p>
 		</div>
 
 		<!-- Comment Message -->

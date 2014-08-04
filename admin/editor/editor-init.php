@@ -98,7 +98,7 @@ function wt_ticket_info_meta_box(){
 			<dd><?php echo wt_get_ticket_source($post->ID); ?></dd>
 
 			<dt>Created:</dt>
-			<dd><?php the_date('F j, Y \a\t g:i a'); ?></dd>
+			<dd><?php the_time('F j, Y \a\t g:i a'); ?></dd>
 
 		</dl>
 
