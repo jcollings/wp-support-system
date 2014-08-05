@@ -63,7 +63,7 @@ class WT_EmailNotification{
 	public function after_ticket_create($ticket_id){
 
 		$admin_emails = $this->get_ticket_admin_emails($ticket_id);
-		$author_email = $this->wt_get_ticket_author_meta($ticket_id, 'email');
+		$author_email = wt_get_ticket_author_meta($ticket_id, 'email');
 
 		// send admin emails
 		$template = $this->set_email_template( 'email/admin/new-ticket', array('test' => 'Admin'));
@@ -97,7 +97,7 @@ class WT_EmailNotification{
 	public function after_comment_create($ticket_id){
 
 		$admin_emails = $this->get_ticket_admin_emails($ticket_id);
-		$author_email = $this->wt_get_ticket_author_meta($ticket_id, 'email');
+		$author_email = wt_get_ticket_author_meta($ticket_id, 'email');
 
 		//todo: send out comment to author or admin depending on who sent it
 

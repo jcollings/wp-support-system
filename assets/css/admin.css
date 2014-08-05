@@ -33,3 +33,6 @@
 
 dl.wpss-dl dt {
   font-weight: bold; }
+
+.wp-admin.post-type-ticket #submitdiv, .wp-admin.post-type-ticket .add-new-h2 {
+  display: none; }

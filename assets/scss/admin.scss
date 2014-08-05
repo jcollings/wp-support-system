@@ -54,3 +54,10 @@ dl.wpss-dl{
 		font-weight: bold;
 	}
 }
+
+.wp-admin.post-type-ticket{
+	
+	#submitdiv, .add-new-h2{
+		display: none;
+	}
+}

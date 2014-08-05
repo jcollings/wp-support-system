@@ -63,7 +63,7 @@ class WT_Admin_ActionBox{
 				// check to see if status exists
 				foreach($status_list as $s){
 					if($ticket_status == $s->slug){
-						$status_label = $d->name;
+						$status_label = $s->name;
 						$found = true;
 						break;
 					}

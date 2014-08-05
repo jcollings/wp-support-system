@@ -41,9 +41,6 @@ function wt_ticket_actions_meta_box(){
 	// todo: display real information here
 	?>
 	<style type="text/css">
-	#submitdiv, .add-new-h2{
-		display: none;
-	}
 	#wpticket-ticket-actions .inside{
 		margin:0;
 		padding:0;

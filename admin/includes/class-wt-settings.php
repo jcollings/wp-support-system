@@ -13,6 +13,9 @@ class WT_AdminSettings{
 		// allow addons to hook into the meny creation
 		do_action('wt/register_admin_menu');
 		add_submenu_page('edit.php?post_type=ticket', 'Settings', 'Settings', 'add_users', 'wpticket-settings', array($this, 'admin_settings_page'));
+
+        // remove add ticket menu item
+        remove_submenu_page('edit.php?post_type=ticket', 'post-new.php?post_type=ticket');
 	}
 
 	public function admin_settings_page(){
