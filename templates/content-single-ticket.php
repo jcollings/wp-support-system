@@ -1,13 +1,7 @@
 <?php
 global $post;
-if($post->post_author == 0){
-	$email = get_post_meta($post->ID, '_user_email', true);
-	$name = get_post_meta($post->ID, '_user_name', true);
-}else{
-	$email = get_the_author_meta( 'email');
-	$name = get_the_author();
-}
-
+$name = wt_get_ticket_author_meta($post->ID, 'name');
+$email = wt_get_ticket_author_meta($post->ID, 'email');
 ?>
 <div id="post-<?php the_ID(); ?>" class="support-ticket single <?php wt_the_ticket_class(); ?>">
 	<div class="question">

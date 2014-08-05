@@ -12,15 +12,11 @@ function is_support_ticket(){
 function is_member_ticket($ticket_id = 0){
 	global $post;
 
-	$post_author = 0;
-
 	if($ticket_id == 0){
-		$post_author = $post->post_author;
-	}else{
-
-		$ticket = get_post($ticket_id);
-		$post_author = $ticket->post_author;
+		$ticket_id = $post->ID;
 	}
+
+	$post_author = intval(get_post_meta( $ticket_id, '_ticket_author', true ));
 
 	if($post_author > 0){
 		return true;

@@ -150,8 +150,7 @@ function wt_get_ticket_author_meta($ticket_id, $key = ''){
 			if(is_member_ticket($ticket_id)){
 
 				// get member email
-				$ticket = get_post($ticket_id);
-				$author_id = $ticket->post_author;
+				$author_id = intval(get_post_meta( $ticket_id, '_ticket_author', true ));
 				return get_the_author_meta('user_email', $author_id);
 
 			}else{
@@ -165,8 +164,7 @@ function wt_get_ticket_author_meta($ticket_id, $key = ''){
 			if(is_member_ticket($ticket_id)){
 
 				// get member email
-				$ticket = get_post($ticket_id);
-				$author_id = $ticket->post_author;
+				$author_id = intval(get_post_meta( $ticket_id, '_ticket_author', true ));
 				return get_the_author_meta('user_nicename', $author_id);
 
 			}else{

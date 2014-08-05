@@ -6,7 +6,17 @@
 
 		<div class="input checkbox">
 			<label>Make Response Private</label>
-			<input type="checkbox" name="access" value="private" />
+			<input type="radio" name="access" value="private" />
+		</div>
+
+		<div class="input checkbox">
+			<label>Internal Note (Staff Only)</label>
+			<input type="radio" name="access" value="internal" />
+		</div>
+
+		<div class="input checkbox">
+			<label>Public Response</label>
+			<input type="radio" name="access" value="public" checked="checked" />
 		</div>
 
 		<div class="input checkbox">

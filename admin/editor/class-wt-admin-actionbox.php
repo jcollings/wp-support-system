@@ -3,20 +3,23 @@ class WT_Admin_ActionBox{
 
 	public function __construct(){
 
-		add_action('wp_loaded', array($this, 'process_action_box'));
+		// add_action('wp_loaded', array($this, 'process_action_box'));
 		add_action('wt_admin_action_box', array($this, 'show_action_box'), 10);
+
+		add_action('wt/process_admin_ticket_actions', array($this, 'process_action_box'));
 	}
 
 	public function process_action_box(){
 
 		global $wptickets;
 
-		$ticket_id = isset($_POST['post_ID']) && intval($_POST['post_ID']) ? $_POST['post_ID'] : false;
+		$ticket_id = isset($_POST['ticket_id']) && intval($_POST['ticket_id']) ? $_POST['ticket_id'] : false;
 
 		if(!$ticket_id)
 			return;
 
-		$author_id = intval($_POST['user_ID']);
+		$author_id = get_current_user_id();
+
 		$log = array();
 		
 		// update ticket department

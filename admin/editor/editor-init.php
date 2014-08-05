@@ -12,9 +12,6 @@ function wt_add_meta_boxes(){
 	// ticket info meta box
 	add_meta_box( 'wpticket-ticket-info', __( 'Ticket Info', 'wp-tickets' ), 'wt_ticket_info_meta_box', 'ticket', 'normal', 'high');
 
-	// ticket internal notes meta box
-	// add_meta_box( 'wpticket-ticket-internal-comments', __( 'Internal Comments', 'wp-tickets' ), 'wt_ticket_internal_comment_meta_box', 'ticket', 'normal', 'high');
-
 	// ticket comment meta box
 	add_meta_box( 'wpticket-ticket-comments', __( 'Ticket Thread', 'wp-tickets' ), 'wt_ticket_comment_meta_box', 'ticket', 'normal', 'high');
 }
@@ -46,23 +43,31 @@ function wt_ticket_actions_meta_box(){
 		padding:0;
 	}
 	</style>
-	<?php
-	/**
-	 * Hooked:
-	 *
-	 * show_action_box 10
-	 */
-	do_action( 'wt_admin_action_box' );
-	?>
-	<div id="major-publishing-actions">
 
-		<div id="publishing-action">
-			<span class="spinner"></span>
-			<input name="original_publish" type="hidden" id="original_publish" value="Publish">
-			<input type="submit" name="publish" id="publish" class="button button-primary" value="Save Ticket" accesskey="p">
+	</form><!-- temp fix -->
+	<form method="post" action="#">
+
+		<input type="hidden" name="wptickets-action" value="admin_ticket_actions" />
+		<input type="hidden" name="ticket_id" value="<?php the_ID(); ?>" />
+		
+		<?php
+		/**
+		 * Hooked:
+		 *
+		 * show_action_box 10
+		 */
+		do_action( 'wt_admin_action_box' );
+		?>
+
+		<div id="major-publishing-actions">
+
+			<div id="publishing-action">
+				<span class="spinner"></span>
+				<input type="submit" name="wptickets-action-button" value="Save Ticket" class="button button-primary" />
+			</div>
+			<div class="clear"></div>
 		</div>
-		<div class="clear"></div>
-	</div>
+	</form>
 	<?php
 }
 

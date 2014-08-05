@@ -67,9 +67,24 @@ class WT_TicketModel{
 
 		$type = isset($args['type']) ? $args['type'] : 'public';
 
+		// order
+		if(isset($args['order'])){
+			$comment_args['order'] = $args['order'];
+		}
+
+		// if(isset($args['limit'])){
+		// 	$comment_args['limit'] = $args['limit'];
+		// }
+
 		switch($type){
 			case 'admin':
 				// admin [internal, private, public]
+				$comment_args['meta_query'] = array(
+					'relation' => 'OR',
+					array('key' => '_comment_access', 'value' => 'internal'),
+					array('key' => '_comment_access', 'value' => 'public'),
+					array('key' => '_comment_access', 'value' => 'private')
+				);
 			break;
 			case 'author':
 				// author [private, public]
@@ -142,6 +157,9 @@ class WT_TicketModel{
 		if($ticket_id > 0){
 
 			add_post_meta( $ticket_id, '_ticket_access', $ticket_access);
+
+			// save author as _ticket_author to stop it being replaced
+			add_post_meta( $ticket_id, '_ticket_author', $user_id);
 
 			if($user_id == 0){
 				$key = substr(md5(time()), 0, 10);
@@ -271,6 +289,39 @@ class WT_TicketModel{
 			return $ticket;
 
 		return false;
+	}
+
+	/**
+	 * Get a list of all user name and emails
+	 * 
+	 * @return array
+	 */
+	public function get_ticket_user_list(){
+		
+		$tickets = new WP_Query(array(
+			'author' => 0,
+			'posts_per_page' => -1,
+			'post_type' => 'ticket'
+		));
+
+		$data = array();
+
+		while($tickets->have_posts()){
+			$tickets->the_post();
+
+			$ticket_id = get_the_id();
+
+			$email = get_post_meta( $ticket_id, '_user_email' , true );
+			$name = get_post_meta( $ticket_id, '_user_name', true );
+
+			if(!empty($email)){
+				$data[$email] = $name;
+			}
+		}
+
+		wp_reset_postdata();
+
+		return $data;
 	}
 
 	/**

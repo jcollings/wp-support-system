@@ -21,7 +21,7 @@ class WT_Admin_CommentForm{
 		$ticket_id = isset($_POST['ticket_id']) && !empty($_POST['ticket_id']) ? $_POST['ticket_id'] : false ;
 		$action = isset($_POST['wptickets-action-button']) && $_POST['wptickets-action-button'] == 'Add Comment' ? $_POST['wptickets-action-button'] : false;
 		$message = isset($_POST['response']) && !empty($_POST['response']) ? $_POST['response'] : false ;
-		$access = isset($_POST['access']) && $_POST['access'] == 'private' ? $_POST['access'] : 'public' ;
+		$access = isset($_POST['access']) && in_array($_POST['access'], array('public', 'private', 'internal')) ? $_POST['access'] : 'public' ;
 		$close_ticket = isset($_POST['close_ticket']) && $_POST['close_ticket'] == 1 ? 1 : 0;
 		$user_id = 0;
 

@@ -2,7 +2,7 @@
 class WT_TicketPriority{
 
 	public $priority = array(
-		0 => 'Low',
+		1 => 'Low',
 		50 => 'Medium',
 		100 => 'High'
 	);
