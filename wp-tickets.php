@@ -45,6 +45,8 @@ class WP_Tickets{
 		add_action('init', array($this, 'init'));
 		add_action( 'wp_enqueue_scripts', array($this, 'enqueue_scripts' ));
 
+		add_action( 'query_vars' , array( $this, 'register_query_vars' ) );
+
 		do_action('wptickets_loaded');
 	}
 
@@ -160,7 +162,7 @@ class WP_Tickets{
 	public function init_post_types(){
 
 		$labels = array(
-			'name'                => __( 'Tickets', 'wp-tickets' ),
+			'name'                => __( 'Support Tickets', 'wp-tickets' ),
 			'singular_name'       => __( 'Ticket', 'wp-tickets' ),
 			'add_new'             => _x( 'Add New Ticket', 'wp-tickets', 'wp-tickets' ),
 			'add_new_item'        => __( 'Add New Ticket', 'wp-tickets' ),
@@ -171,7 +173,7 @@ class WP_Tickets{
 			'not_found'           => __( 'No Tickets found', 'wp-tickets' ),
 			'not_found_in_trash'  => __( 'No Tickets found in Trash', 'wp-tickets' ),
 			'parent_item_colon'   => __( 'Parent Ticket:', 'wp-tickets' ),
-			'menu_name'           => __( 'Tickets', 'wp-tickets' ),
+			'menu_name'           => __( 'Support Tickets', 'wp-tickets' ),
 		);
 
 		$args = array(
@@ -203,6 +205,12 @@ class WP_Tickets{
 		);
 
 		register_post_type( 'ticket', $args );
+	}
+
+	public function register_query_vars($public_query_vars ){
+        $public_query_vars[] = 'ticket-author';
+        $public_query_vars[] = 'ticket-priority';
+        return $public_query_vars;
 	}
 
 	public function enqueue_scripts(){
