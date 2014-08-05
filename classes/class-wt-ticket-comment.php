@@ -2,36 +2,49 @@
 class WT_TicketComment{
 
 	public function __construct(){
-		add_action('pre_get_comments', array($this, 'pre_get_comments'));
+		
+		add_action('pre_get_comments', array($this, 'wt_pre_get_comments'));
 		add_action('wp_insert_comment', array($this, 'wt_insert_comment'), 10,2);
 		add_action('wt_after_ticket_comments', array($this, 'wt_show_ticket_commentform'));
 		add_action('wt_ticket_comments', array($this, 'wt_show_ticket_comments'));
 		add_action('wt/after_comment_create', array( $this, 'set_ticket_status'), 10, 2);
+
+		add_action('wt_before_get_comments', array($this, 'wt_before_get_comments'));
+		add_action('wt_after_get_comments', array($this, 'wt_after_get_comments'));
+	}
+
+	/**
+	 * Disable support comment block
+	 * @return void
+	 */
+	function wt_before_get_comments(){
+		remove_action('pre_get_comments', array($this, 'wt_pre_get_comments'));
+	}
+
+	/**
+	 * Enable support comment block
+	 * @return void
+	 */
+	function wt_after_get_comments(){
+		add_action('pre_get_comments', array($this, 'wt_pre_get_comments'));
 	}
 
 
 	/**
-	 * Hide support omments from comments.php
+	 * Hide support comments from all comment queries
+	 * @return  void
 	 */
-	function pre_get_comments($comments){
+	function wt_pre_get_comments($comments){
 
-		if(!is_admin() || (is_admin() && defined('DOING_AJAX')))
-			return;
-
-		$screen = get_current_screen();
-		
-		if($screen->id == 'edit-comments' || $screen->id == 'dashboard'){
-			
-			// add code to hide comments from main comment stream
-			$comments->meta_query->queries[] = array(
-				'key' => '_support_comment', 
-				'compare' => 'NOT EXISTS'
-			);
-		}
+		$comments->meta_query->queries[] = array(
+			'key' => '_support_comment', 
+			'compare' => 'NOT EXISTS'
+		);
 	}
 
 	/**
 	 * Flag comment as support comment
+	 * @return  void
 	 */
 	function wt_insert_comment($comment_id, $comment, $args = array()){
 		global $post;

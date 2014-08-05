@@ -100,7 +100,15 @@ class WT_TicketModel{
 			break;
 		}
 
-		return get_comments($comment_args);
+		// enable support comments to be displayed
+		do_action('wt_before_get_comments');
+		
+		$result = get_comments($comment_args);
+
+		// disable support comments from other comment queries
+		do_action('wt_after_get_comments');
+
+		return $result;
 	}
 
 	public function insert_ticket($title, $message, $user_id = 0, $args = array()){
