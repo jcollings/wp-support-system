@@ -1,150 +1,35 @@
-/**
- * Columns
- */
-.wptickets_cols_2 {
-  width: 100%;
-  margin: 0;
+.post-type-archive-ticket h1 {
+  margin-bottom: 20px; }
+.post-type-archive-ticket h2 {
+  font-size: 18px;
+  margin: 0 0 10px !important;
   padding: 0; }
-
-.wptickets_cols_2 .wptickets_col_1, .wptickets_cols_2 > form, .wptickets_cols_2 > .tickets {
-  width: 48%;
-  margin: 0 2%;
-  padding: 0;
-  float: left; }
-
-.wptickets_cols_2 .wptickets_col_1.first, .wptickets_cols_2 > .tickets {
-  margin-left: 0; }
-
-.wptickets_cols_2 .wptickets_col_1.last, .wptickets_cols_2 > form {
-  margin-right: 0; }
-
-/**
- * Single Ticket
- */
-
-.support-ticket ul, .support-ticket li {
-  list-style: none;
-  margin: 0 !important;
-  padding: 0; }
-
-.support-ticket .question {
-  width: 98%;
-  overflow: hidden;
-  border: 1px solid #dddddd;
-  background: #f1f1f1;
-  padding: 1%; }
-
-.support-ticket .question .left {
+  .post-type-archive-ticket h2 a, .post-type-archive-ticket h2 a:visited {
+    text-decoration: none;
+    color: black; }
+.post-type-archive-ticket .support-ticket {
+  padding: 15px 20px 15px 20px;
+  border-radius: 1px;
+  position: relative;
+  min-height: 50px;
+  background-color: white; }
+.post-type-archive-ticket .wt-odd {
+  border: #dddddd solid 1px;
+  background: #eaeaea; }
+.post-type-archive-ticket .wt-meta-head p {
   float: left;
-  width: 74%;
-  margin-right: 5%;
-  min-height: 150px; }
-
-.support-ticket .question .meta-head {
-  margin: 0;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #dddddd; }
-
-.support-ticket .question .meta-content {
-  margin: 0; }
-
-.support-ticket .question .meta-head h1 {
+  margin: 0 10px 0 0 !important;
   padding: 0;
-  margin: 0; }
-
-.support-ticket .question p.desc {
-  padding: 0;
-  margin: 3px 0 0;
-  color: #333333; }
-
-.support-ticket .question .right {
-  float: right;
-  width: 20%;
-  padding-top: 0; }
-
-.question .img-wrapper img {
-  height: auto; }
-
-.tickets .single {
-  margin-bottom: 10px; }
-
-/**
- * Single Ticket: Comments
- */
-.support-ticket .response {
-  width: 99%;
-  overflow: hidden;
-  border: 1px solid #dddddd;
-  /*border-bottom-style: dashed;*/
-  background: #f1f1f1; }
-
-.support-ticket .author .response {
-  background: #dddddd;
-  border-color: #aaaaaa; }
-
-.support-ticket .response .left {
-  float: left;
-  width: 74%;
-  margin-right: 5%; }
-
-.support-ticket .response .meta-head {
-  margin: 15px 15px 0 15px;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #dddddd; }
-
-.support-ticket .author .response .meta-head {
-  border-color: #aaaaaa; }
-
-.support-ticket .response .meta-content {
-  margin: 10px 15px 15px; }
-
-.support-ticket .response .meta-head h1 {
-  padding: 0;
-  margin: 0;
-  line-height: 110%; }
-
-.support-ticket .meta-head h1 a {
-  color: #444444;
-  text-decoration: none; }
-
-.support-ticket .meta-head h1 a:hover {
-  color: #444444;
-  text-decoration: underline; }
-
-.support-ticket .response p.desc {
-  padding: 0;
-  margin: 3px 0 0;
-  color: #333333; }
-
-.support-ticket .response .right {
-  float: right;
-  width: 20%;
-  padding-top: 20px; }
-
-.support-ticket li {
-  margin-top: 10px !important; }
-
-/**
- * Single Ticket: Comment Form
- */
-.support-ticket .form {
-  width: 99%;
+  line-height: 1; }
+.post-type-archive-ticket .pagination {
   margin-top: 10px;
-  border: 1px solid #dddddd;
-  background: #f1f1f1; }
-
-.support-ticket .form .textarea {
-  margin-bottom: 10px; }
-
-.support-ticket .form_header, .support-ticket #respond {
-  margin: 20px 20px 0; }
-
-.single-ticket #comment {
-  display: block;
-  width: 100%; }
-
-/**
- * Archive Ticket
- */
-.archive .support-ticket {
-  margin-bottom: 10px; }
+  float: right; }
+  .post-type-archive-ticket .pagination span, .post-type-archive-ticket .pagination a {
+    float: left;
+    padding: 5px 10px;
+    margin-left: 5px; }
+  .post-type-archive-ticket .pagination a {
+    border: #dddddd solid 1px;
+    background: #eaeaea; }
+  .post-type-archive-ticket .pagination .visuallyhidden {
+    display: none; }

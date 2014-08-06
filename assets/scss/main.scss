@@ -1,164 +1,63 @@
-/**
- * Columns
- */
-.wptickets_cols_2{
-	width:100%;
-	margin:0;
-	padding:0;
-}
+// ===========================================
+// Ticket Archive
+// ===========================================
+.post-type-archive-ticket{
 
-.wptickets_cols_2 .wptickets_col_1, .wptickets_cols_2 > form, .wptickets_cols_2 > .tickets{
-	width:48%;
-	margin:0 2%;
-	padding:0;
-	float:left;
-}
+	h1{
+		margin-bottom: 20px;
+	}
 
-.wptickets_cols_2 .wptickets_col_1.first, .wptickets_cols_2 > .tickets{
-	margin-left: 0;	
-}
-.wptickets_cols_2 .wptickets_col_1.last, .wptickets_cols_2 > form{
-	margin-right: 0;	
-}
+	h2{
+		font-size: 18px;
+		margin:0 0 10px !important;
+		padding:0;
+		a, a:visited{
+			text-decoration: none;
+			color: #000;
+		}
+	}
 
-/**
- * Single Ticket
- */
-.support-ticket{
-}
+	.support-ticket{
 
-.support-ticket ul, .support-ticket li{
-	list-style: none;
-	margin:0 !important;
-	padding:0;
-}
-.support-ticket .question{
-	width:98%;
-	overflow: hidden;
-	border:1px solid #DDD;
-	background: #F1F1F1;
-	padding:1%;
-}
-.support-ticket .question .left{
-	float:left;
-	width:74%;
-	margin-right: 5%;
-	min-height: 150px;
-}
-.support-ticket .question .meta-head{
-	margin: 0;
-	padding-bottom: 5px;
-	border-bottom:1px solid #DDD;
-}
-.support-ticket .question .meta-content{
-	margin: 0;
-}
-.support-ticket .question .meta-head h1{
-	padding: 0;
-	margin:0;
-}
-.support-ticket .question p.desc{
-	padding: 0;
-	margin:3px 0 0;	
-	color:#333;
-}
-.support-ticket .question .right{
-	float:right;
-	width:20%;
-	padding-top:0;
-}
+		padding: 15px 20px 15px 20px;
+		border-radius: 1px;
+		position: relative;
+		min-height: 50px;
+		background-color: #fff;
+		
+	}
 
-.question .img-wrapper img{
-	height:auto;
-}
+	.wt-odd{
+		border: #DDD solid 1px;
+		background: #EAEAEA;
+	}
 
-.tickets .single{
-	margin-bottom: 10px;
-}
+	.wt-meta-head{
+		p{
+			float:left;
+			margin: 0 10px 0 0 !important;
+			padding:0;
+			line-height: 1;
+		}
+	}
 
-/**
- * Single Ticket: Comments
- */
-.support-ticket .response{
-	width:99%;
-	overflow: hidden;
-	border:1px solid #DDD;
-	/*border-bottom-style: dashed;*/
-	background: #F1F1F1;
-}
-.support-ticket .author .response{
-	background: #DDD;
-	border-color: #AAA;
-}
-.support-ticket .response .left{
-	float:left;
-	width:74%;
-	margin-right: 5%;
-}
-.support-ticket .response .meta-head{
-	margin: 15px 15px 0 15px;
-	padding-bottom: 5px;
-	border-bottom:1px solid #DDD;
-}
-.support-ticket .author .response .meta-head{
-	border-color: #AAA;
-}
-.support-ticket .response .meta-content{
-	margin:  10px 15px 15px;
-}
-.support-ticket .response .meta-head h1{
-	padding: 0;
-	margin:0;
-	line-height:110%;
-}
-.support-ticket .meta-head h1 a{
-	color:#444;
-	text-decoration: none;
-}
-.support-ticket .meta-head h1 a:hover{
-	color:#444;
-	text-decoration: underline;
-}
-.support-ticket .response p.desc{
-	padding: 0;
-	margin:3px 0 0;	
-	color:#333;
-}
-.support-ticket .response .right{
-	float:right;
-	width:20%;
-	padding-top:20px;
-}
+	.pagination{
+		margin-top: 10px;
+		float:right;
 
-.support-ticket li{
-	margin-top: 10px !important;
-}
+		span, a{
+			float:left;
+			padding: 5px 10px;
+			margin-left: 5px;
+		}
 
-/**
- * Single Ticket: Comment Form
- */
-.support-ticket .form{
-	width:99%;
-	margin-top:10px;
-	border:1px solid #DDD;
-	background: #F1F1F1;
-}
-.support-ticket .form .textarea{
-	margin-bottom: 10px;
-}
+		a{
+			border: #DDD solid 1px;
+			background: #EAEAEA;
+		}
 
-.support-ticket .form_header, .support-ticket #respond{
-	margin: 20px 20px 0;
-}
-
-.single-ticket #comment{
-	display: block;
-	width: 100%;
-}
-
-/**
- * Archive Ticket
- */
-.archive .support-ticket{
-	margin-bottom: 10px;
+		.visuallyhidden{
+			display: none;
+		}
+	}
 }

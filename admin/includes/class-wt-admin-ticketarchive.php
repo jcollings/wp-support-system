@@ -47,8 +47,8 @@ class WT_Admin_TicketArchive{
 		switch($column){
 			
 			case 'priority':
-
-				echo wt_get_ticket_priority($ticket_id);
+				$priority = wt_get_ticket_priority($ticket_id);
+				echo "<span class='" . strtolower($priority) . "'>" . $priority . "</span>";
 			break;
 			
 			case 'date-modified':
@@ -61,6 +61,7 @@ class WT_Admin_TicketArchive{
 					the_time( 'F j, Y \a\t g:i a', $ticket_id );
 				}
 			break;
+			
 			case 'ticket-author':
 				echo wt_get_ticket_author_meta($ticket_id, 'email');
 			break;
@@ -140,7 +141,7 @@ class WT_Admin_TicketArchive{
 
 			// todo: overdue tickets of x days should appear at the top of the list as they should have a higher priority
 			// order by meta_key _priority by default or if orderby priority has been chosen
-			if((isset($query->query['orderby']) && $query->query['orderby'] == 'priority') || !isset($query->query['orderby'])){
+			if((isset($query->query['orderby']) && $query->query['orderby'] == 'priority')){ // || !isset($query->query['orderby'])){
 				$query->set('orderby', 'meta_value_num');
 				$query->set('meta_key', '_priority');
 				$query->set('meta_value_num', '_priority');

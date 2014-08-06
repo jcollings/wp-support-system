@@ -29,29 +29,17 @@
 	}
 }
 
-.wpss-two-cols{
-	width: 100%;
-	overflow: hidden;
-
-	.wpss-one-col{
-		width: 50%;
-	}
-
-	.wpss-two-col{
-		width: 100%;
-	}
-}
-
-.wpss-pull-left{
-	float:left;
-}
-.wpss-pull-right{
-	float:right;
-}
-
 dl.wpss-dl{
+	overflow: hidden;
+	dt, dd{
+		float:left;
+		width:50%;
+		margin:0;
+	}
+
 	dt{
 		font-weight: bold;
+		
 	}
 }
 
@@ -59,5 +47,25 @@ dl.wpss-dl{
 	
 	#submitdiv, .add-new-h2{
 		display: none;
+	}
+}
+
+.priority.column-priority{
+
+	span{
+		padding: 2px 5px;
+		color: #FFF;
+	}
+
+	.high{
+		background: red;
+	}
+
+	.medium{
+		background: orange;
+	}
+
+	.low{
+		background: green;
 	}
 }

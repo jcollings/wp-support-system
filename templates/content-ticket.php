@@ -1,4 +1,4 @@
-<div id="post-<?php the_ID(); ?>" class="support-ticket single">
+<?php /*<div id="post-<?php the_ID(); ?>" class="support-ticket single">
 	<div class="question">
 		<div class="left">
 			<div class="meta-head">
@@ -20,5 +20,15 @@
 				</div>
 			</div>
 		</div>
+	</div>
+</div>
+
+*/ ?>
+<div id="ticket-<?php the_ID(); ?>" class="support-ticket single <?php wt_the_ticket_class(); ?>">
+	<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+	<div class="wt-meta-head">
+		<p class="access"><strong>Access:</strong> <?php echo wt_get_ticket_access(); ?></p>
+		<p class="status"><strong>Status:</strong> <?php echo wt_get_ticket_status(); ?></p>
+		<p class="department"><strong>Dept:</strong> <?php echo wt_get_ticket_department(); ?></p>
 	</div>
 </div>

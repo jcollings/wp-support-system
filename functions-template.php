@@ -72,11 +72,12 @@ function wt_the_notifications($section = null, $session = null){
  * Ticket Functions
  */
 function wt_the_ticket_class(){
-	global $post;
+	global $post, $wpss_counter;
 	$classes = array();
 
 	$classes[] = 'wt-'.wt_get_ticket_access();
 	$classes[] = 'wt-'.strtolower(wt_get_ticket_priority(get_the_ID()));
+	$classes[] = 'wt-' . (($wpss_counter % 2 === 0) ? 'even' : 'odd');
 	echo implode(' ', $classes);
 }
 
@@ -147,31 +148,24 @@ function wt_get_ticket_author_meta($ticket_id, $key = ''){
 	switch($key){
 		case 'email':
 
-			if(is_member_ticket($ticket_id)){
+			// get member email
+			$author_id = intval(get_post_meta( $ticket_id, '_ticket_author', true ));
 
-				// get member email
-				$author_id = intval(get_post_meta( $ticket_id, '_ticket_author', true ));
-				return get_the_author_meta('user_email', $author_id);
-
-			}else{
-
-				// get public email
+			// if non registered ticket
+			if($author_id == 0){
 				return get_post_meta( $ticket_id, '_user_email', true );
 			}
+			return get_the_author_meta('user_email', $author_id);
 		break;
 		case 'name':
 
-			if(is_member_ticket($ticket_id)){
+			$author_id = intval(get_post_meta( $ticket_id, '_ticket_author', true ));
 
-				// get member email
-				$author_id = intval(get_post_meta( $ticket_id, '_ticket_author', true ));
-				return get_the_author_meta('user_nicename', $author_id);
-
-			}else{
-
-				// get public email
+			// if non registered ticket
+			if($author_id == 0){
 				return get_post_meta( $ticket_id, '_user_name', true );
 			}
+			return get_the_author_meta('user_nicename', $author_id);
 		break;
 	}
 
@@ -208,5 +202,48 @@ function wt_get_comment_access(){
 
 	$access = get_comment_meta( get_comment_id(), '_comment_access', true ); 
 	return $access ? $access : 'public';
+}
+
+/**
+ * Pagination
+ */
+if(!function_exists('wt_pagination')){
+    function wt_pagination($pages = '', $range = 2)
+    {  
+         $showitems = ($range * 2)+1;  
+
+         global $paged;
+         if(empty($paged)) $paged = 1;
+
+         if($pages == '')
+         {
+             global $wp_query;
+             $pages = $wp_query->max_num_pages;
+             if(!$pages)
+             {
+                 $pages = 1;
+             }
+         }   
+
+         if(1 != $pages)
+         {
+             echo "<div class=\"pagination\" role=\"navigation\">\n";
+             echo "<p class=\"visuallyhidden\">".__('Pagination', 'native').":</p><div aria-labelledby=\"paginglabel\" >";
+             if($paged > 2 && $paged > $range+1 && $showitems < $pages) echo "<a href='".get_pagenum_link(1)."'>&laquo;</a>";
+             if($paged > 1 && $showitems < $pages) echo "<a href='".get_pagenum_link($paged - 1)."'>&lsaquo;</a>";
+
+             for ($i=1; $i <= $pages; $i++)
+             {
+                 if (1 != $pages &&( !($i >= $paged+$range+1 || $i <= $paged-$range-1) || $pages <= $showitems ))
+                 {
+                     echo ($paged == $i)? "<span class='current'>".$i."</span>":"<a href='".get_pagenum_link($i)."' class='inactive' >".$i."</a>";
+                 }
+             }
+
+             if ($paged < $pages && $showitems < $pages) echo "<a href='".get_pagenum_link($paged + 1)."'>&rsaquo;</a>";  
+             if ($paged < $pages-1 &&  $paged+$range-1 < $pages && $showitems < $pages) echo "<a href='".get_pagenum_link($pages)."'>&raquo;</a>";
+             echo "</div>\n</div>\n";
+         }
+    }
 }
 ?>

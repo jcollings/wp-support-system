@@ -11,6 +11,8 @@ get_header(); ?>
 
 <?php do_action('before_theme_content'); ?>
 
+<div class="primary site-content">
+
 <?php if(have_posts()): ?>
 	<?php while(have_posts()): the_post(); ?>
 
@@ -18,6 +20,9 @@ get_header(); ?>
 
 	<?php endwhile; ?>
 <?php endif; ?>
+
+</div>
+<?php get_sidebar(); ?>
 
 <?php do_action('after_theme_content'); ?>
 

@@ -8,23 +8,36 @@ class WT_Shortcode_ArchiveTicket{
 
 	public function output($atts){
 
-		global $wptickets, $post, $wp_query;
+		global $wptickets, $post, $wp_query, $wpss_counter;
+		$wpss_counter = 0;
 
 		extract( shortcode_atts( array(
 		), $atts ) );
+
+		echo "<div class='post-type-archive-ticket'>";
 
 		// set wp_query to temp query
 		$temp_wp_query = $wp_query;
 
 		// load tikets into post data
-		$wp_query = $wptickets->tickets->get_tickets();
+		$wp_query = $wptickets->tickets->get_tickets(array('paged' => get_query_var('paged'), 'posts_per_page' => 10));
 
 		// Output ticket archive
-		wt_get_template_part( 'archive-ticket' );
+		if(have_posts()){
+			while(have_posts()){
+				the_post();
+				$wpss_counter++;
+
+				wt_get_template_part( 'content-ticket' );
+			}
+		}
+
+		wt_pagination();
 
 		// reset to old wp_query
 		$wp_query = $temp_wp_query;
 		wp_reset_postdata();
+		echo "</div>";
 	}
 }
 new WT_Shortcode_ArchiveTicket();

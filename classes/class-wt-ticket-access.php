@@ -10,6 +10,11 @@ class WT_TicketAccess{
 
 		global $post, $wp_query, $wptickets;
 
+		// ticket archive, modify query
+		if(is_post_type_archive( 'ticket' ) || ( !is_singular('ticket') && is_main_query() && get_query_var('post_type') == 'ticket' )){
+			$wp_query = $wptickets->tickets->get_tickets(array('paged' => get_query_var('paged'), 'posts_per_page' => 2));
+		}
+
 		if(is_user_logged_in() || is_user_admin())
 			return;
 
@@ -23,14 +28,6 @@ class WT_TicketAccess{
 			// redirect if not allowed
 			$wp_query->set_404();
 			status_header(404);
-		}
-
-		// 
-		if(is_post_type_archive( 'ticket' )){
-
-			// load tikets into post data
-			// todo: enable paging or move it to pre_get_posts hook
-			$wp_query = $wptickets->tickets->get_tickets();
 		}
 	}
 }

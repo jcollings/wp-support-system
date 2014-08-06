@@ -6,11 +6,11 @@ require 'class-wt-admin-actionbox.php';
 add_action( 'add_meta_boxes', 'wt_add_meta_boxes' );
 function wt_add_meta_boxes(){
 
+	// ticket info meta box
+	add_meta_box( 'wpticket-ticket-info', __( 'Ticket Info', 'wp-tickets' ), 'wt_ticket_info_meta_box', 'ticket', 'side', 'high');
+
 	// publish meta box
 	add_meta_box( 'wpticket-ticket-actions', __( 'Ticket Actions', 'wp-tickets' ), 'wt_ticket_actions_meta_box', 'ticket', 'side', 'high');
-
-	// ticket info meta box
-	add_meta_box( 'wpticket-ticket-info', __( 'Ticket Info', 'wp-tickets' ), 'wt_ticket_info_meta_box', 'ticket', 'normal', 'high');
 
 	// ticket comment meta box
 	add_meta_box( 'wpticket-ticket-comments', __( 'Ticket Thread', 'wp-tickets' ), 'wt_ticket_comment_meta_box', 'ticket', 'normal', 'high');

@@ -23,8 +23,22 @@ class WT_TicketModel{
 			);
 		}
 
+		if(isset($args['paged']) && intval($args['paged']) > 0){
+			$query['paged'] = intval($args['paged']);
+		}
+
+		if(isset($args['posts_per_page'])){
+			$query['posts_per_page'] = $args['posts_per_page'];
+		}
+
 		if(isset($args['user_id']) && intval($args['user_id']) > 0){
 			$query['author'] = intval($args['user_id']);
+		}
+
+		if(isset($args['status'])){
+
+			$query['tax_query'] = array();
+			$query['tax_query'][] = array('taxonomy' => 'status', 'field' => 'slug', 'terms' => $args['status']);
 		}
 
 		$tickets = new WP_Query($query);
@@ -299,7 +313,7 @@ class WT_TicketModel{
 	public function get_ticket_user_list(){
 		
 		$tickets = new WP_Query(array(
-			'author' => 0,
+			// 'author' => 0,
 			'posts_per_page' => -1,
 			'post_type' => 'ticket'
 		));
@@ -310,9 +324,9 @@ class WT_TicketModel{
 			$tickets->the_post();
 
 			$ticket_id = get_the_id();
-
-			$email = get_post_meta( $ticket_id, '_user_email' , true );
-			$name = get_post_meta( $ticket_id, '_user_name', true );
+			
+			$email = wt_get_ticket_author_meta($ticket_id, 'email');
+			$name = wt_get_ticket_author_meta($ticket_id, 'name');
 
 			if(!empty($email)){
 				$data[$email] = $name;
