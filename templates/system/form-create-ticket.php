@@ -49,7 +49,16 @@
 
 	<div class="input textarea">
 		<label>Message</label>
-		<textarea name="message"></textarea>
+		<?php 
+			$settings  = array(
+				'wpautop'       => false, // use wpautop?
+				'media_buttons' => false, // show insert/upload button(s)
+				'textarea_rows' => 10,
+				'teeny'         => false, // output the minimal editor config used in Press This
+				'tinymce'       => true
+			);
+			wp_editor( '', 'message', $settings);
+			?>
 	</div>
 	
 	<div class="submit">

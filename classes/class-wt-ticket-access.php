@@ -12,7 +12,7 @@ class WT_TicketAccess{
 
 		// ticket archive, modify query
 		if(is_post_type_archive( 'ticket' ) || ( !is_singular('ticket') && is_main_query() && get_query_var('post_type') == 'ticket' )){
-			$wp_query = $wptickets->tickets->get_tickets(array('paged' => get_query_var('paged'), 'posts_per_page' => 2));
+			$wp_query = $wptickets->tickets->get_tickets(array('paged' => get_query_var('paged'), 'posts_per_page' => 10));
 		}
 
 		if(is_user_logged_in() || is_user_admin())

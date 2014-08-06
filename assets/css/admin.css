@@ -4,8 +4,11 @@
   margin-bottom: 10px;
   border-bottom: 1px dashed #cccccc;
   overflow: hidden; }
-  .admin-support-comment .comment-left, .admin-support-comment .comment-right {
-    float: left; }
+  .admin-support-comment .comment-right {
+    padding-left: 60px;
+    min-height: 50px; }
+  .admin-support-comment .comment-left {
+    position: absolute; }
   .admin-support-comment p {
     margin: 0;
     padding: 0; }
@@ -22,19 +25,25 @@ dl.wpss-dl {
   dl.wpss-dl dt, dl.wpss-dl dd {
     float: left;
     width: 50%;
-    margin: 0; }
+    margin: 0 0 5px; }
   dl.wpss-dl dt {
     font-weight: bold; }
 
 .wp-admin.post-type-ticket #submitdiv, .wp-admin.post-type-ticket .add-new-h2 {
   display: none; }
 
-.priority.column-priority span {
-  padding: 2px 5px;
-  color: white; }
-.priority.column-priority .high {
-  background: red; }
-.priority.column-priority .medium {
-  background: orange; }
-.priority.column-priority .low {
-  background: green; }
+span.wt-priority {
+  padding: 2px 5px; }
+  span.wt-priority.high {
+    background: red;
+    color: white; }
+  span.wt-priority.medium {
+    background: orange;
+    color: white; }
+  span.wt-priority.low {
+    background: green;
+    color: white; }
+
+.wt_form_wrapper label {
+  width: 200px !important;
+  display: inline-block !important; }

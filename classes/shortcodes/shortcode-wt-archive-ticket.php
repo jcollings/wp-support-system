@@ -14,7 +14,6 @@ class WT_Shortcode_ArchiveTicket{
 		extract( shortcode_atts( array(
 		), $atts ) );
 
-		echo "<div class='post-type-archive-ticket'>";
 
 		// set wp_query to temp query
 		$temp_wp_query = $wp_query;
@@ -37,7 +36,6 @@ class WT_Shortcode_ArchiveTicket{
 		// reset to old wp_query
 		$wp_query = $temp_wp_query;
 		wp_reset_postdata();
-		echo "</div>";
 	}
 }
 new WT_Shortcode_ArchiveTicket();

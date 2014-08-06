@@ -6,9 +6,18 @@
 	border-bottom: 1px dashed #CCC;
 	overflow:hidden;
 
-	.comment-left, .comment-right{
-		float:left;
+	.comment-right{
+		padding-left:60px;
+		min-height: 50px;
 	}
+
+	.comment-left{
+		position:absolute;
+	}
+
+	// .comment-left, .comment-right{
+	// 	float:left;
+	// }
 
 	p{
 		margin:0;
@@ -34,12 +43,11 @@ dl.wpss-dl{
 	dt, dd{
 		float:left;
 		width:50%;
-		margin:0;
+		margin:0 0 5px;
 	}
 
 	dt{
 		font-weight: bold;
-		
 	}
 }
 
@@ -50,22 +58,31 @@ dl.wpss-dl{
 	}
 }
 
-.priority.column-priority{
 
-	span{
-		padding: 2px 5px;
+span.wt-priority{
+	padding: 2px 5px;
+	
+
+	&.high{
+		background: red;
 		color: #FFF;
 	}
 
-	.high{
-		background: red;
-	}
-
-	.medium{
+	&.medium{
 		background: orange;
+		color: #FFF;
 	}
 
-	.low{
+	&.low{
 		background: green;
+		color: #FFF;
+	}
+}
+
+.wt_form_wrapper{
+
+	label{
+		width: 200px !important;	
+		display: inline-block !important;	
 	}
 }

@@ -16,7 +16,7 @@ get_header(); ?>
 
 <?php do_action('before_theme_content'); ?>
 
-<div class="primary site-content">
+<div class="primary site-content" id="wt-ticket-archive">
 
 <?php  if(is_archive()): ?>
 	<h1 class="entry-title">Support Tickets</h1>

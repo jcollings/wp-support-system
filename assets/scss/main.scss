@@ -1,45 +1,24 @@
 // ===========================================
 // Ticket Archive
 // ===========================================
-.post-type-archive-ticket{
+#wt-ticket-archive{
 
-	h1{
-		margin-bottom: 20px;
-	}
+	// h2, p{
+	// 	margin:0;
+	// 	padding:0;
+	// }
 
-	h2{
-		font-size: 18px;
-		margin:0 0 10px !important;
-		padding:0;
-		a, a:visited{
-			text-decoration: none;
-			color: #000;
-		}
-	}
+	// p{
+	// 	float:left;
+	// 	margin-right: 10px;
+	// }
 
-	.support-ticket{
-
-		padding: 15px 20px 15px 20px;
-		border-radius: 1px;
-		position: relative;
-		min-height: 50px;
-		background-color: #fff;
-		
-	}
-
-	.wt-odd{
-		border: #DDD solid 1px;
-		background: #EAEAEA;
-	}
-
-	.wt-meta-head{
-		p{
-			float:left;
-			margin: 0 10px 0 0 !important;
-			padding:0;
-			line-height: 1;
-		}
-	}
+	// h2{
+	// 	a{
+	// 		text-decoration: none;
+	// 		color: #000;
+	// 	}
+	// }
 
 	.pagination{
 		margin-top: 10px;
@@ -61,3 +40,66 @@
 		}
 	}
 }
+
+// ===========================================
+// Single Ticket
+// ===========================================
+
+.single-ticket{
+	h1{
+		font-size: 30px;
+	}
+}
+
+// .wt-support-ticket{
+
+.wt-support-comment{
+	padding: 10px;
+	margin: 10px 0 10px 0;	
+	border: #DDD solid 1px;
+	background: #EAEAEA;
+	overflow: hidden;
+
+	.wt-comment-right{
+		h2, p{
+			margin:0;
+			padding:0;
+		}
+
+		p{
+			float:left;
+			margin-right: 10px;
+		}
+
+		h2{
+			a{
+				text-decoration: none;
+				color: #000;
+			}
+		}
+	}
+
+	.wt-comment-content{
+		width: 100%;
+		clear:left;
+	}
+}
+
+.wt-comment-author{
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.wt-comment-left{
+	position:absolute;
+	width:50px;
+}
+
+.wt-comment-right{
+	padding-left:60px;
+	min-height: 50px;
+	p{
+		line-height: 1.3;
+	}
+}
+// }

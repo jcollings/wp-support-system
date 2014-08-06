@@ -1,35 +1,48 @@
-.post-type-archive-ticket h1 {
-  margin-bottom: 20px; }
-.post-type-archive-ticket h2 {
-  font-size: 18px;
-  margin: 0 0 10px !important;
-  padding: 0; }
-  .post-type-archive-ticket h2 a, .post-type-archive-ticket h2 a:visited {
-    text-decoration: none;
-    color: black; }
-.post-type-archive-ticket .support-ticket {
-  padding: 15px 20px 15px 20px;
-  border-radius: 1px;
-  position: relative;
-  min-height: 50px;
-  background-color: white; }
-.post-type-archive-ticket .wt-odd {
-  border: #dddddd solid 1px;
-  background: #eaeaea; }
-.post-type-archive-ticket .wt-meta-head p {
-  float: left;
-  margin: 0 10px 0 0 !important;
-  padding: 0;
-  line-height: 1; }
-.post-type-archive-ticket .pagination {
+#wt-ticket-archive .pagination {
   margin-top: 10px;
   float: right; }
-  .post-type-archive-ticket .pagination span, .post-type-archive-ticket .pagination a {
+  #wt-ticket-archive .pagination span, #wt-ticket-archive .pagination a {
     float: left;
     padding: 5px 10px;
     margin-left: 5px; }
-  .post-type-archive-ticket .pagination a {
+  #wt-ticket-archive .pagination a {
     border: #dddddd solid 1px;
     background: #eaeaea; }
-  .post-type-archive-ticket .pagination .visuallyhidden {
+  #wt-ticket-archive .pagination .visuallyhidden {
     display: none; }
+
+.single-ticket h1 {
+  font-size: 30px; }
+
+.wt-support-comment {
+  padding: 10px;
+  margin: 10px 0 10px 0;
+  border: #dddddd solid 1px;
+  background: #eaeaea;
+  overflow: hidden; }
+  .wt-support-comment .wt-comment-right h2, .wt-support-comment .wt-comment-right p {
+    margin: 0;
+    padding: 0; }
+  .wt-support-comment .wt-comment-right p {
+    float: left;
+    margin-right: 10px; }
+  .wt-support-comment .wt-comment-right h2 a {
+    text-decoration: none;
+    color: black; }
+  .wt-support-comment .wt-comment-content {
+    width: 100%;
+    clear: left; }
+
+.wt-comment-author {
+  font-weight: bold;
+  margin-bottom: 10px; }
+
+.wt-comment-left {
+  position: absolute;
+  width: 50px; }
+
+.wt-comment-right {
+  padding-left: 60px;
+  min-height: 50px; }
+  .wt-comment-right p {
+    line-height: 1.3; }

@@ -19,6 +19,7 @@ class WT_Admin_TicketArchive{
 		add_action( 'restrict_manage_posts' , array($this,  'wt_restrict_manage_tickets') );
 
 		add_filter( 'views_edit-ticket' , array($this, 'append_tick_view_list'));
+		add_filter( 'bulk_actions-edit-ticket', array($this, 'bulk_actions') );
 	}
 
 	/**
@@ -48,7 +49,7 @@ class WT_Admin_TicketArchive{
 			
 			case 'priority':
 				$priority = wt_get_ticket_priority($ticket_id);
-				echo "<span class='" . strtolower($priority) . "'>" . $priority . "</span>";
+				echo "<span class='wt-priority " . strtolower($priority) . "'>" . $priority . "</span>";
 			break;
 			
 			case 'date-modified':
@@ -239,6 +240,11 @@ class WT_Admin_TicketArchive{
 			?></select>
 			<?php
 		}
+	}
+
+	public function bulk_actions($list){
+		unset($list['edit']);
+		return $list;
 	}
 }
 

@@ -1,5 +1,5 @@
 <div class="form form_wrapper">
-	<?php //comment_form(); ?>
+	<h2>Reply</h2>
 	<form method="post" action="#">
 
 		<input type="hidden" name="wptickets-action" value="add_comment" />
@@ -11,8 +11,17 @@
 		</div>
 
 		<div class="input textarea">
-			<label>Response</label>
-			<textarea name="response"></textarea>
+			<!-- <textarea name="response"></textarea> -->
+			<?php 
+			$settings  = array(
+				'wpautop'       => false, // use wpautop?
+				'media_buttons' => false, // show insert/upload button(s)
+				'textarea_rows' => 10,
+				'teeny'         => false, // output the minimal editor config used in Press This
+				'tinymce'       => true
+			);
+			wp_editor( '', 'response', $settings);
+			?>
 		</div>
 
 		<div class="submit">

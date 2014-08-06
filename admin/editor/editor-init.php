@@ -93,8 +93,9 @@ function wt_ticket_info_meta_box(){
 			<dt>Status:</dt>
 			<dd><?php echo wt_get_ticket_status(); ?></dd>
 
+			<?php $priority = wt_get_ticket_priority(); ?>
 			<dt>Priority:</dt>
-			<dd><?php echo wt_get_ticket_priority(); ?></dd>
+			<dd><span class="wt-priority <?php echo strtolower($priority); ?>"><?php echo wt_get_ticket_priority(); ?></span></dd>
 
 			<dt>Source</dt>
 			<dd><?php echo wt_get_ticket_source($post->ID); ?></dd>
@@ -108,8 +109,9 @@ function wt_ticket_info_meta_box(){
 			<dt>Author:</dt>
 			<dd><?php echo wt_get_ticket_author_meta($post->ID, 'name'); ?></dd>
 
+			<?php $email = wt_get_ticket_author_meta($post->ID, 'email'); ?>
 			<dt>Email:</dt>
-			<dd><?php echo wt_get_ticket_author_meta($post->ID, 'email'); ?></dd>
+			<dd><a href="<?php echo admin_url('/edit.php?post_type=ticket&ticket-author='.urlencode($email)); ?>"><?php echo $email; ?></a></dd>
 
 		</dl>
 	</div>
