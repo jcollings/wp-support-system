@@ -94,6 +94,7 @@ class WP_Tickets{
 		require_once 'classes/class-wt-ticket-priority.php';
 		require_once 'classes/class-wt-ticket-comment.php';
 		require_once 'classes/class-wt-email-notification.php';
+		require_once 'classes/class-wt-notifications.php';
 
 		// temp addons
 		// require_once 'addons/wptickets-imap-email.php';

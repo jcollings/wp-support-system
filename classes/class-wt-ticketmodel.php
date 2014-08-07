@@ -405,8 +405,8 @@ class WT_TicketModel{
 
 		$read = get_post_meta( $ticket_id, '_ticket_read_'.$user_id, true );
 		
-		if($read !== '' && $read !== 1){
-			print_r($read);
+		if($read !== '' && $read != 1){
+			// print_r($read);
 			return false;
 		}
 

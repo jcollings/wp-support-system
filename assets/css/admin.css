@@ -11,6 +11,8 @@ li#menu-posts-ticket.wp-has-current-submenu .wp-menu-image:before {
   padding-left: 40px; }
 .post-type-ticket #submitdiv, .post-type-ticket .add-new-h2 {
   display: none; }
+.post-type-ticket .wp-list-table .row-title {
+  font-weight: normal; }
 
 .admin-support-comment {
   clear: both;

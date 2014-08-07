@@ -8,7 +8,6 @@ require 'includes/class-wt-settings.php';
 require 'includes/class-wt-admin-departments.php';
 require 'includes/class-wt-admin-ticketstatus.php';
 require 'includes/class-wt-admin-ticketarchive.php';
-require 'includes/class-wt-admin-notifications.php';
 
 // load sections
 require 'editor/editor-init.php';

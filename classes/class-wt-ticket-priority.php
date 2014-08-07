@@ -20,7 +20,14 @@ class WT_TicketPriority{
 	}
 
 	public function after_ticket_create($ticket_id){
-		add_post_meta( $ticket_id, '_priority', $this->default_priority);
+
+		$config = get_option('support_system_config');
+		$priority = $this->default_priority;
+		if(isset($config['ticket_default_priority'])){
+			$priority = $config['ticket_default_priority'];
+		}
+
+		add_post_meta( $ticket_id, '_priority', $priority);
 	}
 
 	public function list_ticket_priorities($priorities = array()){

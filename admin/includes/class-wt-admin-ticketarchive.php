@@ -48,8 +48,10 @@ class WT_Admin_TicketArchive{
 				if($wptickets->tickets->is_ticket_read($id))
 					continue;
 				
-				echo "#post-".$id." .row-title{
-					color: red;
+				echo "
+				#post-".$id." .row-title{
+					font-weight:bold;
+					color: #000;
 				}";
 			}
 			echo "<style>";
