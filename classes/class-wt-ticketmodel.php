@@ -175,6 +175,9 @@ class WT_TicketModel{
 			// save author as _ticket_author to stop it being replaced
 			add_post_meta( $ticket_id, '_ticket_author', $user_id);
 
+			// save author ip
+			add_post_meta( $ticket_id, '_ticket_author_ip', $this->get_user_ip());
+
 			if($user_id == 0){
 				$key = substr(md5(time()), 0, 10);
 				add_post_meta( $ticket_id, '_view_key', $key);
@@ -204,14 +207,19 @@ class WT_TicketModel{
 
 		$commentdata = array(
 			'comment_post_ID' => $ticket_id,
-			'comment_content' => $content
+			'comment_content' => $content,
+			'comment_author_IP' => $this->get_user_ip()
 		);
+
+		
 
 		if(!$author_id){
 			$commentdata['comment_author_email'] = get_post_meta( $ticket_id, '_user_email', true );
 			$commentdata['comment_author'] = get_post_meta( $ticket_id, '_user_name', true );
 		}else{
 			$commentdata['user_id'] = $author_id;
+			$commentdata['comment_author_email'] = get_the_author_meta( 'user_email', $author_id );
+			$commentdata['comment_author'] = get_the_author_meta( 'user_nicename', $author_id );
 		}
 
 		if($comment_id = wp_insert_comment($commentdata)){
@@ -228,6 +236,27 @@ class WT_TicketModel{
 		}
 
 		return false;
+	}
+
+	private function get_user_ip(){
+
+		$user_ip = '';
+
+		// get commenters IP
+		if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
+			
+			//check ip from share internet
+			$user_ip = $_SERVER['HTTP_CLIENT_IP'];
+		} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+			
+			//to check ip is pass from proxy
+			$user_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		} else {
+			
+			$user_ip = $_SERVER['REMOTE_ADDR'];
+		}
+
+		return $user_ip;
 	}
 
 	public function insert_internal_note($ticket_id = null, $content = null, $author_id = 0){
