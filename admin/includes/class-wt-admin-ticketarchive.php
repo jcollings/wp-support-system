@@ -10,6 +10,8 @@
 
 class WT_Admin_TicketArchive{
 
+	private $admin_ticket_query = false;
+
 	public function __construct(){
 
 		add_filter('manage_ticket_posts_columns', array($this, 'add_ticket_column_heading'));
@@ -18,8 +20,40 @@ class WT_Admin_TicketArchive{
 		add_filter( 'pre_get_posts' , array($this, 'sort_ticket_columns'));
 		add_action( 'restrict_manage_posts' , array($this,  'wt_restrict_manage_tickets') );
 
+		add_action('admin_head', array($this, 'display_unread_styles'));
+
 		add_filter( 'views_edit-ticket' , array($this, 'append_tick_view_list'));
 		add_filter( 'bulk_actions-edit-ticket', array($this, 'bulk_actions') );
+	}
+
+	public function display_unread_styles(){
+
+		global $wptickets;
+		
+		$screen = get_current_screen();
+		if($screen->id == 'edit-ticket'){
+			$ids = array();
+			$q = $this->admin_ticket_query->set('fields', 'ids');
+			if($this->admin_ticket_query->have_posts()){
+				while($this->admin_ticket_query->have_posts()){
+					$this->admin_ticket_query->the_post();
+					$ids[] = get_the_ID();
+				}
+				wp_reset_postdata();
+			}
+
+			echo "<style type='text/css'>";
+			foreach($ids as $id){
+				
+				if($wptickets->tickets->is_ticket_read($id))
+					continue;
+				
+				echo "#post-".$id." .row-title{
+					color: red;
+				}";
+			}
+			echo "<style>";
+		}
 	}
 
 	/**
@@ -173,7 +207,8 @@ class WT_Admin_TicketArchive{
 				// check to see if author has 
 				$author_query = new WP_User_Query(array(
 					'search' => $author,
-					'search_columns' => array('user_email')
+					'search_columns' => array('user_email'),
+					'fields' => 'ID'
 				));
 
 				// todo: stop reuse of meta_query merge
@@ -187,7 +222,7 @@ class WT_Admin_TicketArchive{
 					$query->set('meta_query',  array_merge(array(
 						array(
 							'key' => '_ticket_author',
-							'value' => $author,
+							'value' => $author_query->results,
 						)
 					), $old_meta_query));
 
@@ -201,6 +236,9 @@ class WT_Admin_TicketArchive{
 					), $old_meta_query));
 				}
 			}
+
+			// log query for later
+			$this->admin_ticket_query = $query;
 		}
 
 		return $query;

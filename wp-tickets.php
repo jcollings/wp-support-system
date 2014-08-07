@@ -43,11 +43,14 @@ class WP_Tickets{
 		$this->includes();
 
 		add_action('init', array($this, 'init'));
+		add_action( 'admin_init', array($this,'load_plugin') );
 		add_action( 'wp_enqueue_scripts', array($this, 'enqueue_scripts' ));
 
 		add_action( 'query_vars' , array( $this, 'register_query_vars' ) );
 
 		do_action('wptickets_loaded');
+
+		register_activation_hook( __FILE__, array( $this, 'activate_plugin' ) );
 	}
 
 	public function init(){
@@ -225,6 +228,30 @@ class WP_Tickets{
 		$this->allow_public = $config['require_account'] == 0 ? true : false;
 		$this->disable_css = isset($config['disable_css']) && $config['disable_css'] == 1 ? true : false; 
 	}
+
+	/**
+	 * On plugin activation
+	 * @return void
+	 */
+	public function activate_plugin(){
+
+		 add_option( 'wt-activated-plugin', 'wt-tickets' );
+	}
+
+	/**
+	 * On plugin activation ready
+	 * @return void
+	 */
+	public function load_plugin(){
+
+		if ( is_admin() && get_option( 'wt-activated-plugin' ) == 'wt-tickets' ) {
+
+			// once installed remove activation flag
+			delete_option( 'wt-activated-plugin' );
+		}
+	}
+
+
 }
 
 $GLOBALS['wptickets'] = new WP_Tickets();

@@ -388,4 +388,60 @@ class WT_TicketModel{
 		do_action('wt/after_ticket_close', $ticket_id);
 		return true;
 	}
+
+	
+	/**
+	 * check to see if user/current user has read the ticket
+	 * 
+	 * @param  int  $ticket_id 
+	 * @param  int $user_id   
+	 * @return boolean
+	 */
+	public function is_ticket_read($ticket_id, $user_id = 0){
+
+		if($user_id == 0){
+			$user_id = get_current_user_id();
+		}
+
+		$read = get_post_meta( $ticket_id, '_ticket_read_'.$user_id, true );
+		
+		if($read !== '' && $read !== 1){
+			print_r($read);
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Count unread messages
+	 * 
+	 * @return int
+	 */
+	public function count_unread_messages($user = 0){
+
+		if($user_id == 0){
+			$user_id = get_current_user_id();
+		}
+
+		$query = array(
+			'fields' => 'ids',
+			'post_type' => 'ticket',
+			'posts_per_page' => -1,
+			'meta_query' => array(
+				array(
+					'key' => '_ticket_read_'. $user_id,
+					'value' => 1,
+					'compare' => '!=',
+					'type' => 'NUMERIC'
+				)
+			)
+		);
+
+		$tickets = new WP_Query($query);
+		if($tickets->have_posts()){
+			return $tickets->post_count;
+		}
+		return 0;
+	}
 }

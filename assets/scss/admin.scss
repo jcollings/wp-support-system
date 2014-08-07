@@ -1,3 +1,48 @@
+// ==========================================================================
+// admin menu styles
+// ==========================================================================
+li#menu-posts-ticket{
+	
+	// default menu item state
+	.wp-menu-image:before{
+		background: url(../img/icon_16_grey.png) no-repeat 0 10px !important;
+	    content: "";
+	}
+	
+	// hover menu item state
+	&:hover{
+		.wp-menu-image:before {
+		    background: url(../img/icon_16_grey.png) no-repeat 0 10px !important;
+		}
+	}
+		
+	// current menu item state
+	&.wp-has-current-submenu{
+		.wp-menu-image:before {
+		    background: url(../img/icon_16_grey.png) no-repeat 0 10px !important;
+		}
+	}
+}
+
+// ==========================================================================
+// General Admin Styles
+// ==========================================================================
+.post-type-ticket{
+	.wrap{
+		h2{
+			// set title admin icon icon
+			background: url(../img/icon_32.png) no-repeat 0 7px;
+			padding-left: 40px;
+		}
+	}
+	
+	// hide add new button and public box
+	#submitdiv, .add-new-h2{
+		display: none;
+	}
+}
+
+
 .admin-support-comment{
 
 	clear:both;
@@ -15,17 +60,12 @@
 		position:absolute;
 	}
 
-	// .comment-left, .comment-right{
-	// 	float:left;
-	// }
-
 	p{
 		margin:0;
 		padding:0;
 	}
 
 	.meta-head{
-		// margin-left:10px;
 		margin: 0 0 10px 10px;
 		border-bottom: 1px solid #DDD;
 	}
@@ -38,26 +78,23 @@
 	}
 }
 
+// ticket info box
 dl.wpss-dl{
 	overflow: hidden;
 	dt, dd{
 		float:left;
-		width:50%;
 		margin:0 0 5px;
+	}
+
+	dd{
+		width: 60%;
 	}
 
 	dt{
 		font-weight: bold;
+		width:40%;
 	}
 }
-
-.wp-admin.post-type-ticket{
-	
-	#submitdiv, .add-new-h2{
-		display: none;
-	}
-}
-
 
 span.wt-priority{
 	padding: 2px 5px;

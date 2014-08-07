@@ -35,6 +35,9 @@ function wt_remove_meta_boxes() {
 function wt_ticket_actions_meta_box(){
 	global $post;
 
+	// on ticket view
+	do_action('wt/ticket_read', $post->ID, get_current_user_id());
+
 	// todo: display real information here
 	?>
 	<style type="text/css">

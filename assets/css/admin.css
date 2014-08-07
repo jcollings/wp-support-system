@@ -1,3 +1,17 @@
+li#menu-posts-ticket .wp-menu-image:before {
+  background: url(../img/icon_16_grey.png) no-repeat 0 10px !important;
+  content: ""; }
+li#menu-posts-ticket:hover .wp-menu-image:before {
+  background: url(../img/icon_16_grey.png) no-repeat 0 10px !important; }
+li#menu-posts-ticket.wp-has-current-submenu .wp-menu-image:before {
+  background: url(../img/icon_16_grey.png) no-repeat 0 10px !important; }
+
+.post-type-ticket .wrap h2 {
+  background: url(../img/icon_32.png) no-repeat 0 7px;
+  padding-left: 40px; }
+.post-type-ticket #submitdiv, .post-type-ticket .add-new-h2 {
+  display: none; }
+
 .admin-support-comment {
   clear: both;
   padding-bottom: 10px;
@@ -24,13 +38,12 @@ dl.wpss-dl {
   overflow: hidden; }
   dl.wpss-dl dt, dl.wpss-dl dd {
     float: left;
-    width: 50%;
     margin: 0 0 5px; }
+  dl.wpss-dl dd {
+    width: 60%; }
   dl.wpss-dl dt {
-    font-weight: bold; }
-
-.wp-admin.post-type-ticket #submitdiv, .wp-admin.post-type-ticket .add-new-h2 {
-  display: none; }
+    font-weight: bold;
+    width: 40%; }
 
 span.wt-priority {
   padding: 2px 5px; }
