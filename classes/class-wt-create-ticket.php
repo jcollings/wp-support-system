@@ -9,8 +9,7 @@ class WT_CreateTicket{
 		add_action('wt/process_add_comment', array($this, 'process_form_add_comment'));
 		add_action('wt/process_public_view_ticket', array($this, 'process_form_public_view_ticket'));
 
-		add_action('wt/process_login_account', array($this, 'process_form_login_account'));
-		add_action('wt/process_register_account', array($this, 'process_form_register_account'));
+		
 	}
 
 
@@ -127,57 +126,6 @@ class WT_CreateTicket{
 			exit;
 		}
 		return false;
-	}
-
-	public function process_form_register_account(){
-		global $wptickets;
-
-		$email = isset($_POST['email']) && !empty($_POST['email']) ? $_POST['email'] : false;
-		$password = isset($_POST['password']) && !empty($_POST['password']) ? $_POST['password'] : false;
-		$first_name = isset($_POST['first_name']) && !empty($_POST['first_name']) ? $_POST['first_name'] : false;
-		$surname = isset($_POST['surname']) && !empty($_POST['surname']) ? $_POST['surname'] : false;
-
-		$user = wp_insert_user(array(
-			'user_login'	=>	$email,
-			'user_pass'	=>	$password,
-			'first_name'	=>	$first_name,
-			'last_name'	=>	$surname,
-			'user_email'	=>	$email,
-			'display_name'	=>	$first_name . ' ' . $surname,
-			'nickname'	=>	$first_name . ' ' . $surname,
-			'role'		=>	'member'
-		));
-
-		if ( !is_wp_error($user) ){
-			wp_redirect(site_url('/support/'));
-		}else{
-			// error registering - $user->get_error_message()
-			$wptickets->session->add_notification($user->get_error_message(), 'form_member_register');
-		}
-
-	}
-
-	public function process_form_login_account(){
-		global $wptickets;
-
-		$username = isset($_POST['email']) && !empty($_POST['email']) ? $_POST['email'] : false;
-		$password = isset($_POST['password']) && !empty($_POST['password']) ? $_POST['password'] : false;
-
-		$user = wp_signon( array(
-			'user_login' => $username,
-			'user_password' => $password,
-			'remember' => true
-		), false );
-
-		if ( !is_wp_error($user) ){
-			// logged in
-			wp_redirect(site_url('/support/'));
-			exit();
-		}else{
-			// Username and password don`t match
-			$wptickets->session->add_notification('Username and password don\'t match', 'form_member_login');
-		}
-		
 	}
 }
 

@@ -44,6 +44,8 @@ class WT_Admin_Notifications{
 	 */
 	public function reset_ticket_notifications($ticket_id){
 
+		// todo: only when non admins have posted
+
 		// clear read
 		// todo: get list of users who are in charge of this ticket
 		$user_query = new WP_User_Query(array(

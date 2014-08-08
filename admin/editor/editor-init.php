@@ -38,7 +38,6 @@ function wt_ticket_actions_meta_box(){
 	// on ticket view
 	do_action('wt/ticket_read', $post->ID, get_current_user_id());
 
-	// todo: display real information here
 	?>
 	<style type="text/css">
 	#wpticket-ticket-actions .inside{
@@ -85,8 +84,6 @@ function wt_ticket_actions_meta_box(){
 function wt_ticket_info_meta_box(){
 	global $post;
 	setup_postdata($post);
-
-	// todo: gather and display ticket information
 	?>
 	<div class="wpss-two-cols">
 		<dl class="wpss-pull-left wpss-one-col wpss-dl">
@@ -139,14 +136,4 @@ function wt_ticket_comment_meta_box(){
 	 * show_admin_ticket_commentform 20
 	 */
 	do_action( 'wt_admin_comment_box' );	
-}
-
-/**
- * Display ticket internal notes
- * @return void
- */
-function wt_ticket_internal_comment_meta_box(){
-	global $post;
-
-	// todo: gather and display ticket internal comments
 }

@@ -418,7 +418,7 @@ class WT_TicketModel{
 	 * 
 	 * @return int
 	 */
-	public function count_unread_messages($user = 0){
+	public function count_unread_messages($user_id = 0){
 
 		if($user_id == 0){
 			$user_id = get_current_user_id();

@@ -5,7 +5,6 @@
  * Add new columns to ticket post type, and make taxonomies sortable
  * @author James Collings <james@jclabs.co.uk>
  * @since 0.0.2
- * @todo: Add filter drop downs, modify bulk edit forms
  */
 
 class WT_Admin_TicketArchive{
@@ -26,6 +25,11 @@ class WT_Admin_TicketArchive{
 		add_filter( 'bulk_actions-edit-ticket', array($this, 'bulk_actions') );
 	}
 
+	/**
+	 * Output unread ticket styles
+	 * 
+	 * @return void
+	 */
 	public function display_unread_styles(){
 
 		global $wptickets;

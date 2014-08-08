@@ -12,11 +12,13 @@ class WT_Admin_CommentForm{
 		add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts'));
 	}
 
+	/**
+	 * Process admin comment form in single ticket admin screen
+	 * @return [type] [description]
+	 */
 	public function process_form_add_comment(){
 
 		global $wptickets;
-
-		// todo: make sure it only happens when the add comment button is pressed
 
 		$ticket_id = isset($_POST['ticket_id']) && !empty($_POST['ticket_id']) ? $_POST['ticket_id'] : false ;
 		$action = isset($_POST['wptickets-action-button']) && $_POST['wptickets-action-button'] == 'Add Comment' ? $_POST['wptickets-action-button'] : false;
@@ -43,7 +45,6 @@ class WT_Admin_CommentForm{
 		$result = $wptickets->tickets->insert_comment($ticket_id, $message, $user_id, $args);
 		if($result){
 
-			//todo close ticket if checkbox is selected
 			if($close_ticket){
 				$wptickets->tickets->close_ticket($ticket_id);
 			}
@@ -54,28 +55,36 @@ class WT_Admin_CommentForm{
 		return false;
 	}
 
+	/**
+	 * Show all ticket comments in single ticket admin screen
+	 * @return void
+	 */
 	public function show_admin_ticket_comments(){
 
 		global $post, $wptickets, $comment;
 		setup_postdata($post);
 		
-		// todo: gather and display ticket comments 
 		$comments = $wptickets->tickets->get_comments($post->ID, array('type' => 'admin'));
-
 		foreach($comments as $comment){
 			require $wptickets->plugin_dir . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'editor' . DIRECTORY_SEPARATOR . 'comments.php';
 		}
-		// print_r($comments);
-
 	}
+
+	/**
+	 * Show comment form in single ticket admin screen
+	 * @return void
+	 */
 	public function show_admin_ticket_commentform(){
 
 		global $wptickets;
 
-		// todo: display form to add comment
 		require_once $wptickets->plugin_dir . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'editor' . DIRECTORY_SEPARATOR . 'commentform.php';
 	}
 
+	/**
+	 * Display main ticket message in single ticket admin screen
+	 * @return void
+	 */
 	public function show_admin_ticket_message(){
 		global $post, $wptickets;
 		setup_postdata( $post );
@@ -83,6 +92,10 @@ class WT_Admin_CommentForm{
 		require_once $wptickets->plugin_dir . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'editor' . DIRECTORY_SEPARATOR . 'message.php';
 	}
 
+	/**
+	 * Output admin styles
+	 * @return void
+	 */
 	public function admin_enqueue_scripts(){
 		
 		global $wptickets;

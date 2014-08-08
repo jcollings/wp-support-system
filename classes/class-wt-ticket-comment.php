@@ -90,6 +90,8 @@ class WT_TicketComment{
 	 * Add ticket form
 	 */
 	function wt_show_ticket_commentform(){
+
+		// todo: show comment form if is ticket author or admin
 		wt_get_template_part( 'single-ticket/commentform' );
 	}
 
