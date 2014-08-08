@@ -138,7 +138,7 @@ class WT_Admin_TicketArchive{
 		    'numberposts' => -1
 		);
 		$num = count( get_posts( $args ) );
-		$output['all'] = '<a href="' . admin_url('/edit.php?post_type=ticket') . '" ' . $class . '>All (' . $num . ')</a>';
+		$output['all'] = '<a href="' . admin_url('/edit.php?post_type=ticket') . '" ' . $class . '>Active </a>';
 
 		$status = wt_list_ticket_status();
 		if($status){
@@ -182,6 +182,24 @@ class WT_Admin_TicketArchive{
 				$query->set('orderby', 'meta_value_num');
 				$query->set('meta_key', '_priority');
 				$query->set('meta_value_num', '_priority');
+			}
+
+			// by default show ticket status apart from opened
+			if(!isset($query->query['status'])){
+
+				$config = get_option('support_system_config');
+				$closed = intval($config['ticket_close_status']);
+
+				$terms = get_terms('status', array('exclude' => $closed) );
+				if(is_array($terms) && !empty($terms)){
+
+					$output = array();
+					foreach($terms as $t){
+						$output[] = $t->slug;
+					}
+					$query->set('status', implode(',',$output));	
+				}
+				
 			}
 
 			$priority = get_query_var('ticket-priority' );
