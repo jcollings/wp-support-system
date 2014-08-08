@@ -13,6 +13,8 @@ li#menu-posts-ticket.wp-has-current-submenu .wp-menu-image:before {
   display: none; }
 .post-type-ticket .wp-list-table .row-title {
   font-weight: normal; }
+.post-type-ticket .row-actions {
+  display: none; }
 
 .admin-support-comment {
   clear: both;

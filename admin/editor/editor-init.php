@@ -64,6 +64,10 @@ function wt_ticket_actions_meta_box(){
 
 		<div id="major-publishing-actions">
 
+			<div id="delete-action">
+				<a href="<?php echo esc_url( get_delete_post_link($post->ID ) ); ?>" class="submitdelete deletion">Move to Trash</a>
+			</div>
+
 			<div id="publishing-action">
 				<span class="spinner"></span>
 				<input type="submit" name="wptickets-action-button" value="Save Ticket" class="button button-primary" />

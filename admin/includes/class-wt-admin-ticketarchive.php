@@ -178,7 +178,7 @@ class WT_Admin_TicketArchive{
 
 			// todo: overdue tickets of x days should appear at the top of the list as they should have a higher priority
 			// order by meta_key _priority by default or if orderby priority has been chosen
-			if((isset($query->query['orderby']) && $query->query['orderby'] == 'priority')){ // || !isset($query->query['orderby'])){
+			if((isset($query->query['orderby']) && $query->query['orderby'] == 'priority')){
 				$query->set('orderby', 'meta_value_num');
 				$query->set('meta_key', '_priority');
 				$query->set('meta_value_num', '_priority');
@@ -200,6 +200,15 @@ class WT_Admin_TicketArchive{
 					$query->set('status', implode(',',$output));	
 				}
 				
+			}
+
+			// set posts per page
+			// todo: posts per page to be set from settings page
+			$query->set('posts_per_page', 30);
+
+			// by default order by date created
+			if(!isset($query->query['orderby']) && !isset($query->query['order'])){
+				$query->set('order', 'ASC');
 			}
 
 			$priority = get_query_var('ticket-priority' );

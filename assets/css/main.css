@@ -46,3 +46,14 @@
   min-height: 50px; }
   .wt-comment-right p {
     line-height: 1.3; }
+
+.wptickets_cols_2 {
+  overflow: hidden; }
+
+.wptickets_cols_2 .wptickets_col_1 {
+  float: left;
+  width: 48%;
+  margin-right: 4%; }
+
+.wptickets_cols_2 .wptickets_col_1.last {
+  margin-right: 0; }

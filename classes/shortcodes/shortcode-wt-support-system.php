@@ -21,9 +21,14 @@ class WT_Shortcode_SupportSystem{
 	public function output($atts){
 
 		extract( shortcode_atts( array(
+			'cols' => 2
 		), $atts ) );
 
 		global $wptickets;
+
+		if($cols == 2){
+			echo '<div class="wptickets_cols_2">';
+		}
 
 		if(is_user_logged_in()){
 
@@ -43,6 +48,10 @@ class WT_Shortcode_SupportSystem{
 			// Modules: [Register Account, Login]
 			wt_get_template_part( 'system/home-member' );
 
+		}
+
+		if($cols == 2){
+			echo '</div>';
 		}
 	}
 
@@ -72,24 +81,8 @@ class WT_Shortcode_SupportSystem{
 	}
 
 	public function account_ticket_archive_module(){
-		global $wptickets;
-
-		$tickets = $wptickets->tickets->get_tickets(array(
-			'user_id' => get_current_user_id()
-		));
-
-		if($tickets->have_posts()){
-
-			echo '<div class="tickets">';
-			echo '<h2>My Tickets</h2>';
-			while($tickets->have_posts()){
-				$tickets->the_post();
-				wt_get_template_part( 'content-ticket' );
-			}
-			wp_reset_postdata();
-			echo '</div>';
-		}
 		
+		wt_get_template_part( 'system/account/module-ticket-archive' );		
 	}
 }
 new WT_Shortcode_SupportSystem();

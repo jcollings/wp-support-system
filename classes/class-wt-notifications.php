@@ -6,7 +6,35 @@ class WT_Admin_Notifications{
 		add_action('wt/after_ticket_create', array($this, 'reset_ticket_notifications'));
 		add_action('wt/after_comment_create',array($this, 'reset_ticket_notifications'));
 		add_action('wt/ticket_read', array($this, 'on_ticket_read'), 10 , 2);
+		add_action('admin_menu', array($this, 'menu_notification'));
 	}
+
+	/**
+	 * Display unread ticket count in menu
+	 *
+	 * Add unread ticket count in menu item and overwite menu name to say Support
+	 * 
+	 * @return void
+	 */
+	public function menu_notification() {
+        global $menu, $wptickets;
+
+        $count = $wptickets->tickets->count_unread_messages();
+
+        foreach($menu as $key => $item){
+
+        	// if support menu item
+            if($item[2] == 'edit.php?post_type=ticket'){
+            	
+                if($count > 0){
+                    $menu[$key][0] = "Support <span class='update-plugins count-1'><span class='update-count'>$count</span></span>";    
+                }else{
+                    $menu[$key][0] = "Support";
+                }
+                break;
+            }
+        }
+    }
 
 	/**
 	 * Reset ticket notifications on the ticket

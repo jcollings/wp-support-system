@@ -177,7 +177,7 @@ class WP_Tickets{
 			'not_found'           => __( 'No Tickets found', 'wp-tickets' ),
 			'not_found_in_trash'  => __( 'No Tickets found in Trash', 'wp-tickets' ),
 			'parent_item_colon'   => __( 'Parent Ticket:', 'wp-tickets' ),
-			'menu_name'           => __( 'Support Tickets', 'wp-tickets' ),
+			'menu_name'           => __( 'Support Tickets', 'wp-tickets' ), // main menu renamed in wt-settings
 		);
 
 		$args = array(
