@@ -210,7 +210,6 @@ class WT_TicketModel{
 			'comment_content' => $content,
 			'comment_author_IP' => $this->get_user_ip()
 		);
-
 		
 
 		if(!$author_id){

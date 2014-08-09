@@ -8,15 +8,20 @@ class WT_AdminSettings{
 		add_action( 'admin_init', array($this, 'register_settings' ));
 	}
 
-	public function register_menu_pages(){
+	public function register_menu_pages(){     
 
 		// allow addons to hook into the meny creation
 		do_action('wt/register_admin_menu');
 		add_submenu_page('edit.php?post_type=ticket', 'Settings', 'Settings', 'manage_support_tickets', 'wpticket-settings', array($this, 'admin_settings_page'));
 
-        // remove add ticket menu item
-        remove_submenu_page('edit.php?post_type=ticket', 'post-new.php?post_type=ticket');
+        add_submenu_page( 'edit.php?post_type=ticket', 'About', 'About', 'read', 'wptickets-addons', array($this, 'admin_about_page') );
 	}
+
+    public function admin_about_page(){
+        
+        global $wptickets;
+        include $wptickets->plugin_dir . 'admin/views/about.php';
+    }
 
 	public function admin_settings_page(){
 		global $tabs;
@@ -208,6 +213,7 @@ class WT_AdminSettings{
                     <?php endif; ?>
                 <?php endforeach; ?>
                 </select>
+                <input type="hidden" name="<?php echo $setting_id; ?>[<?php echo $field_id; ?>_check]" value="1" />
                 <?php
                 break;
             }

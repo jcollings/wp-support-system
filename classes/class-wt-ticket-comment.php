@@ -91,6 +91,12 @@ class WT_TicketComment{
 	 */
 	function wt_show_ticket_commentform(){
 
+		global $post, $wptickets;
+
+		// hide comment form for non loggedin users who are not authorised
+		if(!is_user_logged_in() && !$wptickets->session->check_access_code( $post->ID ))
+			return;
+
 		// todo: show comment form if is ticket author or admin
 		wt_get_template_part( 'single-ticket/commentform' );
 	}
@@ -116,7 +122,7 @@ class WT_TicketComment{
 		}else{
 
 			$ticket = $wptickets->tickets->get_ticket($ticket_id);
-			if($comment->user_id == $ticket->post_author){
+			if( $comment->user_id == intval( get_post_meta( $ticket_id, '_ticket_author', true ) ) ){
 				
 				// author
 				wp_set_object_terms( $ticket_id, intval($config['ticket_reply_status']), 'status');

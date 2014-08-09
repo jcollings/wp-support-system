@@ -12,7 +12,7 @@ class WT_EmailNotification{
 	public function __construct(){
 
 		add_action('wt/after_ticket_create', array($this, 'after_ticket_create'), 10, 1);
-		add_action('wt/after_comment_create', array($this, 'after_comment_create'), 10, 1);
+		add_action('wt/after_comment_create', array($this, 'after_comment_create'), 10, 2);
 	}
 
 	/**
@@ -23,10 +23,31 @@ class WT_EmailNotification{
 	 */
 	public function get_ticket_admin_emails($ticket_id){
 
-		// todo: fetch list of real admin addresses
-		return array(
-			'james@jclabs.co.uk'
-		);
+		$privs = get_option('admin_priv');	// get list roles with ticket capabilities
+		$user_roles = array('administrator');
+		$users = array();
+		$emails = array();
+
+		if(isset($privs['admin_group']) && is_array($privs['admin_group'])){
+			$user_roles = array_unique(array_merge($user_roles, $privs['admin_group']));
+		}
+		
+		// get list of user ids for each role
+		foreach($user_roles as $role){
+			$users_query = new WP_User_Query(array(
+				'role' => $role,
+				'fields' => 'ID'
+		    ));
+		    $results = $users_query->get_results();
+	        if ($results) $users = array_merge($users, $results);
+		}
+
+		// get each user email
+		foreach($users as $user_id){
+			$emails[] = get_the_author_meta('user_email', $user_id);
+		}
+
+		return $emails;
 	}
 
 	/**
@@ -69,7 +90,6 @@ class WT_EmailNotification{
 		$template = $this->set_email_template( 'email/admin/new-ticket', array('test' => 'Admin'));
 		wp_mail( $admin_emails, 'new ticket admin', $template);
 
-
 		if(is_member_ticket($ticket_id)){
 
 			// send member email
@@ -94,32 +114,37 @@ class WT_EmailNotification{
 	 * @param  int $ticket_id 
 	 * @return void
 	 */
-	public function after_comment_create($ticket_id){
+	public function after_comment_create($ticket_id, $comment_id){
 
 		$admin_emails = $this->get_ticket_admin_emails($ticket_id);
 		$author_email = wt_get_ticket_author_meta($ticket_id, 'email');
+	
+		// current comment author
+		$comment_email = get_comment($comment_id)->comment_author_email;
+		if(in_array($comment_email, $admin_emails)){
 
-		//todo: send out comment to author or admin depending on who sent it
+			// author posted
+			if(is_member_ticket($ticket_id)){
 
-		// send admin emails
-		$template = $this->set_email_template( 'email/admin/new-comment', array('test' => 'Admin'));
-		wp_mail( $admin_emails, 'new comment admin', $template);
+				// send member email
+				$template = $this->set_email_template( 'email/member/new-comment', array('test' => 'Member'));
+				wp_mail( $author_email, 'new comment member', $template);
+			}else{
 
-		if(is_member_ticket($ticket_id)){
+				$email_vars = array(
+					'pass' => get_post_meta( $ticket_id, '_view_key', true ),
+					'name' => get_post_meta( $ticket_id, '_user_name', true ),
+				);
 
-			// send member email
-			$template = $this->set_email_template( 'email/member/new-comment', array('test' => 'Member'));
-			wp_mail( $author_email, 'new comment member', $template);
+				// send public email
+				$template = $this->set_email_template( 'email/public/new-comment', $email_vars);
+				wp_mail( $author_email, 'new comment public', $template);
+			}
 		}else{
 
-			$email_vars = array(
-				'pass' => get_post_meta( $ticket_id, '_view_key', true ),
-				'name' => get_post_meta( $ticket_id, '_user_name', true ),
-			);
-
-			// send public email
-			$template = $this->set_email_template( 'email/public/new-comment', $email_vars);
-			wp_mail( $author_email, 'new comment public', $template);
+			// non author, send admin emails
+			$template = $this->set_email_template( 'email/admin/new-comment', array('test' => 'Admin'));
+			wp_mail( $admin_emails, 'new comment admin', $template);
 		}
 	}
 

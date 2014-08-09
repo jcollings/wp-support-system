@@ -210,6 +210,7 @@ class WP_Tickets{
 			'can_export'          => true,
 			'rewrite'             => array('slug' => 'tickets'),
 			'capability_type'     => 'ticket',
+			'capabilities' => array('create_posts' => false),
 			'supports'            => false 
 
 			// array(
