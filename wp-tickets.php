@@ -128,6 +128,12 @@ class WP_Tickets{
 			'update_count_callback' => '_update_post_term_count',
 			'query_var'             => true,
 			'rewrite'               => array( 'slug' => 'department' ),
+			'capabilities' 			=> array(
+				'manage_terms' => 'manage_ticket_departments', 
+				'edit_terms' => 'edit_ticket_departments',
+				'delete_terms' => 'delete_ticket_departments',
+				'assign_terms' => 'assign_ticket_departments'
+			)
 		);
 
 		register_taxonomy( 'department', 'ticket', $args );
@@ -158,6 +164,12 @@ class WP_Tickets{
 			'update_count_callback' => '_update_post_term_count',
 			'query_var'             => true,
 			'rewrite'               => array( 'slug' => 'status' ),
+			'capabilities' 			=> array(
+				'manage_terms' => 'manage_ticket_status', 
+				'edit_terms' => 'edit_ticket_status',
+				'delete_terms' => 'delete_ticket_status',
+				'assign_terms' => 'assign_ticket_status'
+			)
 		);
 
 		register_taxonomy( 'status', 'ticket', $args );
@@ -197,7 +209,7 @@ class WP_Tickets{
 			'query_var'           => true,
 			'can_export'          => true,
 			'rewrite'             => array('slug' => 'tickets'),
-			'capability_type'     => 'post',
+			'capability_type'     => 'ticket',
 			'supports'            => false 
 
 			// array(
@@ -228,6 +240,8 @@ class WP_Tickets{
 		$config = get_option('support_system_config');
 		$this->allow_public = $config['require_account'] == 0 ? true : false;
 		$this->disable_css = isset($config['disable_css']) && $config['disable_css'] == 1 ? true : false; 
+
+		// print_r($GLOBALS['wp_post_types']['ticket']);
 	}
 
 	/**
@@ -236,7 +250,32 @@ class WP_Tickets{
 	 */
 	public function activate_plugin(){
 
-		 add_option( 'wt-activated-plugin', 'wt-tickets' );
+		add_option( 'wt-activated-plugin', 'wt-tickets' );
+
+		$role = get_role("administrator");
+		$caps = array(
+			'edit_ticket',
+			'read_ticket',
+			'delete_ticket',
+			'edit_tickets',
+			'edit_others_tickets',
+			'publish_tickets',
+			'read_private_tickets',
+			'edit_tickets',
+			'manage_ticket_departments',
+			'edit_ticket_departments',
+			'delete_ticket_departments',
+			'assign_ticket_departments',
+			'manage_ticket_status',
+			'edit_ticket_status',
+			'delete_ticket_status',
+			'assign_ticket_status',
+			'manage_support_tickets'
+		);
+
+		foreach($caps as $cap){
+			$role->add_cap($cap);
+		}
 	}
 
 	/**
@@ -251,8 +290,6 @@ class WP_Tickets{
 			delete_option( 'wt-activated-plugin' );
 		}
 	}
-
-
 }
 
 $GLOBALS['wptickets'] = new WP_Tickets();

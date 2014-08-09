@@ -12,7 +12,7 @@ class WT_AdminSettings{
 
 		// allow addons to hook into the meny creation
 		do_action('wt/register_admin_menu');
-		add_submenu_page('edit.php?post_type=ticket', 'Settings', 'Settings', 'add_users', 'wpticket-settings', array($this, 'admin_settings_page'));
+		add_submenu_page('edit.php?post_type=ticket', 'Settings', 'Settings', 'manage_support_tickets', 'wpticket-settings', array($this, 'admin_settings_page'));
 
         // remove add ticket menu item
         remove_submenu_page('edit.php?post_type=ticket', 'post-new.php?post_type=ticket');
@@ -86,6 +86,7 @@ class WT_AdminSettings{
      * @return array
      */
     public function save_setting($args){
+        $args = apply_filters( 'wt/settings_save', $args );
     	return $args;
     }
 
