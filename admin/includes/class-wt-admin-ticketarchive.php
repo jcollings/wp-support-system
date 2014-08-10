@@ -124,7 +124,7 @@ class WT_Admin_TicketArchive{
 	}
 
 	/**
-	 * Output ticket status where post_status used to be
+	 * Output ticket status where list of post_status used to be
 	 * 
 	 * @param  array $list
 	 * @return array
@@ -162,8 +162,6 @@ class WT_Admin_TicketArchive{
 				}else{
 					$output[$ticket_status->slug] = $ticket_status->name . ' (0)';
 				}
-
-				
 			}
 		}
 
@@ -192,7 +190,7 @@ class WT_Admin_TicketArchive{
 			if(!isset($query->query['status'])){
 
 				$config = get_option('support_system_config');
-				$closed = intval($config['ticket_close_status']);
+				$closed = $config['ticket_close_status'];
 
 				$terms = get_terms('status', array('exclude' => $closed) );
 				if(is_array($terms) && !empty($terms)){

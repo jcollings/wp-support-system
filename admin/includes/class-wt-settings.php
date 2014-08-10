@@ -108,14 +108,14 @@ class WT_AdminSettings{
     	$support_groups = array('' => 'Select a Term');
     	
     	foreach($terms as $term){
-    		$support_groups[$term->term_id] = $term->name; 
+    		$support_groups[$term->slug] = $term->name; 
     	}
 
         // 
         $ticket_status = array('' => 'Select a Status');
         $terms = get_terms( 'status', array('hide_empty' => 0) );
         foreach($terms as $term){
-            $ticket_status[$term->term_id] = $term->name;    
+            $ticket_status[$term->slug] = $term->name;    
         }
 
 

@@ -24,30 +24,6 @@ class WT_EmailNotification{
 
 		add_action('wt/after_ticket_create', array($this, 'after_ticket_create'), 10, 1);
 		add_action('wt/after_comment_create', array($this, 'after_comment_create'), 10, 2);
-
-		// notifications
-		$notification_config = get_option('notification_override');
-
-		// admin message
-		if(isset($notification_config['override_admin']) && $notification_config['override_admin'] == 'yes'){
-			// custom message
-		}else{
-			// template
-		}
-
-		// member message
-		if(isset($notification_config['override_member']) && $notification_config['override_member'] == 'yes'){
-			// custom message
-		}else{
-			// template
-		}
-
-		// public message
-		if(isset($notification_config['override_public']) && $notification_config['override_public'] == 'yes'){
-			// custom message
-		}else{
-			// template
-		}
 	}
 
 	/**
@@ -220,6 +196,11 @@ class WT_EmailNotification{
 		// current comment author
 		$comment_email = get_comment($comment_id)->comment_author_email;
 		if(in_array($comment_email, $admin_emails)){
+
+			// check to see if the current comment was not public or private then dont notify
+			if( !in_array( get_comment_meta( $comment_id, '_comment_access',true), array('public', 'private') ) ){
+				return;
+			}
 
 			// author posted
 			if(is_member_ticket($ticket_id)){

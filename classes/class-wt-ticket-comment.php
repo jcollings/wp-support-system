@@ -73,10 +73,18 @@ class WT_TicketComment{
 
 	
 	function wt_show_ticket_comments(){
-		global $wptickets;
-		global $comment;
+		global $wptickets, $comment;
 
-		$comments = $wptickets->tickets->get_comments(get_the_ID(), array('type' => 'public'));
+		// todo: show private/inernal comments if authorised
+		if(wt_is_user_admin()){
+			$comments = $wptickets->tickets->get_comments(get_the_ID(), array('type' => 'admin'));
+		}elseif(wt_is_user_author()){
+			$comments = $wptickets->tickets->get_comments(get_the_ID(), array('type' => 'author'));
+		}else{
+			$comments = $wptickets->tickets->get_comments(get_the_ID(), array('type' => 'public'));
+		}
+
+		
 		
 		foreach($comments as $comment){
 			
@@ -117,7 +125,7 @@ class WT_TicketComment{
 		if($comment->user_id == 0){
 			
 			// public author
-			wp_set_object_terms( $ticket_id, intval($config['ticket_reply_status']), 'status');
+			wp_set_object_terms( $ticket_id, $config['ticket_reply_status'], 'status');
 
 		}else{
 
@@ -125,12 +133,12 @@ class WT_TicketComment{
 			if( $comment->user_id == intval( get_post_meta( $ticket_id, '_ticket_author', true ) ) ){
 				
 				// author
-				wp_set_object_terms( $ticket_id, intval($config['ticket_reply_status']), 'status');
+				wp_set_object_terms( $ticket_id, $config['ticket_reply_status'], 'status');
 				
 			}else{
 
 				// admin
-				wp_set_object_terms( $ticket_id, intval($config['ticket_responded_status']), 'status');
+				wp_set_object_terms( $ticket_id, $config['ticket_responded_status'], 'status');
 			}
 		}
 	}

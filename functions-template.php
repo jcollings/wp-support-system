@@ -246,4 +246,78 @@ if(!function_exists('wt_pagination')){
          }
     }
 }
+
+/**
+ * Ticket Author check
+ *
+ * Check to see if the specified or current user the ticket author
+ * 
+ * @param  integer $user_id 
+ * @return boolean
+ */
+function wt_is_user_author($user_id = 0){
+
+	global $post, $wptickets;
+
+	// check current user if no user id specified
+	if($user_id == 0){
+		$user_id = get_current_user_id();
+	}
+
+	if($user_id > 0){
+
+		if(get_post_meta( $post->ID, '_ticket_author', true ) == $user_id){
+			return true;
+		}
+
+	}else{
+
+		// check to see if public authorised author
+		if(!is_user_logged_in() && $wptickets->session->check_access_code( $post->ID )){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Ticket Moderator check
+ *
+ * Check to see if the specified or current user is a ticket moderator
+ * 
+ * @param  integer $user_id 
+ * @return boolean
+ */
+function wt_is_user_admin($user_id = 0){
+
+	// check current user if no user id specified
+	if($user_id == 0){
+		$user_id = get_current_user_id();
+	}
+
+	$privs = get_option('admin_priv');	// get list roles with ticket capabilities
+	$user_roles = array('administrator');
+	$users = array();
+
+	if(isset($privs['admin_group']) && is_array($privs['admin_group'])){
+		$user_roles = array_unique(array_merge($user_roles, $privs['admin_group']));
+	}
+	
+	// get list of user ids for each role
+	foreach($user_roles as $role){
+		$users_query = new WP_User_Query(array(
+			'role' => $role,
+			'fields' => 'ID'
+	    ));
+	    $results = $users_query->get_results();
+        if ($results) $users = array_merge($users, $results);
+	}
+
+	if(in_array($user_id, $users)){
+		return true;
+	}
+
+	return false;
+}
 ?>

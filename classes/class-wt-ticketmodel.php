@@ -147,11 +147,11 @@ class WT_TicketModel{
 		$config = get_option('support_system_config');
 		
 		// set ticket department
-		$department = isset($args['department']) ? $args['department'] : intval($config['default_group']);
+		$department = isset($args['department']) ? $args['department'] : $config['default_group'];
 		$department = apply_filters( 'wt/set_ticket_department', $department );
 
 		// set ticket status
-		$ticket_status = isset($args['status']) ? $args['status'] : intval($config['ticket_open_status']);
+		$ticket_status = isset($args['status']) ? $args['status'] : $config['ticket_open_status'];
 		$ticket_status = apply_filters( 'wt/set_ticket_status', $ticket_status );
 
 		// set ticket access
@@ -379,7 +379,7 @@ class WT_TicketModel{
 		if($ticket_id == 0)
 			return false;
 
-		$result = wp_set_object_terms( $ticket_id, intval($config['ticket_close_status']), 'status');
+		$result = wp_set_object_terms( $ticket_id, $config['ticket_close_status'], 'status');
 		if(is_wp_error($result)){
 			return false;
 		}
