@@ -151,20 +151,36 @@ class WT_AdminSettings{
                     array( 'type' => 'select' , 'id' => 'disable_css', 'section' => 'theme_section', 'setting_id' => 'support_system_config', 'label' => 'Disable Plugin CSS', 'value' => '', 'choices' => array('No', 'Yes'))
                 )
             ),
+            // email notifications tab
+            'notification_override' => array(
+                'section' => array('page' => 'notification_settings', 'title' => 'Notification Overrides', 'description' => 'Override templates with messages below'),
+                'fields' => array(
+                    array('type' => 'select', 'id' => 'override_admin', 'section' => 'notification_override', 'setting_id' => 'notification_override', 'label' => 'Override Admin Email', 'value' => '', 'choices' => array('no' => 'No', 'yes' => 'Yes')),
+                    array('type' => 'select', 'id' => 'override_member', 'section' => 'notification_override', 'setting_id' => 'notification_override', 'label' => 'Override Member Email', 'value' => '', 'choices' => array('no' => 'No', 'yes' => 'Yes')),
+                    array('type' => 'select', 'id' => 'override_public', 'section' => 'notification_override', 'setting_id' => 'notification_override', 'label' => 'Override Public Email', 'value' => '', 'choices' => array('no' => 'No', 'yes' => 'Yes')),
+                )
+            ),
+            'notification_admin' => array(
+                'section' => array('page' => 'notification_settings', 'title' => 'Admin Notification', 'description' => 'Notification email sent to admins once a ticket has been submitted.'),
+                'fields' => array(
+                    array('type' => 'text', 'id' => 'msg_title', 'section' => 'notification_admin', 'setting_id' => 'notification_admin', 'label' => 'Response Subject', 'value' => ''),
+                    array('type' => 'textarea', 'id' => 'msg_body', 'section' => 'notification_admin', 'setting_id' => 'notification_admin', 'label' => 'Response Message', 'value' => ''),
+                )
+            ),
     		'notification_user' => array(
-    			'section' => array('page' => 'notification_settings', 'title' => 'User Notification', 'description' => 'Confirmation email sent to user once a ticket has been submitted.'),
+    			'section' => array('page' => 'notification_settings', 'title' => 'Member Notification', 'description' => 'Confirmation email sent to member once a ticket has been submitted.'),
     			'fields' => array(
     				array('type' => 'text', 'id' => 'msg_title', 'section' => 'notification_user', 'setting_id' => 'notification_user', 'label' => 'Response Subject', 'value' => ''),
     				array('type' => 'textarea', 'id' => 'msg_body', 'section' => 'notification_user', 'setting_id' => 'notification_user', 'label' => 'Response Message', 'value' => ''),
     			)
     		),
-    		'notification_admin' => array(
-    			'section' => array('page' => 'notification_settings', 'title' => 'Admin Notification', 'description' => 'Notification email sent to admins once a ticket has been submitted.'),
-    			'fields' => array(
-    				array('type' => 'text', 'id' => 'msg_title', 'section' => 'notification_admin', 'setting_id' => 'notification_admin', 'label' => 'Response Subject', 'value' => ''),
-    				array('type' => 'textarea', 'id' => 'msg_body', 'section' => 'notification_admin', 'setting_id' => 'notification_admin', 'label' => 'Response Message', 'value' => ''),
-    			)
-    		)
+            'notification_public' => array(
+                'section' => array('page' => 'notification_settings', 'title' => 'Public Notification', 'description' => 'Confirmation email sent to public user once a ticket has been submitted.'),
+                'fields' => array(
+                    array('type' => 'text', 'id' => 'msg_title', 'section' => 'notification_public', 'setting_id' => 'notification_public', 'label' => 'Response Subject', 'value' => ''),
+                    array('type' => 'textarea', 'id' => 'msg_body', 'section' => 'notification_public', 'setting_id' => 'notification_public', 'label' => 'Response Message', 'value' => ''),
+                )
+            ),
     	);
 
     	$sections = array_merge($sections, apply_filters( 'wt/settings_sections', $sections));

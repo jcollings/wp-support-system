@@ -2,10 +2,10 @@
 class WT_Admin_Departments{
 
 	public function __construct(){
-		add_action('department_add_form_fields', array($this, 'add_form_fields'));
-		add_action('department_edit_form_fields', array($this, 'edit_form_fields'));
-		add_action('edited_department', array($this, 'save_custom_meta'));
-		add_action('create_department', array($this, 'save_custom_meta'));
+		// add_action('department_add_form_fields', array($this, 'add_form_fields'));
+		// add_action('department_edit_form_fields', array($this, 'edit_form_fields'));
+		// add_action('edited_department', array($this, 'save_custom_meta'));
+		// add_action('create_department', array($this, 'save_custom_meta'));
 		add_action( 'admin_head', array($this, 'hide_slug_box')  );
 	}
 

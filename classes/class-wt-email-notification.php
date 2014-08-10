@@ -9,10 +9,44 @@
  */
 class WT_EmailNotification{
 
+	// list of emails and their template paths
+	private $_emails = array(
+		'admin_new' => 'email/admin/new-ticket',
+		'admin_update' => 'email/admin/new-comment',
+		'member_new' => 'email/member/new-ticket',
+		'member_update' => 'email/member/new-comment',
+		'public_new' => 'email/public/new-ticket',
+		'public_update' => 'email/public/new-comment'
+	);
+
 	public function __construct(){
 
 		add_action('wt/after_ticket_create', array($this, 'after_ticket_create'), 10, 1);
 		add_action('wt/after_comment_create', array($this, 'after_comment_create'), 10, 2);
+
+		// notifications
+		$notification_config = get_option('notification_override');
+
+		// admin message
+		if(isset($notification_config['override_admin']) && $notification_config['override_admin'] == 'yes'){
+			// custom message
+		}else{
+			// template
+		}
+
+		// member message
+		if(isset($notification_config['override_member']) && $notification_config['override_member'] == 'yes'){
+			// custom message
+		}else{
+			// template
+		}
+
+		// public message
+		if(isset($notification_config['override_public']) && $notification_config['override_public'] == 'yes'){
+			// custom message
+		}else{
+			// template
+		}
 	}
 
 	/**
@@ -51,12 +85,19 @@ class WT_EmailNotification{
 	}
 
 	/**
-	 * Load email template and set template variables {{var}}
+	 * Load email template
 	 * 
 	 * @param string $template template location
 	 * @param array  $vars
 	 */
-	public function set_email_template($template, $vars = array()){
+	public function get_email_content($template, $vars = array()){
+
+		$template = isset($this->_emails[$template]) ? $this->_emails[$template] : false;
+
+		if(!$template)
+			return false;
+
+		// todo: check to see if override and load message from database instead
 
 		// fetch email template
 		ob_start();
@@ -65,14 +106,55 @@ class WT_EmailNotification{
 		ob_clean();
 
 		// process template vars
+		return $this->parse_message_vars($email_content, $vars);
+	}
+
+	/**
+	 * Set template variables {{var}} in email message
+	 * 
+	 * @param  string $message
+	 * @param  array $vars
+	 * @return string
+	 */
+	private function parse_message_vars($message, $vars = array()){
+
 		if(is_array($vars) && !empty($vars)){
 
 			foreach($vars as $key => $value){
-				$email_content = preg_replace('/\{\{'.$key.'\}\}/', $value, $email_content);
+				$message = preg_replace('/\{\{'.$key.'\}\}/', $value, $message);
 			}
 		}
 
+		return $message;
+	}
+
+	/**
+	 * Load template to insert email content into
+	 * 
+	 * @param string $content 
+	 * @param string $subject
+	 */
+	private function set_template_content($content, $subject = ''){
+
+		// load template from file
+		ob_start();
+		wt_get_template_part( 'email/template' );
+		$email_content = ob_get_contents();
+		ob_clean();
+
+		// enter content and title into template
+		$pattern = array('/\{\{TEMPLATE_TITLE\}\}/', '/\{\{TEMPLATE_CONTENT\}\}/');
+		$replace = array($subject, $content);
+		$email_content = preg_replace($pattern, $replace, $email_content);
+
 		return $email_content;
+	}
+
+	/**
+	 * Set email to html format
+	 */
+	public function set_html_content_type() {
+		return 'text/html';
 	}
 
 	/**
@@ -86,15 +168,22 @@ class WT_EmailNotification{
 		$admin_emails = $this->get_ticket_admin_emails($ticket_id);
 		$author_email = wt_get_ticket_author_meta($ticket_id, 'email');
 
+		// add html email header
+		add_filter( 'wp_mail_content_type', array($this, 'set_html_content_type') );
+
 		// send admin emails
-		$template = $this->set_email_template( 'email/admin/new-ticket', array('test' => 'Admin'));
-		wp_mail( $admin_emails, 'new ticket admin', $template);
+		$email_subject = 'new ticket admin';
+		$email_message = $this->get_email_content( 'admin_new', array('test' => 'Admin'));
+		$template = $this->set_template_content($email_message, $email_subject);
+		wp_mail( $admin_emails, $email_subject, $template);
 
 		if(is_member_ticket($ticket_id)){
 
 			// send member email
-			$template = $this->set_email_template( 'email/member/new-ticket', array('test' => 'Member'));
-			wp_mail( $author_email, 'new ticket public', $template);
+			$email_subject = 'new ticket public';
+			$email_message = $this->get_email_content( 'member_new', array('test' => 'Member'));
+			$template = $this->set_template_content($email_message, $email_subject);
+			wp_mail( $author_email, $email_subject, $template);
 		}else{
 
 			$email_vars = array(
@@ -103,9 +192,14 @@ class WT_EmailNotification{
 			);
 
 			// send public email
-			$template = $this->set_email_template( 'email/public/new-ticket', $email_vars);
-			wp_mail( $author_email, 'new ticket public', $template);
+			$email_subject = 'new ticket public';
+			$email_message = $this->get_email_content( 'public_new', $email_vars);
+			$template = $this->set_template_content($email_message, $email_subject);
+			wp_mail( $author_email, $email_subject, $template);
 		}
+
+		// remove html email header filter
+		remove_filter( 'wp_mail_content_type', array($this, 'set_html_content_type') );
 	}
 
 	/**
@@ -118,6 +212,9 @@ class WT_EmailNotification{
 
 		$admin_emails = $this->get_ticket_admin_emails($ticket_id);
 		$author_email = wt_get_ticket_author_meta($ticket_id, 'email');
+
+		// add html email header
+		add_filter( 'wp_mail_content_type', array($this, 'set_html_content_type') );
 	
 		// current comment author
 		$comment_email = get_comment($comment_id)->comment_author_email;
@@ -127,8 +224,10 @@ class WT_EmailNotification{
 			if(is_member_ticket($ticket_id)){
 
 				// send member email
-				$template = $this->set_email_template( 'email/member/new-comment', array('test' => 'Member'));
-				wp_mail( $author_email, 'new comment member', $template);
+				$email_subject = 'new comment member';
+				$email_message = $this->get_email_content( 'member_update', array('test' => 'Member'));
+				$template = $this->set_template_content($email_message, $email_subject);
+				wp_mail( $author_email, $email_subject, $template);
 			}else{
 
 				$email_vars = array(
@@ -137,15 +236,22 @@ class WT_EmailNotification{
 				);
 
 				// send public email
-				$template = $this->set_email_template( 'email/public/new-comment', $email_vars);
-				wp_mail( $author_email, 'new comment public', $template);
+				$email_subject = 'new comment public';
+				$email_message = $this->get_email_content( 'public_update', $email_vars);
+				$template = $this->set_template_content($email_message, $email_subject);
+				wp_mail( $author_email, $email_subject, $template);
 			}
 		}else{
 
 			// non author, send admin emails
-			$template = $this->set_email_template( 'email/admin/new-comment', array('test' => 'Admin'));
-			wp_mail( $admin_emails, 'new comment admin', $template);
+			$email_subject = 'new comment admin';
+			$email_message = $this->get_email_content( 'admin_update', array('test' => 'Admin'));
+			$template = $this->set_template_content($email_message, $email_subject);
+			wp_mail( $admin_emails, $email_subject, $template);
 		}
+
+		// remove html email header filter
+		remove_filter( 'wp_mail_content_type', array($this, 'set_html_content_type') );
 	}
 
 }
