@@ -14,7 +14,7 @@ class WT_AdminSettings{
 		do_action('wt/register_admin_menu');
 		add_submenu_page('edit.php?post_type=ticket', 'Settings', 'Settings', 'manage_support_tickets', 'wpticket-settings', array($this, 'admin_settings_page'));
 
-        add_submenu_page( 'edit.php?post_type=ticket', 'About', 'About', 'read', 'wptickets-addons', array($this, 'admin_about_page') );
+        add_submenu_page( 'edit.php?post_type=ticket', 'About', 'About', 'read_ticket', 'wptickets-addons', array($this, 'admin_about_page') );
 	}
 
     public function admin_about_page(){
@@ -31,9 +31,9 @@ class WT_AdminSettings{
 		    'base_settings' => array(
 		        'title' => 'General Settings'
 		    ),
-		    'notification_settings' => array(
-		    	'title' => 'Notification Messages'
-		    )
+		    // 'notification_settings' => array(
+		    // 	'title' => 'Notification Messages'
+		    // )
 		);
 
 		// hook to extends setting tabs
@@ -152,7 +152,7 @@ class WT_AdminSettings{
                 )
             ),
             // email notifications tab
-            'notification_override' => array(
+            /*'notification_override' => array(
                 'section' => array('page' => 'notification_settings', 'title' => 'Notification Overrides', 'description' => 'Override templates with messages below'),
                 'fields' => array(
                     array('type' => 'select', 'id' => 'override_admin', 'section' => 'notification_override', 'setting_id' => 'notification_override', 'label' => 'Override Admin Email', 'value' => '', 'choices' => array('no' => 'No', 'yes' => 'Yes')),
@@ -180,7 +180,7 @@ class WT_AdminSettings{
                     array('type' => 'text', 'id' => 'msg_title', 'section' => 'notification_public', 'setting_id' => 'notification_public', 'label' => 'Response Subject', 'value' => ''),
                     array('type' => 'textarea', 'id' => 'msg_body', 'section' => 'notification_public', 'setting_id' => 'notification_public', 'label' => 'Response Message', 'value' => ''),
                 )
-            ),
+            ),*/
     	);
 
     	$sections = array_merge($sections, apply_filters( 'wt/settings_sections', $sections));

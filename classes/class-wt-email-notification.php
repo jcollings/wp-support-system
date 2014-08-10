@@ -13,6 +13,7 @@ class WT_EmailNotification{
 	private $_emails = array(
 		'admin_new' => 'email/admin/new-ticket',
 		'admin_update' => 'email/admin/new-comment',
+		'admin_assign' => 'email/admin/assign-ticket',
 		'member_new' => 'email/member/new-ticket',
 		'member_update' => 'email/member/new-comment',
 		'public_new' => 'email/public/new-ticket',
