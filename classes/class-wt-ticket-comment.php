@@ -122,6 +122,11 @@ class WT_TicketComment{
 		$config = get_option('support_system_config');	// load config
 		$comment = get_comment($comment_id);			// load comment details
 
+		// on internal note dont mark as responded
+		if( !in_array( get_comment_meta( $comment_id, '_comment_access',true), array('public', 'private') ) ){
+			return;
+		}
+
 		if($comment->user_id == 0){
 			
 			// public author
