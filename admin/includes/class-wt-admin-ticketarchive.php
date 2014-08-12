@@ -131,10 +131,11 @@ class WT_Admin_TicketArchive{
 	 */
 	public function append_tick_view_list($list){
 		
-		// todo: add class to active status
+		// todo: add post count for active and all
+
 		$output = array();
-		$query_var = get_query_var('status' );
-		$class = empty($query_var) ? ' class="current"' : '';
+		$query_var = $_GET['status']; //get_query_var('status' );
+		$class = empty($query_var) &&  $query_var != -1 ? ' class="current"' : '';
 
 		// count number of posts in total
 		$args = array(
@@ -142,7 +143,11 @@ class WT_Admin_TicketArchive{
 		    'numberposts' => -1
 		);
 		$num = count( get_posts( $args ) );
-		$output['all'] = '<a href="' . admin_url('/edit.php?post_type=ticket') . '" ' . $class . '>Active </a>';
+		$output['all'] = '<a href="' . admin_url('/edit.php?post_type=ticket') . '" ' . $class . '>Active (#)</a>';
+
+		$class = $query_var == -1 ? ' class="current"' : '';
+		$output['all-status'] = '<a href="'.admin_url('/edit.php?post_type=ticket&status=-1').'"'.$class.'>All (#)</a>';
+		
 
 		$status = wt_list_ticket_status();
 		if($status){
@@ -184,6 +189,12 @@ class WT_Admin_TicketArchive{
 				$query->set('orderby', 'meta_value_num');
 				$query->set('meta_key', '_priority');
 				$query->set('meta_value_num', '_priority');
+			}
+
+			// remove status if query_var stataus == -1 (show all)
+			if(get_query_var('status') == -1){
+
+				$query->query_vars['status'] = '';
 			}
 
 			// by default show ticket status apart from opened

@@ -43,7 +43,7 @@ class WP_Tickets{
 		$this->includes();
 
 		add_action('init', array($this, 'init'));
-		add_action( 'admin_init', array($this,'load_plugin') );
+		add_action( 'admin_init', array($this,'on_plugin_activation') );
 		add_action( 'wp_enqueue_scripts', array($this, 'enqueue_scripts' ));
 
 		add_action( 'query_vars' , array( $this, 'register_query_vars' ) );
@@ -283,9 +283,51 @@ class WP_Tickets{
 	 * On plugin activation ready
 	 * @return void
 	 */
-	public function load_plugin(){
+	public function on_plugin_activation(){
 
 		if ( is_admin() && get_option( 'wt-activated-plugin' ) == 'wt-tickets' ) {
+
+			$config = array();
+
+			// check for department
+			$count = get_terms('department', array('hide_empty' => false, 'fields' => 'count'));
+			if($count == 0){
+
+				// if no departments set default one
+				wp_insert_term( 'General', 'department');
+				$config['default_group'] = 'general';
+			}
+
+			// check for status
+			$count = get_terms('status', array('hide_empty' => false, 'fields' => 'count'));
+			if($count == 0){
+
+				// insert new status and ammend settings
+				$opened_id = wp_insert_term( 'Opened', 'status');
+				$closed_id = wp_insert_term( 'Closed', 'status');
+				$author_feedback_id = wp_insert_term( 'Awaiting Reply', 'status');
+				$moderator_feedback_id = wp_insert_term( 'Replied', 'status');
+
+				$config['ticket_open_status'] = 'opened';
+				$config['ticket_close_status'] = 'closed';
+				$config['ticket_responded_status'] = 'replied';
+				$config['ticket_reply_status'] = 'awaiting-reply';
+			}
+
+			// save config
+			if( get_option( 'support_system_config' ) !== false ){
+
+				// update
+				$old_support_system_config = get_option( 'support_system_config' );
+				$config = array_merge($old_support_system_config, $config);
+
+				update_option( 'support_system_config', $config);
+
+			}else{
+
+				// add new config
+				add_option( 'support_system_config', $config);
+			}
 
 			// once installed remove activation flag
 			delete_option( 'wt-activated-plugin' );
