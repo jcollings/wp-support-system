@@ -320,4 +320,18 @@ function wt_is_user_admin($user_id = 0){
 
 	return false;
 }
+
+function wt_get_members($type = 'list'){
+
+	$output = array();
+	$users = get_users(array('fields' => array( 'display_name', 'id' )));
+	if($users && count($users) > 0){
+		foreach($users as $user){
+			$output[$user->id] = $user->display_name;
+		}
+		return $output;
+	}
+
+	return false;
+}
 ?>

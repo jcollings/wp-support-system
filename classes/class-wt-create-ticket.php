@@ -40,13 +40,31 @@ class WT_CreateTicket{
 		$user_id = 0;
 		$args = array();
 
-		if(is_user_logged_in()){
-			$user_id = get_current_user_id();
-		}
+		// todo: allow moderators to post tickets on behalf of someone else
+		if(wt_is_user_admin()){
+			
+			// set ticket for chosen user
+			$user_id = isset($_POST['user_id']) && intval($_POST['user_id']) > 0 ? intval($_POST['user_id']) : 0;
+			if($user_id == 0){
+				if(!$name && !$email){
+					// set ticket for curent user
+					$user_id = get_current_user_id();
+				}else{
+					// set custom name and email
+					$args['user_email'] = $email;
+					$args['user_name'] = $name;
+				}	
+			}
+		}else{
 
-		if($user_id == 0){
-			$args['user_email'] = $email;
-			$args['user_name'] = $name;
+			if(is_user_logged_in()){
+				$user_id = get_current_user_id();
+			}
+
+			if($user_id == 0){
+				$args['user_email'] = $email;
+				$args['user_name'] = $name;
+			}
 		}
 
 		if($access){

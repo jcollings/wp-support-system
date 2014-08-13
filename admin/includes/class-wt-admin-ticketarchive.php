@@ -135,14 +135,33 @@ class WT_Admin_TicketArchive{
 		$output = array();
 		$query_var = get_query_var('status' );
 		$class = empty($query_var) ? ' class="current"' : '';
+		$status = wt_list_ticket_status();
+		$config = get_option('support_system_config');
 
-		// count number of posts in total
-		$args = array(
+		// count number of posts in total and output all link
+		$all_ticket_count = new WP_Query(array(
 		    'post_type' => 'ticket',
-		    'numberposts' => -1
-		);
-		$num = count( get_posts( $args ) );
-		$output['all'] = '<a href="' . admin_url('/edit.php?post_type=ticket') . '" ' . $class . '>Active </a>';
+		));
+		$output['all'] = '<a href="' . admin_url('/edit.php?post_type=ticket') . '" ' . $class . '>All ('. $all_ticket_count->found_posts .')</a>';
+
+		// build list of status' to filter
+		$active_status_list = array();
+		foreach($status as $ts){
+			if($ts->slug != $config['ticket_close_status']){
+				$active_status_list[] = $ts->slug;
+			}
+		}
+
+		$active_status_string = implode(',', $active_status_list);
+		$class = $query_var == $active_status_string ? ' class="current"' : '';
+
+		// count number of tickets in active status
+		$active_post_count = new WP_Query(array(
+			'post_type' => 'ticket',
+			'fields' => 'ids',
+			'status' => $active_status_string
+		));
+		$output['active'] = '<a href="' . admin_url('/edit.php?post_type=ticket&status='.implode(',', $active_status_list)) . '" ' . $class . '>Active ('.$active_post_count->found_posts.')</a>';
 
 		$status = wt_list_ticket_status();
 		if($status){
@@ -187,7 +206,7 @@ class WT_Admin_TicketArchive{
 			}
 
 			// by default show ticket status apart from opened
-			if(!isset($query->query['status'])){
+			/*if(!isset($query->query['status'])){
 
 				$config = get_option('support_system_config');
 				$closed = $config['ticket_close_status'];
@@ -202,7 +221,7 @@ class WT_Admin_TicketArchive{
 					$query->set('status', implode(',',$output));	
 				}
 				
-			}
+			}*/
 
 			// set posts per page
 			// todo: posts per page to be set from settings page

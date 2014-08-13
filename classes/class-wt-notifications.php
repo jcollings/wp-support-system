@@ -45,6 +45,7 @@ class WT_Admin_Notifications{
 	public function reset_ticket_notifications($ticket_id){
 
 		// todo: only when non admins have posted
+		// todo: alert not admins only when there tickets have been updated
 
 		// clear read
 		// todo: get list of users who are in charge of this ticket
