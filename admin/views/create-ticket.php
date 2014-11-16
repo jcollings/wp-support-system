@@ -34,7 +34,17 @@
 			<div class="input text">
 				<label>Email</label>
 				<input type="text" name="email" />	
-			</div>		
+			</div>	
+
+			<?php $priorities = wt_list_ticket_priorities(); ?>
+			<div class="input select">
+				<label>Priority</label>
+				<select name="priority" id="priority">
+					<?php foreach($priorities as $key =>$label): ?>
+						<option value="<?php echo $key; ?>"><?php echo $label; ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>	
 		<?php endif; ?>
 
 		<div class="input">

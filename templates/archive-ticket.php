@@ -16,7 +16,7 @@ get_header(); ?>
 
 <?php do_action('before_theme_content'); ?>
 
-<div class="primary site-content" id="wt-ticket-archive">
+<div id="wt-ticket-archive">
 
 <?php  if(is_archive()): ?>
 	<h1 class="entry-title">Support Tickets</h1>
@@ -34,8 +34,6 @@ get_header(); ?>
 <?php wt_pagination(); ?>
 
 </div>
-
-<?php get_sidebar(); ?>
 
 <?php do_action('after_theme_content'); ?>
 

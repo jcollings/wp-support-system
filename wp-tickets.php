@@ -239,7 +239,7 @@ class WP_Tickets{
 
 	public function load_settings(){
 		$config = get_option('support_system_config');
-		$this->allow_public = $config['require_account'] == 0 ? true : false;
+		$this->allow_public = isset($config['require_account']) && $config['require_account'] == 0 ? true : false;
 		$this->disable_css = isset($config['disable_css']) && $config['disable_css'] == 1 ? true : false; 
 
 		// print_r($GLOBALS['wp_post_types']['ticket']);
