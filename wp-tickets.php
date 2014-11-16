@@ -329,4 +329,14 @@ class WP_Tickets{
 	}
 }
 
+add_filter( 'show_post_locked_dialog', 'wpse_120179_close_dialog', 99, 3 );
+
+function wpse_120179_close_dialog( $show, $post, $user )
+{
+    if( 'ticket' === $post->post_type )
+        return FALSE;
+
+    return $show;
+}
+
 $GLOBALS['wptickets'] = new WP_Tickets();

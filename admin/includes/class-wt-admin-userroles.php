@@ -89,15 +89,17 @@ class WT_Admin_UserRoles{
 
 	    	$role = get_role($id);
 			$caps = array(
-				'edit_ticket',
-				'read_ticket',
 				'delete_ticket',
-				'edit_tickets',
+				'delete_tickets',
 				'edit_others_tickets',
+				'edit_published_tickets',
+				'edit_ticket',
+				'edit_tickets',
 				'publish_tickets',
 				'read_private_tickets',
-				'edit_tickets',
-				'manage_support_tickets'
+				'read_ticket',
+				'read_tickets',
+				'manage_support_tickets',
 			);
 
 	    	foreach($caps as $cap){
@@ -124,6 +126,7 @@ class WT_Admin_UserRoles{
 				'delete_ticket',
 				'edit_tickets',
 				'publish_tickets',
+				'edit_published_tickets'
 			);
 
 	    	if(in_array($id, $role_list)){
@@ -150,7 +153,6 @@ class WT_Admin_UserRoles{
 				'edit_ticket',
 				'read_ticket',
 				'delete_ticket',
-				'edit_tickets',
 				'edit_others_tickets',
 				'publish_tickets',
 				'read_private_tickets',

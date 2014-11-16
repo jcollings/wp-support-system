@@ -423,18 +423,31 @@ class WT_TicketModel{
 			$user_id = get_current_user_id();
 		}
 
+		$meta_query = array();
+
+		// limit non moderators to there own tickets
+		if(!current_user_can( 'manage_support_tickets' )){
+			$meta_query = array(
+				'relation' => 'AND',
+				array(
+					'key' => '_ticket_author',
+					'value' => get_current_user_id(),
+				)
+			);
+		}
+
+		$meta_query[] = array(
+			'key' => '_ticket_read_'. $user_id,
+			'value' => 1,
+			'compare' => '!=',
+			'type' => 'NUMERIC'
+		);
+
 		$query = array(
 			'fields' => 'ids',
 			'post_type' => 'ticket',
 			'posts_per_page' => -1,
-			'meta_query' => array(
-				array(
-					'key' => '_ticket_read_'. $user_id,
-					'value' => 1,
-					'compare' => '!=',
-					'type' => 'NUMERIC'
-				)
-			)
+			'meta_query' => $meta_query
 		);
 
 		$tickets = new WP_Query($query);

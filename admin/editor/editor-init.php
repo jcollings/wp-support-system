@@ -63,7 +63,7 @@ function wt_ticket_actions_meta_box(){
 
 		<div id="major-publishing-actions">
 
-			<?php if(current_user_can( 'delete_ticket' )): ?>
+			<?php if(current_user_can( 'delete_tickets' )): ?>
 			<div id="delete-action">
 				<a href="<?php echo esc_url( get_delete_post_link($post->ID ) ); ?>" class="submitdelete deletion">Move to Trash</a>
 			</div>

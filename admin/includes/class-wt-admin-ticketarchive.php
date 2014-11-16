@@ -138,10 +138,23 @@ class WT_Admin_TicketArchive{
 		$status = wt_list_ticket_status();
 		$config = get_option('support_system_config');
 
+		$access_query = array();
+		// limit non moderators to there own tickets
+		if(!current_user_can( 'manage_support_tickets' )){
+			$access_query = array(
+				'meta_query' => array(
+					array(
+						'key' => '_ticket_author',
+						'value' => get_current_user_id(),
+					)
+				)
+			);
+		}
+
 		// count number of posts in total and output all link
-		$all_ticket_count = new WP_Query(array(
+		$all_ticket_count = new WP_Query(array_merge(array(
 		    'post_type' => 'ticket',
-		));
+		), $access_query));
 		$output['all'] = '<a href="' . admin_url('/edit.php?post_type=ticket') . '" ' . $class . '>All ('. $all_ticket_count->found_posts .')</a>';
 
 		// build list of status' to filter
@@ -156,11 +169,11 @@ class WT_Admin_TicketArchive{
 		$class = $query_var == $active_status_string ? ' class="current"' : '';
 
 		// count number of tickets in active status
-		$active_post_count = new WP_Query(array(
+		$active_post_count = new WP_Query(array_merge(array(
 			'post_type' => 'ticket',
 			'fields' => 'ids',
 			'status' => $active_status_string
-		));
+		), $access_query));
 		$output['active'] = '<a href="' . admin_url('/edit.php?post_type=ticket&status='.implode(',', $active_status_list)) . '" ' . $class . '>Active ('.$active_post_count->found_posts.')</a>';
 
 		$status = wt_list_ticket_status();
@@ -173,6 +186,12 @@ class WT_Admin_TicketArchive{
 				    'status' => $ticket_status->slug,
 				    'numberposts' => -1
 				);
+				// limit non moderators to there own tickets
+				if(!current_user_can( 'manage_support_tickets' )){
+					$args['meta_key'] = '_ticket_author';
+					$args['meta_value'] = get_current_user_id();
+				}
+
 				$num = count( get_posts( $args ) );
 				$class = $query_var == $ticket_status->slug ? ' class="current"' : '';
 
