@@ -263,6 +263,7 @@ class WP_Tickets{
 			'publish_tickets',
 			'read_private_tickets',
 			'edit_tickets',
+			'delete_tickets',
 			'manage_ticket_departments',
 			'edit_ticket_departments',
 			'delete_ticket_departments',
@@ -274,6 +275,20 @@ class WP_Tickets{
 			'manage_support_tickets'
 		);
 
+		foreach($caps as $cap){
+			$role->add_cap($cap);
+		}
+
+		// subscriber test
+		$role = get_role("subscriber");
+
+		$caps = array(
+			'edit_ticket',
+			'read_ticket',
+			'delete_ticket',
+			'edit_tickets',
+			'publish_tickets',
+		);
 		foreach($caps as $cap){
 			$role->add_cap($cap);
 		}

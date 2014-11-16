@@ -251,15 +251,46 @@ class WT_Admin_TicketArchive{
 				), $old_meta_query));
 			}
 
-			$author = get_query_var( 'ticket-author' );
-			if($author){
+			if(current_user_can( 'manage_support_tickets' )){
 
-				// check to see if author has 
-				$author_query = new WP_User_Query(array(
-					'search' => $author,
-					'search_columns' => array('user_email'),
-					'fields' => 'ID'
-				));
+				// ticket administrator
+				$author = get_query_var( 'ticket-author' );
+				if($author){
+
+					// check to see if author has 
+					$author_query = new WP_User_Query(array(
+						'search' => $author,
+						'search_columns' => array('user_email'),
+						'fields' => 'ID'
+					));
+
+					// todo: stop reuse of meta_query merge
+					$old_meta_query = $query->get('meta_query');
+					if(!is_array($old_meta_query)){
+						$old_meta_query = array();
+					}
+
+					if( !empty($author_query->results) ){
+
+						$query->set('meta_query',  array_merge(array(
+							array(
+								'key' => '_ticket_author',
+								'value' => $author_query->results,
+							)
+						), $old_meta_query));
+
+					}else{
+						
+						$query->set('meta_query',  array_merge(array(
+							array(
+								'key' => '_user_email',
+								'value' => $author,
+							)
+						), $old_meta_query));
+					}
+				}
+
+			}else{
 
 				// todo: stop reuse of meta_query merge
 				$old_meta_query = $query->get('meta_query');
@@ -267,24 +298,14 @@ class WT_Admin_TicketArchive{
 					$old_meta_query = array();
 				}
 
-				if( !empty($author_query->results) ){
+				// ticket author, limit to their own tickets
+				$query->set('meta_query',  array_merge(array(
+					array(
+						'key' => '_ticket_author',
+						'value' => get_current_user_id(),
+					)
+				), $old_meta_query));
 
-					$query->set('meta_query',  array_merge(array(
-						array(
-							'key' => '_ticket_author',
-							'value' => $author_query->results,
-						)
-					), $old_meta_query));
-
-				}else{
-					
-					$query->set('meta_query',  array_merge(array(
-						array(
-							'key' => '_user_email',
-							'value' => $author,
-						)
-					), $old_meta_query));
-				}
 			}
 
 			// log query for later
@@ -315,11 +336,13 @@ class WT_Admin_TicketArchive{
 			}
 			?></select>
 
+			<?php if(current_user_can( 'manage_support_tickets' )): ?>
 			<select name="ticket-author" id="ticket-authors"><option value="">All Emails</option><?php 
 			foreach($emails as $email => $name){
 				echo "<option value='".$email."' " . selected( get_query_var('ticket-author' ) , $email ).">" . $email . "</option>";
 			} 
 			?></select>
+			<?php endif; ?>
 			
 			<select name="ticket-priority" id="ticket-priorities"><option value="">All Priorities</option><?php
 			foreach($priorities as $key => $priority){
