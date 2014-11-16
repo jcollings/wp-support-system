@@ -210,15 +210,8 @@ class WP_Tickets{
 			'can_export'          => true,
 			'rewrite'             => array('slug' => 'tickets'),
 			'capability_type'     => 'ticket',
-			'capabilities' => array('create_posts' => false),
+			'map_meta_cap' => true,
 			'supports'            => false 
-
-			// array(
-			// 	'title', 'editor', 'comments'
-			// 	'title', 'editor', 'author', 'thumbnail',
-			// 	'excerpt','custom-fields', 'trackbacks', 'comments',
-			// 	'revisions', 'page-attributes', 'post-formats'
-			// )
 		);
 
 		register_post_type( 'ticket', $args );
@@ -275,20 +268,6 @@ class WP_Tickets{
 			'manage_support_tickets'
 		);
 
-		foreach($caps as $cap){
-			$role->add_cap($cap);
-		}
-
-		// subscriber test
-		$role = get_role("subscriber");
-
-		$caps = array(
-			'edit_ticket',
-			'read_ticket',
-			'delete_ticket',
-			'edit_tickets',
-			'publish_tickets',
-		);
 		foreach($caps as $cap){
 			$role->add_cap($cap);
 		}
