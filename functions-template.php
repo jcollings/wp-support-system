@@ -39,6 +39,11 @@ function wt_get_add_ticket_link(){
 	return get_permalink($config['add_ticket_page']);
 }
 
+function wt_get_support_system_link(){
+	$config = get_option('support_system_config');
+	return get_permalink($config['support_page']);
+}
+
 function wt_the_notifications($section = null, $session = null){
 	global $wptickets;
 

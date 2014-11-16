@@ -58,7 +58,8 @@ class WT_TicketAccess{
 		));
 
 		if ( !is_wp_error($user) ){
-			wp_redirect(site_url('/support/'));
+			get_permalink( $id, $leavename );
+			wp_redirect(wt_get_add_ticket_link());
 		}else{
 			// error registering - $user->get_error_message()
 			$wptickets->session->add_notification($user->get_error_message(), 'form_member_register');
@@ -84,7 +85,7 @@ class WT_TicketAccess{
 
 		if ( !is_wp_error($user) ){
 			// logged in
-			wp_redirect(site_url('/support/'));
+			wp_redirect(wt_get_add_ticket_link());
 			exit();
 		}else{
 			// Username and password don`t match
