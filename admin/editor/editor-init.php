@@ -6,14 +6,21 @@ require 'class-wt-admin-actionbox.php';
 add_action( 'add_meta_boxes', 'wt_add_meta_boxes' );
 function wt_add_meta_boxes(){
 
-	// ticket info meta box
-	add_meta_box( 'wpticket-ticket-info', __( 'Ticket Info', 'wp-tickets' ), 'wt_ticket_info_meta_box', 'ticket', 'side', 'high');
+	global $post;
 
 	// publish meta box
 	add_meta_box( 'wpticket-ticket-actions', __( 'Ticket Actions', 'wp-tickets' ), 'wt_ticket_actions_meta_box', 'ticket', 'side', 'high');
 
-	// ticket comment meta box
-	add_meta_box( 'wpticket-ticket-comments', __( 'Ticket Thread', 'wp-tickets' ), 'wt_ticket_comment_meta_box', 'ticket', 'normal', 'high');
+	if('auto-draft' !== $post->post_status){
+		// ticket info meta box
+		add_meta_box( 'wpticket-ticket-info', __( 'Ticket Info', 'wp-tickets' ), 'wt_ticket_info_meta_box', 'ticket', 'side', 'high');
+
+		// ticket comment meta box
+		add_meta_box( 'wpticket-ticket-comments', __( 'Ticket Thread', 'wp-tickets' ), 'wt_ticket_comment_meta_box', 'ticket', 'normal', 'high');
+	}else{
+		// publish meta box
+		add_meta_box( 'wpticket-ticket-create', __( 'Ticket Create', 'wp-tickets' ), 'wt_ticket_create_meta_box', 'ticket', 'normal', 'high');
+	}
 }
 
 add_action( 'admin_menu' , 'wt_remove_meta_boxes' );
@@ -66,7 +73,7 @@ function wt_ticket_actions_meta_box(){
 
 		<div id="major-publishing-actions">
 
-			<?php if(current_user_can( 'delete_tickets' )): ?>
+			<?php if(current_user_can( 'delete_tickets') && 'auto-draft' !== $post->post_status): ?>
 			<div id="delete-action">
 				<a href="<?php echo esc_url( get_delete_post_link($post->ID ) ); ?>" class="submitdelete deletion">Move to Trash</a>
 			</div>
@@ -140,5 +147,11 @@ function wt_ticket_comment_meta_box(){
 	 * show_admin_ticket_comments 10
 	 * show_admin_ticket_commentform 20
 	 */
-	do_action( 'wt_admin_comment_box' );	
+	do_action( 'wt_admin_comment_box' );
+}
+
+function wt_ticket_create_meta_box(){
+
+	global $wptickets;
+	require_once $wptickets->plugin_dir . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'editor' . DIRECTORY_SEPARATOR . 'new-ticket.php';
 }

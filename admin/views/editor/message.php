@@ -1,5 +1,5 @@
 <div id="ticket-<?php echo $post->ID; ?>" class="admin-support-comment support-message">
-		
+
 	<div class="comment-left">
 
 		<!-- Author Info -->
