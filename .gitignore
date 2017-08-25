@@ -4,6 +4,7 @@ tests/
 phpunit.xml
 *.scssc
 node_modules/*
+.idea/
 
 # Compiled source #
 ###################

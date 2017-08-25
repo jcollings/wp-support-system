@@ -6,8 +6,8 @@
     padding: 5px 10px;
     margin-left: 5px; }
   #wt-ticket-archive .pagination a {
-    border: #dddddd solid 1px;
-    background: #eaeaea; }
+    border: #DDD solid 1px;
+    background: #EAEAEA; }
   #wt-ticket-archive .pagination .visuallyhidden {
     display: none; }
 
@@ -17,8 +17,8 @@
 .wt-support-comment {
   padding: 10px;
   margin: 10px 0 10px 0;
-  border: #dddddd solid 1px;
-  background: #eaeaea;
+  border: #DDD solid 1px;
+  background: #EAEAEA;
   overflow: hidden; }
   .wt-support-comment .wt-comment-right h2, .wt-support-comment .wt-comment-right p {
     margin: 0;
@@ -28,7 +28,7 @@
     margin-right: 10px; }
   .wt-support-comment .wt-comment-right h2 a {
     text-decoration: none;
-    color: black; }
+    color: #000; }
   .wt-support-comment .wt-comment-content {
     width: 100%;
     clear: left; }
@@ -57,3 +57,5 @@
 
 .wptickets_cols_2 .wptickets_col_1.last {
   margin-right: 0; }
+
+/*# sourceMappingURL=main.css.map */

@@ -14,8 +14,8 @@ class WT_AdminSettings{
 		do_action('wt/register_admin_menu');
 		add_submenu_page('edit.php?post_type=ticket', 'Settings', 'Settings', 'manage_support_tickets', 'wpticket-settings', array($this, 'admin_settings_page'));
 
-        add_submenu_page( 'edit.php?post_type=ticket', 'Create Ticket', 'Create Ticket', 'read', 'wptickets-add-ticket', array($this, 'admin_create_ticket') );
-        add_submenu_page( 'edit.php?post_type=ticket', 'About', 'About', 'read', 'wptickets-addons', array($this, 'admin_about_page') );
+//        add_submenu_page( 'edit.php?post_type=ticket', 'Create Ticket', 'Create Ticket', 'read', 'wptickets-add-ticket', array($this, 'admin_create_ticket') );
+//        add_submenu_page( 'edit.php?post_type=ticket', 'About', 'About', 'read', 'wptickets-addons', array($this, 'admin_about_page') );
         // add_submenu_page( 'edit.php?post_type=ticket', 'About', 'About', 'read_ticket', 'wptickets-addons', array($this, 'admin_about_page') );
 	}
 

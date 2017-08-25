@@ -23,8 +23,12 @@ function wt_remove_meta_boxes() {
 	remove_meta_box( 'departmentdiv', 'ticket', 'side' );
 	remove_meta_box( 'statusdiv', 'ticket', 'side' );
 
+	remove_meta_box( 'commentsdiv', 'ticket', 'normal' );
+
 	// remove slug
 	remove_meta_box('slugdiv', 'ticket', 'normal' );
+
+	remove_meta_box( 'submitdiv', 'ticket', 'side' );
 }
 
 /**
@@ -46,7 +50,6 @@ function wt_ticket_actions_meta_box(){
 	}
 	</style>
 
-	</form><!-- temp fix -->
 	<form method="post" action="#">
 
 		<input type="hidden" name="wptickets-action" value="admin_ticket_actions" />
@@ -71,7 +74,7 @@ function wt_ticket_actions_meta_box(){
 
 			<div id="publishing-action">
 				<span class="spinner"></span>
-				<input type="submit" name="wptickets-action-button" value="Save Ticket" class="button button-primary" />
+				<input type="submit" name="wptickets-action-button" value="<?php echo 'auto-draft' === $post->post_status ? esc_attr__( 'Create', '' ) : esc_attr__( 'Update', '' ); ?>" class="button button-primary" />
 			</div>
 			<div class="clear"></div>
 		</div>

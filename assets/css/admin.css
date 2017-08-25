@@ -6,21 +6,18 @@ li#menu-posts-ticket:hover .wp-menu-image:before {
 li#menu-posts-ticket.wp-has-current-submenu .wp-menu-image:before {
   background: url(../img/icon_16_grey.png) no-repeat 0 10px !important; }
 
-.post-type-ticket .wrap h2 {
-  background: url(../img/icon_32.png) no-repeat 0 7px;
-  padding-left: 40px; }
-.post-type-ticket #submitdiv, .post-type-ticket .add-new-h2 {
-  display: none; }
 .post-type-ticket .wp-list-table .row-title {
   font-weight: normal; }
 .post-type-ticket .row-actions {
+  display: none; }
+.post-type-ticket #post-body-content, .post-type-ticket #titlediv {
   display: none; }
 
 .admin-support-comment {
   clear: both;
   padding-bottom: 10px;
   margin-bottom: 10px;
-  border-bottom: 1px dashed #cccccc;
+  border-bottom: 1px dashed #CCC;
   overflow: hidden; }
   .admin-support-comment .comment-right {
     padding-left: 60px;
@@ -32,7 +29,7 @@ li#menu-posts-ticket.wp-has-current-submenu .wp-menu-image:before {
     padding: 0; }
   .admin-support-comment .meta-head {
     margin: 0 0 10px 10px;
-    border-bottom: 1px solid #dddddd; }
+    border-bottom: 1px solid #DDD; }
   .admin-support-comment .meta-content {
     margin-left: 10px; }
     .admin-support-comment .meta-content p {
@@ -53,14 +50,16 @@ span.wt-priority {
   padding: 2px 5px; }
   span.wt-priority.high {
     background: red;
-    color: white; }
+    color: #FFF; }
   span.wt-priority.medium {
     background: orange;
-    color: white; }
+    color: #FFF; }
   span.wt-priority.low {
     background: green;
-    color: white; }
+    color: #FFF; }
 
 .wt_form_wrapper label {
   width: 200px !important;
   display: inline-block !important; }
+
+/*# sourceMappingURL=admin.css.map */

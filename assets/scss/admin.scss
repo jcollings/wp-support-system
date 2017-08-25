@@ -31,21 +31,25 @@ li#menu-posts-ticket{
 	.wrap{
 		h2{
 			// set title admin icon icon
-			background: url(../img/icon_32.png) no-repeat 0 7px;
-			padding-left: 40px;
+			//background: url(../img/icon_32.png) no-repeat 0 7px;
+			//padding-left: 40px;
 		}
 	}
 	
 	// hide add new button and public box
-	#submitdiv, .add-new-h2{
-		display: none;
-	}
+	//#submitdiv, .add-new-h2{
+	//	display: none;
+	//}
 
 	.wp-list-table .row-title {
 		font-weight: normal;
 	}
 
 	.row-actions{
+		display: none;
+	}
+
+	#post-body-content, #titlediv {
 		display: none;
 	}
 }

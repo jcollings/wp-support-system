@@ -22,8 +22,8 @@ module.exports = function(grunt) {
 			dev:{
 
 				options:{
-					sourceMap: true,
-					outputStyle: 'nested'
+					// sourceMap: true,
+					// outputStyle: 'nested'
 				},
 				files: {
 					'assets/css/admin.css' : 'assets/scss/admin.scss',
@@ -44,7 +44,7 @@ module.exports = function(grunt) {
 	});
 
 	// Load the plugin that provides the "sass" task.
-	grunt.loadNpmTasks('grunt-sass');
+	grunt.loadNpmTasks('grunt-contrib-sass');
 	grunt.loadNpmTasks ('grunt-contrib-watch');
 
 	// Our tasks

@@ -4,7 +4,7 @@ class WT_Admin_CommentForm{
 	public function __construct(){
 
 		add_action('wt/process_admin_add_comment', array($this, 'process_form_add_comment'));
-		
+
 		add_action('wt_admin_comment_box', array($this, 'show_admin_ticket_message'), 5);
 		add_action('wt_admin_comment_box', array($this, 'show_admin_ticket_comments'), 10);
 		add_action('wt_admin_comment_box', array($this, 'show_admin_ticket_commentform'), 20);
@@ -86,6 +86,7 @@ class WT_Admin_CommentForm{
 	 * @return void
 	 */
 	public function show_admin_ticket_message(){
+
 		global $post, $wptickets;
 		setup_postdata( $post );
 
